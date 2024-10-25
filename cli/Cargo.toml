@@ -1,0 +1,16 @@
+[package]
+name = "streetcritic-cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.91"
+benchmark-rs = "0.1.1"
+clap = { version = "4.5.20", features = ["derive"] }
+log = "0.4.22"
+osm-io = "0.1.4"
+postgres = "0.19.9"
+regex = "1.11.1"
+simple_logger = "5.0.0"
