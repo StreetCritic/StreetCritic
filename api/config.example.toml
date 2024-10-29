@@ -1,0 +1,31 @@
+# HTTP-server configuration
+[server]
+
+# Hostname/IP to listen on
+listen_host = "127.0.0.1"
+
+# Port to listen on
+listen_port = 5000
+
+# Database configuration
+[database]
+host = "localhost"
+port = 5432
+name = "db_name"
+user = "db_user"
+password = "db_password"
+
+# Access token configuration
+[access.token]
+# The public key for token signatures in PEM format
+sign_public_key = """
+-----BEGIN PUBLIC KEY-----
+the public key
+-----END PUBLIC KEY-----
+"""
+
+# The expected audience claim
+audience = "account"
+
+# The expected issuer claim
+issuer = "https://accounts.streetcritic.org/realms/streetcritic"
