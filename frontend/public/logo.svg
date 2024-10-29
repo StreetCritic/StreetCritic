@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="116.45428mm"
+   height="19.313816mm"
+   viewBox="-14 -7 169.41966 28.098068"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <g
+     id="layer1"
+     transform="translate(-34.754513,-106.02311)">
+    <path
+       id="rect10257"
+       style="color:#000000;overflow:visible;fill:#6b8000;fill-opacity:1;stroke:none;stroke-width:3.565;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       d="m 20.754512,99.062596 v 28.058584 h 8.118662 c -0.688289,-1.80874 -0.866497,-3.3343 -0.505208,-4.71828 0.542273,-2.07729 2.29616,-3.24666 4.01535,-3.97626 3.438377,-1.45924 7.450098,-2.08778 9.244103,-4.57167 0.831351,-1.15106 0.77301,-2.08502 0.291697,-3.46128 -0.481316,-1.37625 -1.499786,-2.9592 -2.383198,-4.58371 -0.883411,-1.62452 -1.784763,-3.43718 -1.182578,-5.45955 0.138126,-0.463883 0.35327,-0.891426 0.637525,-1.287834 z" />
+    <path
+       id="rect14650"
+       style="overflow:visible;fill:#5d7000;fill-opacity:1;stroke:#ffffff;stroke-width:0.999998;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       d="m 33.364023,112.68093 -0.07645,3.30523 -2.252199,-2.99207 -6.367672,0.98972 c -0.472973,0.0735 -0.863916,-0.38538 -0.863916,-0.86404 v -6.29711 c 0,-0.47866 0.390872,-0.79115 0.863916,-0.86425 l 9.963962,-1.53968 c 0.478658,0 0.863916,0.38559 0.863916,0.86425 v 6.33094 c 0,0.47866 -0.34894,0.68299 -0.863916,0.86424 z" />
+    <circle
+       style="color:#000000;overflow:visible;fill:#ffffff;stroke:none;stroke-width:3.565;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       id="path14644"
+       cx="26.524481"
+       cy="110.13368"
+       r="0.745933" />
+    <circle
+       style="color:#000000;overflow:visible;fill:#ffffff;stroke:none;stroke-width:3.565;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       id="circle14646"
+       cx="29.437943"
+       cy="109.67954"
+       r="0.745933" />
+    <circle
+       style="color:#000000;overflow:visible;fill:#ffffff;stroke:none;stroke-width:3.565;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       id="circle14648"
+       r="0.745933"
+       cy="109.1745"
+       cx="32.691914" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.4px;line-height:125%;font-family:'Nimbus Sans';-inkscape-font-specification:'Nimbus Sans Bold';font-variation-settings:normal;letter-spacing:0px;word-spacing:0px;opacity:1;vector-effect:none;fill:#5d7000;fill-opacity:1;stroke:none;stroke-width:3.565;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       x="54.309593"
+       y="122.74462"
+       id="text18288"><tspan
+         id="tspan18286"
+         style="font-size:25.4px;font-variation-settings:normal;vector-effect:none;fill:#5d7000;fill-opacity:1;stroke:none;stroke-width:3.565;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         x="54.309593"
+         y="122.74462">StreetCritic</tspan></text>
+    <path
+       d="m 45.10502,99.023113 0.01729,0.0624 c -2.841448,0.78161 -3.543826,1.616527 -3.69734,2.132087 -0.153515,0.51557 0.13992,1.58719 0.92847,3.03726 0.788549,1.45007 1.919231,3.13212 2.590694,5.05208 0.671465,1.91997 0.769954,4.31445 -0.711952,6.36622 -2.832498,3.92175 -7.849332,4.47539 -10.579295,5.63398 -1.36498,0.57928 -1.980782,1.07645 -2.184723,1.85768 -0.168273,0.64461 -0.05373,1.88766 0.896894,3.91687 H 48.84446 V 99.023113 Z"
+       style="color:#000000;overflow:visible;fill:#96b300;fill-opacity:1;stroke:none;stroke-width:3.565;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+       id="path18333" />
+  </g>
+</svg>

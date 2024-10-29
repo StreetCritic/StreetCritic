@@ -1,0 +1,19 @@
+.root {
+  height: 100%;
+  position: relative;
+}
+
+.actionWrap {
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 40px;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.actionWrap > * {
+  pointer-events: all;
+}
