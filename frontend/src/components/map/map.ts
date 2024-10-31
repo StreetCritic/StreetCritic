@@ -13,7 +13,7 @@ import { Point } from "@/hooks/useRoute";
 import { RoutingError, Route, Point as WASMPoint, init_hooks } from "ibre";
 
 export type PositionHandler = (point: LngLat) => void;
-export type WaySelectHandler = (id: String) => void;
+export type WaySelectHandler = (id: string) => void;
 export type PositionChangeHandler = (
   index: number,
   lngLat: LngLat | null,
@@ -485,6 +485,24 @@ class Map {
   // }
 }
 
+export enum MapMode {
+  Routing,
+}
+
+export type MapOptions = {
+  styleURL: string;
+  center: LngLatLike;
+  stops: Point[];
+  route: Route | null;
+  onPosition: PositionHandler;
+  onPositionChange: PositionChangeHandler;
+  onRoutePosition: PositionHandler;
+  onWaySelect: WaySelectHandler;
+  APIToken: string | null;
+  selectedWay: number | null;
+  mode: MapMode;
+};
+
 /**
  * React hook to initialize and update the transport map.
  *
@@ -495,16 +513,18 @@ class Map {
  */
 export function useMap(
   container: React.RefObject<HTMLElement>,
-  styleURL: string,
-  center: LngLatLike,
-  stops: Point[],
-  route: Route | null,
-  onPosition: PositionHandler,
-  onPositionChange: PositionChangeHandler,
-  onRoutePosition: PositionHandler,
-  onWaySelect: WaySelectHandler,
-  APIToken: string | null,
-  selectedWay: number | null,
+  {
+    styleURL,
+    center,
+    stops,
+    route,
+    onPosition,
+    onPositionChange,
+    onRoutePosition,
+    onWaySelect,
+    APIToken,
+    selectedWay,
+  }: MapOptions,
 ) {
   const [map, setMap] = useState<null | Map>(null);
 

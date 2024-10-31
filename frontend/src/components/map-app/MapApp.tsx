@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import Map from "@/components/map";
+import { default as Map, MapMode } from "@/components/map";
 import Button from "@/components/button";
 import { useRating } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
@@ -23,14 +23,14 @@ type Props = {
 export default function MapApp({ children, sidebar, selectedWay }: Props) {
   console.log("sidebar", sidebar);
   const auth = useAuth();
-  const token = auth.user?.access_token;
+  const token = auth.user?.access_token || null;
 
   const [stops, route, onPosition, onPositionChange, onRoutePosition] =
     useRating();
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
   const router = useRouter();
 
-  const onWaySelect = (id) => {
+  const onWaySelect = (id: string) => {
     router.push(`/way/${id}`);
   };
 
@@ -47,6 +47,7 @@ export default function MapApp({ children, sidebar, selectedWay }: Props) {
         center={[8.684966, 50.110573]}
         APIToken={token}
         selectedWay={selectedWay}
+        mode={MapMode.Routing}
       />
       {/* <InConstructionModal /> */}
       {route && !wayCreateFormOpen && (
