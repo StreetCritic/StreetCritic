@@ -1,26 +1,43 @@
-import { useRoute, Point } from "./useRoute";
 import { PositionHandler, PositionChangeHandler } from "@/components/map";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Point as WASMPoint, Route } from "ibre";
 import { LngLat } from "maplibre-gl";
+import { useSegmentsRoute } from "./useSegmentsRoute";
+import { useDirections } from "./useDirections";
+import { MapMode } from "@/components/map";
+
+/**
+ * A stop on the map used for ways/routes.
+ */
+export type Stop = {
+  // Longitude, measured in degrees.
+  lng: number;
+  // Latitude, measured in degrees.
+  lat: number;
+};
 
 type Rets = [
-  Point[],
+  Stop[],
+  GeoJSON.GeoJSON,
   Route | null,
   PositionHandler,
   PositionChangeHandler,
   PositionHandler,
 ];
 
-export function useRating(): Rets {
-  const [stops, setStops] = useState<Point[]>([]);
+export function useWay(mapMode: MapMode): Rets {
+  const [stops, setStops] = useState<Stop[]>([]);
+
+  const route = useSegmentsRoute(mapMode === MapMode.WayAdding ? stops : []);
+  const directionsRoute = useDirections(
+    mapMode === MapMode.Routing ? stops : [],
+  );
+
   console.log("current stops", stops);
-  const route = useRoute(stops);
 
   const lastChanged = useRef(1);
 
-  const onPosition: PositionHandler = (position) => {
-    const newStop = { x: position.lng, y: position.lat };
+  const onPosition: PositionHandler = (newStop) => {
     if (lastChanged.current === 0) {
       console.log("set new stop");
       setStops((prevStops) => [prevStops[0], newStop]);
@@ -37,7 +54,7 @@ export function useRating(): Rets {
       console.log("set");
       setStops((prevStops) => [
         ...prevStops.slice(0, index),
-        { x: lngLat.lng, y: lngLat.lat },
+        lngLat,
         ...prevStops.slice(index + 1),
       ]);
     } else {
@@ -50,6 +67,7 @@ export function useRating(): Rets {
   };
 
   const routePositionRef = useRef((position: LngLat) => {});
+
   useEffect(() => {
     if (!route) {
       return;
@@ -58,7 +76,7 @@ export function useRating(): Rets {
       console.log("routePosition", position);
       const extended = route
         .getExtendedStops(new WASMPoint(position.lng, position.lat))
-        .map((stop) => ({ x: stop.x(), y: stop.y() }));
+        .map((stop) => ({ lng: stop.x(), lat: stop.y() }));
       console.log("extedend is", extended);
       setStops(extended);
     };
@@ -68,7 +86,13 @@ export function useRating(): Rets {
     routePositionRef.current(routePosition);
   };
 
-  return [stops, route, onPosition, onPositionChange, onRoutePosition];
+  const way =
+    mapMode === MapMode.Routing
+      ? directionsRoute?.feature?.geometry
+      : route && JSON.parse(route.get_segments_as_geojson());
+  console.log("the geometry", way);
+
+  return [stops, way, route, onPosition, onPositionChange, onRoutePosition];
 }
 
-export default useRating;
+export default useWay;

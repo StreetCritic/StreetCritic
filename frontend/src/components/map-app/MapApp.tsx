@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { default as Map, MapMode } from "@/components/map";
 import Button from "@/components/button";
-import { useRating } from "@/hooks";
+import { useWay, useSegments, useDirections } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
 import { useAuth } from "react-oidc-context";
@@ -22,11 +22,13 @@ type Props = {
 
 export default function MapApp({ children, sidebar, selectedWay }: Props) {
   console.log("sidebar", sidebar);
+  const [mapMode, setMapMode] = useState(MapMode.Routing);
   const auth = useAuth();
   const token = auth.user?.access_token || null;
 
-  const [stops, route, onPosition, onPositionChange, onRoutePosition] =
-    useRating();
+  const [stops, way, segments, onPosition, onPositionChange, onRoutePosition] =
+    useWay(mapMode);
+
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
   const router = useRouter();
 
@@ -37,7 +39,7 @@ export default function MapApp({ children, sidebar, selectedWay }: Props) {
   return (
     <div className={styles.root}>
       <Map
-        route={route}
+        route={way}
         stops={stops}
         onPosition={onPosition}
         onPositionChange={onPositionChange}
@@ -47,10 +49,10 @@ export default function MapApp({ children, sidebar, selectedWay }: Props) {
         center={[8.684966, 50.110573]}
         APIToken={token}
         selectedWay={selectedWay}
-        mode={MapMode.Routing}
+        mode={mapMode}
       />
       {/* <InConstructionModal /> */}
-      {route && !wayCreateFormOpen && (
+      {segments && !wayCreateFormOpen && (
         <div className={styles.actionWrap}>
           <Button
             label="Add this way"
@@ -59,10 +61,10 @@ export default function MapApp({ children, sidebar, selectedWay }: Props) {
           />
         </div>
       )}
-      {route && wayCreateFormOpen && (
+      {segments && wayCreateFormOpen && (
         <div className={styles.actionWrap}>
           <WayCreateForm
-            route={route}
+            route={segments}
             onClose={() => setWayCreateFormOpen(false)}
           />
         </div>

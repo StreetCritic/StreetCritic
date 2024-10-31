@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Map as LibreMap, LngLat, Marker, type LngLatLike } from "maplibre-gl";
 import maplibregl, { GeoJSONSource } from "maplibre-gl";
+import type { GeoJSON } from "geojson";
 import { PMTiles, Protocol } from "pmtiles";
 import type { Position } from "geojson";
 // import { pointToTile } from '@mapbox/tilebelt';
 import layers from "protomaps-themes-base";
 import chroma from "chroma-js";
 
-import { Point } from "@/hooks/useRoute";
+import type { Stop } from "@/hooks/useWay";
 
 // import { , init_hooks, Segment, Router, Route, LineString, Point as WASMPoint, Coord, Connector } from "ibre";
 import { RoutingError, Route, Point as WASMPoint, init_hooks } from "ibre";
@@ -42,7 +43,8 @@ class Map {
    * map.
    * @param onPositionChange - Callback which is called when a position is
    * changed by the user. Index is the position of the index, lngLat the new position.
-   * @param onRoutePosition - Callback which is called when the user clicks on the
+   * @param onRoutePosition - Callback which is called when the user clicks on
+   * the displayed route.
    * @param onWaySelect - Callback which is called when the user clicks a
    * rating on the map.
    * @param APIToken - Auth token for the backend API.
@@ -382,40 +384,40 @@ class Map {
    *
    * @param route - The route to display.
    */
-  displayRoute(route: Route): void {
-    for (const segment of route.get_segments()) {
-      console.log(
-        segment.get_start(),
-        segment.get_stop(),
-        segment.get_segment().get_id(),
-      );
-    }
+  displayRoute(route: GeoJSON): void {
     const source = this.map.getSource("route");
+    console.log("display route", route);
     if (source instanceof GeoJSONSource) {
-      const segments = route.get_segments_as_geojson();
       // console.log('route segments', segments);
-      console.log("route segments", JSON.parse(segments));
       source.setData(
-        JSON.parse(segments), // || {
+        route,
+        // || {
         // type: "FeatureCollection",
         // features: [],
         // },
       );
     }
+  }
 
+  /**
+   * Displays the given stops.
+   *
+   * @param stops - The stops to display.
+   */
+  displayStops(stops: Stop[]): void {
     this.stopMarker.forEach((m) => m.remove());
     this.stopMarker = [];
 
     let index = 0;
-    console.log("we have stops", route.get_stops().length);
-    for (const stop of route.get_stops()) {
+    // console.log("we have stops", route.get_stops().length);
+    for (const stop of stops) {
       console.log("add stop marker", index);
       this.stopMarker.push(
         new Marker({
           color: index == 0 ? "#FFCCE6" : "#AB212A",
           draggable: true,
           scale: index == 0 ? 0.7 : 1.0,
-        }).setLngLat([stop.x(), stop.y()]),
+        }).setLngLat(stop),
       );
       index++;
     }
@@ -487,13 +489,14 @@ class Map {
 
 export enum MapMode {
   Routing,
+  WayAdding,
 }
 
 export type MapOptions = {
   styleURL: string;
   center: LngLatLike;
-  stops: Point[];
-  route: Route | null;
+  stops: Stop[];
+  route: GeoJSON.GeoJSON | null;
   onPosition: PositionHandler;
   onPositionChange: PositionChangeHandler;
   onRoutePosition: PositionHandler;
@@ -548,6 +551,13 @@ export function useMap(
       };
     }
   }, []);
+
+  // Display stops.
+  useEffect(() => {
+    if (map && stops) {
+      map.displayStops(stops);
+    }
+  }, [stops, map]);
 
   // Display route.
   useEffect(() => {

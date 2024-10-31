@@ -1,2 +1,3 @@
-export * from "./useRating";
-export * from "./useRoute";
+export * from "./useWay";
+export * from "./useSegmentsRoute";
+export * from "./useDirections";
