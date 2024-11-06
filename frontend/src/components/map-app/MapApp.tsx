@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./map-app.module.css";
 import Sidebar from "./Sidebar";
 import { LngLatLike } from "maplibre-gl";
+import useNavigateMap from "@/hooks/useNavigateMap";
 
 type Props = {
   selectedWay: number | null;
@@ -28,7 +29,7 @@ export default function MapApp({ selectedWay }: Props) {
   console.log("selected way", selectedWay);
 
   const [mapMode, setMapMode] = useState(MapMode.Routing);
-  let navigate = useNavigate();
+  const navigateMap = useNavigateMap();
   const auth = useAuth();
   const token = auth.user?.access_token || null;
 
@@ -38,7 +39,7 @@ export default function MapApp({ selectedWay }: Props) {
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
   const onWaySelect = (id: string) => {
-    navigate(`/way/${id}`);
+    navigateMap(`/way/${id}`, { replace: false });
   };
 
   return (

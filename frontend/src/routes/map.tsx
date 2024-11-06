@@ -11,21 +11,20 @@ import {
   selectMapState,
   zoomUpdated,
 } from "@/features/map/mapSlice";
+import useMapSearchParams from "@/hooks/useMapSearchParams";
 
 export default function Map() {
   const [initDone, setInitDone] = useState(false);
   const { wayId } = useParams();
 
   let [searchParams, setSearchParams] = useSearchParams();
+  const mapSearchParams = useMapSearchParams();
 
   const dispatch = useDispatch();
   const mapState = useSelector(selectMapState);
 
   useEffect(() => {
-    setSearchParams((oldParams) => ({
-      c: `${mapState.center.lng},${mapState.center.lat}`,
-      z: `${mapState.zoom}`,
-    }));
+    setSearchParams((_) => mapSearchParams, { replace: true });
   }, [mapState]);
 
   // Set map zoom and center based on URL params.
