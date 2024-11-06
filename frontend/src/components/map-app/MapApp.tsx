@@ -16,9 +16,12 @@ import WaySidebar from "@/components/way-sidebar";
 import { useNavigate } from "react-router-dom";
 import styles from "./map-app.module.css";
 import Sidebar from "./Sidebar";
+import { LngLatLike } from "maplibre-gl";
 
 type Props = {
   selectedWay: number | null;
+  center: LngLatLike;
+  onCenterUpdate: (center: LngLatLike) => void;
 };
 
 export default function MapApp({ selectedWay }: Props) {
@@ -49,7 +52,6 @@ export default function MapApp({ selectedWay }: Props) {
         onRoutePosition={onRoutePosition}
         onWaySelect={onWaySelect}
         styleURL="/styles.json"
-        center={[8.684966, 50.110573]}
         APIToken={token}
         selectedWay={selectedWay}
         mode={mapMode}

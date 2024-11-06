@@ -57,6 +57,7 @@ class Map {
   constructor(
     styleURL: string,
     center: LngLatLike,
+    onCenterChange: (center: LngLat) => void,
     container: HTMLElement,
     onLoad: (map: Map) => void,
     onPosition: PositionHandler,
@@ -64,6 +65,7 @@ class Map {
     onRoutePosition: PositionHandler,
     onWaySelect: WaySelectHandler,
     APIToken: string | null,
+    options: MapOptions,
   ) {
     const protocol = new Protocol();
     this.APIToken = APIToken;
@@ -91,7 +93,7 @@ class Map {
       // layers: layers("protomaps", "light")
       // },
       center,
-      zoom: 12,
+      zoom: options.zoom,
       attributionControl: {
         customAttribution:
           '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap Mitwirkende</a> <a href = "https://www.maptiler.com/copyright/" target="_blank" >&copy; MapTiler</a>',
@@ -338,7 +340,14 @@ class Map {
 
       this.map.on("moveend", () => {
         this.refreshWays();
+        onCenterChange(this.map.getCenter());
       });
+
+      this.map.on("zoomend", () => {
+        this.refreshWays();
+        options.onZoomChange(this.map.getZoom());
+      });
+
       this.refreshWays();
 
       onLoad(this);
@@ -442,6 +451,20 @@ class Map {
   }
 
   /**
+   * Sets center of map.
+   */
+  setCenter(center: LngLatLike) {
+    this.map.setCenter(center);
+  }
+
+  /**
+   * Sets zoom of map.
+   */
+  setZoom(zoom: number) {
+    this.map.setZoom(zoom);
+  }
+
+  /**
    * Cleans up the map.
    *
    * Removes the PMTiles protocol from MapLibre GL.
@@ -499,6 +522,9 @@ export enum MapMode {
 export type MapOptions = {
   styleURL: string;
   center: LngLatLike;
+  onCenterChange: (center: LngLat) => void;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
   stops: Stop[];
   route: GeoJSON.GeoJSON | null;
   onPosition: PositionHandler;
@@ -520,9 +546,15 @@ export type MapOptions = {
  */
 export function useMap(
   container: React.RefObject<HTMLElement>,
-  {
+  options : MapOptions,
+) {
+  const [map, setMap] = useState<null | Map>(null);
+
+  const {
     styleURL,
     center,
+    onCenterChange,
+    zoom,
     stops,
     route,
     onPosition,
@@ -531,9 +563,7 @@ export function useMap(
     onWaySelect,
     APIToken,
     selectedWay,
-  }: MapOptions,
-) {
-  const [map, setMap] = useState<null | Map>(null);
+  } = options;
 
   // Initialize the map.
   useEffect(() => {
@@ -542,6 +572,7 @@ export function useMap(
       const theMap = new Map(
         styleURL,
         center,
+        onCenterChange,
         container.current,
         setMap,
         onPosition,
@@ -549,6 +580,7 @@ export function useMap(
         onRoutePosition,
         onWaySelect,
         APIToken,
+        options,
       );
       return () => {
         theMap.destruct();
@@ -576,4 +608,14 @@ export function useMap(
       map.displayRating(selectedWay);
     }
   }, [selectedWay, map]);
+
+  // Update center when changed.
+  useEffect(() => {
+    map && map.setCenter(center)
+  }, [map, center]);
+
+  // Update zoom when changed.
+  useEffect(() => {
+    map && map.setZoom(zoom)
+  }, [map, zoom]);
 }
