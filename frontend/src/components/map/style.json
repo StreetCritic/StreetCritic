@@ -24,7 +24,7 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "tiles": ["https://tiles.streetcritic.org/tiles/basemap/{z}/{x}/{y}.mvt"],
+      "tiles": ["https://tiles.streetcritic.org/tiles/basemap/{z}/{x}/{y}"],
       "minzoom": 0,
       "maxzoom": 14
     }
