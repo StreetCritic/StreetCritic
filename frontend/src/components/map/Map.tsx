@@ -6,8 +6,12 @@ import type { LngLatLike } from "maplibre-gl";
 import { Route } from "ibre";
 import { Point } from "@/hooks/useRoute";
 import { LngLat } from "maplibre-gl";
-import { useDispatch, useSelector } from 'react-redux'
-import { selectMapState, centerUpdated, zoomUpdated } from "@/features/map/mapSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectMapState,
+  centerUpdated,
+  zoomUpdated,
+} from "@/features/map/mapSlice";
 
 import {
   useMap,
@@ -27,11 +31,13 @@ export default function Map(mapOptions: MapOptions): React.JSX.Element {
   useMap(container, {
     ...mapOptions,
     zoom: mapState.zoom,
-    onZoomChange: (zoom) => { dispatch(zoomUpdated(zoom)) },
+    onZoomChange: (zoom) => {
+      dispatch(zoomUpdated(zoom));
+    },
     center: mapState.center,
-    onCenterChange: (center) => { dispatch(centerUpdated(
-        { lng: center.lng, lat: center.lat })); }
-    ,
+    onCenterChange: (center) => {
+      dispatch(centerUpdated({ lng: center.lng, lat: center.lat }));
+    },
   });
   return (
     <div className={styles.root}>

@@ -79,17 +79,14 @@ export default function RatingForm({
         comment,
       };
       const token = auth.user?.access_token;
-      const response = await fetch(
-        `${config.apiURL}/ratings`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
+      const response = await fetch(`${config.apiURL}/ratings`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(body),
+      });
       if (response.ok) {
         console.log("success");
         onClose();

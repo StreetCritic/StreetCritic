@@ -2,10 +2,10 @@ import Container from "@/components/container";
 import { P, H1 } from "@/components/typography";
 
 /* export const metadata: Metadata = {
-*   title: "Sponsors",
-*   description: "Our sponsors.",
-* };
-*  */
+ *   title: "Sponsors",
+ *   description: "Our sponsors.",
+ * };
+ *  */
 export default function Home() {
   return (
     <main>
@@ -20,7 +20,10 @@ export default function Home() {
           </a>
           .
         </P>
-        <img src={new URL("bmbf_logo.jpg", import.meta.url)} width={402} height={343}
+        <img
+          src={new URL("bmbf_logo.jpg", import.meta.url)}
+          width={402}
+          height={343}
           alt="Sponsored by the Federal Ministry of Education and Research"
           style={{
             maxWidth: "100%",

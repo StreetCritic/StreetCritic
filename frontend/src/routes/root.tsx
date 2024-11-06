@@ -7,14 +7,16 @@ import { Outlet } from "react-router-dom";
 /* import { ColorSchemeScript } from "@mantine/core"; */
 
 /* export const metadata: Metadata = {
-*   title: "StreetCritic",
-*   description: "We collect subjective data about traffic routes.",
-* };
-*  */
+ *   title: "StreetCritic",
+ *   description: "We collect subjective data about traffic routes.",
+ * };
+ *  */
 
 export default function Root() {
   return (
-    <App><Outlet/></App>
+    <App>
+      <Outlet />
+    </App>
   );
 }
 

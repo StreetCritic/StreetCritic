@@ -25,8 +25,7 @@ type Props = {
 };
 
 export default function MapApp({ selectedWay }: Props) {
-
-  console.log('selected way', selectedWay);
+  console.log("selected way", selectedWay);
 
   const [mapMode, setMapMode] = useState(MapMode.Routing);
   let navigate = useNavigate();
@@ -74,9 +73,11 @@ export default function MapApp({ selectedWay }: Props) {
           />
         </div>
       )}
-      {
-        selectedWay && (<Sidebar><WaySidebar wayId={selectedWay}/></Sidebar>)
-      }
+      {selectedWay && (
+        <Sidebar>
+          <WaySidebar wayId={selectedWay} />
+        </Sidebar>
+      )}
     </div>
   );
 }

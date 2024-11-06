@@ -6,7 +6,11 @@ import initIbre from "ibre";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { centerUpdated, selectMapState, zoomUpdated } from "@/features/map/mapSlice";
+import {
+  centerUpdated,
+  selectMapState,
+  zoomUpdated,
+} from "@/features/map/mapSlice";
 
 export default function Map() {
   const [initDone, setInitDone] = useState(false);
@@ -26,11 +30,16 @@ export default function Map() {
 
   // Set map zoom and center based on URL params.
   useEffect(() => {
-    const centerCoords = searchParams.get('c') ? searchParams.get('c')!.split(',').map(parseFloat) : [];
-    const center: [number, number] | null = centerCoords.length === 2 &&
-    !centerCoords.some(isNaN) ? [centerCoords[0], centerCoords[1]]
-    : null;
-    const zoom: number | null = searchParams.get('z') ? parseFloat(searchParams.get('z') as string) : null;
+    const centerCoords = searchParams.get("c")
+      ? searchParams.get("c")!.split(",").map(parseFloat)
+      : [];
+    const center: [number, number] | null =
+      centerCoords.length === 2 && !centerCoords.some(isNaN)
+        ? [centerCoords[0], centerCoords[1]]
+        : null;
+    const zoom: number | null = searchParams.get("z")
+      ? parseFloat(searchParams.get("z") as string)
+      : null;
 
     if (zoom) {
       dispatch(zoomUpdated(zoom));

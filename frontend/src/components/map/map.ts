@@ -361,14 +361,11 @@ class Map {
     //   return;
     // }
     const bbox = this.map.getBounds().toArray().flat().join(",");
-    const response = await fetch(
-        `${config.apiURL}/ways?bbox=${bbox}`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.APIToken}`,
-        },
+    const response = await fetch(`${config.apiURL}/ways?bbox=${bbox}`, {
+      headers: {
+        Authorization: `Bearer ${this.APIToken}`,
       },
-    );
+    });
     if (response.ok) {
       const json = await response.json();
       console.log(json);
@@ -384,9 +381,7 @@ class Map {
    * @param id - The rating to display.
    */
   async displayRating(id: number): void {
-    const response = await fetch(
-        `${config.apiURL}/ratings/${id}`,
-    );
+    const response = await fetch(`${config.apiURL}/ratings/${id}`);
     const data = await response.json();
     const source = this.map.getSource("existing-ways");
     source.setData(data.geometry);
@@ -546,7 +541,7 @@ export type MapOptions = {
  */
 export function useMap(
   container: React.RefObject<HTMLElement>,
-  options : MapOptions,
+  options: MapOptions,
 ) {
   const [map, setMap] = useState<null | Map>(null);
 
@@ -611,11 +606,11 @@ export function useMap(
 
   // Update center when changed.
   useEffect(() => {
-    map && map.setCenter(center)
+    map && map.setCenter(center);
   }, [map, center]);
 
   // Update zoom when changed.
   useEffect(() => {
-    map && map.setZoom(zoom)
+    map && map.setZoom(zoom);
   }, [map, zoom]);
 }

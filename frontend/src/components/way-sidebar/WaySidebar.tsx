@@ -4,7 +4,7 @@ import config from "@/config";
 
 type Props = {
   wayId: number;
-}
+};
 
 export default function WaySidebar({ wayId }: Props) {
   const [wayData, setWayData] = useState(null);
@@ -12,9 +12,7 @@ export default function WaySidebar({ wayId }: Props) {
 
   useEffect(() => {
     (async () => {
-      const wayResponse = await fetch(
-        `${config.apiURL}/ways/${wayId}`,
-      );
+      const wayResponse = await fetch(`${config.apiURL}/ways/${wayId}`);
       const way = await wayResponse.json();
       setWayData(way);
 
@@ -25,15 +23,11 @@ export default function WaySidebar({ wayId }: Props) {
       );
       const ratings = await ratingsResponse.json();
       setRatingsData(ratings);
-      console.log(
-        wayId,
-        ratings,
-        `${config.apiURL}/ratings?way_id=${wayId}`,
-      );
-    })()
+      console.log(wayId, ratings, `${config.apiURL}/ratings?way_id=${wayId}`);
+    })();
   }, [wayId]);
 
-  if ( !wayData || ! ratingsData ) {
+  if (!wayData || !ratingsData) {
     return <p>empty</p>;
   }
 

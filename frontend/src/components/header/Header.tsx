@@ -29,7 +29,12 @@ export default function Header() {
       <header className={classes.header}>
         <Group justify="space-between" h="100%">
           <Link to={"/"}>
-            <img src={new URL("logo.svg", import.meta.url)} width={200} height={33} alt="StreetCritic" />
+            <img
+              src={new URL("logo.svg", import.meta.url)}
+              width={200}
+              height={33}
+              alt="StreetCritic"
+            />
           </Link>
 
           <Group h="100%" gap={0} visibleFrom="sm">
@@ -95,11 +100,7 @@ export default function Header() {
           <Link to={"about"} className={classes.link} onClick={toggleDrawer}>
             About
           </Link>
-          <Link
-            to={"sponsors"}
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
+          <Link to={"sponsors"} className={classes.link} onClick={toggleDrawer}>
             Sponsors
           </Link>
           <Divider my="sm" />
