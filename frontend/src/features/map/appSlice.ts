@@ -10,10 +10,14 @@ export enum AppMode {
 export type AppState = {
   // Main App operation
   mode: AppMode;
+
+  // Locale for translations
+  locale: string;
 };
 
 const initialState: AppState = {
   mode: AppMode.Browsing,
+  locale: "en",
 };
 
 export const appSlice = createSlice({

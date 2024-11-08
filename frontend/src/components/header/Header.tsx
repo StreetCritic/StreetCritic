@@ -18,9 +18,11 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
+import useLocalize from "@/hooks/useLocalized";
 
 export default function Header() {
   const auth = useAuth();
+  const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
@@ -69,7 +71,7 @@ export default function Header() {
                   >
                     Log in
                   </Button>
-                  <Button>Sign up</Button>
+                  <Button>{__("sign-up")}</Button>
                 </>
               )}
           </Group>
