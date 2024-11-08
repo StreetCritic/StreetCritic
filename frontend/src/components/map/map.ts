@@ -479,6 +479,7 @@ class Map {
    */
   destruct() {
     maplibregl.removeProtocol("pmtiles");
+    this.map.remove();
   }
 
   // /**
