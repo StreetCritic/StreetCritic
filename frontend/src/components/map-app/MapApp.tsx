@@ -25,6 +25,7 @@ import useNavigateMap from "@/hooks/useNavigateMap";
 import LocationSearch from "../location-search";
 import AddIcon from "../add-icon";
 import { AppMode, selectAppState } from "@/features/map/appSlice";
+import WayAddingIntroduction from "../way-adding-introduction";
 
 type Props = {
   selectedWay: number | null;
@@ -96,6 +97,7 @@ export default function MapApp({ selectedWay }: Props) {
       {appState.mode === AppMode.WayAdding && (
         <Sidebar>
           <WayAddingSidebar />
+          <WayAddingIntroduction />
         </Sidebar>
       )}
 
