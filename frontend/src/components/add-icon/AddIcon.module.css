@@ -1,0 +1,15 @@
+.root {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px #0000001a;
+}
+
+.root a {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: inherit;
+}

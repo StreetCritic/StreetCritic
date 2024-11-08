@@ -20,6 +20,7 @@ import Sidebar from "./Sidebar";
 import { LngLatLike } from "maplibre-gl";
 import useNavigateMap from "@/hooks/useNavigateMap";
 import LocationSearch from "../location-search";
+import AddIcon from "../add-icon";
 
 type Props = {
   selectedWay: number | null;
@@ -86,6 +87,10 @@ export default function MapApp({ selectedWay }: Props) {
 
       <div className={styles.locationSearch}>
         <LocationSearch />
+      </div>
+
+      <div className={styles.addIcon}>
+        <AddIcon />
       </div>
     </div>
   );

@@ -23,3 +23,9 @@
   top: 80px;
   left: var(--mantine-spacing-md);
 }
+
+.addIcon {
+  position: absolute;
+  top: 140px;
+  left: var(--mantine-spacing-md);
+}
