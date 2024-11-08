@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Map as LibreMap, LngLat, Marker, type LngLatLike } from "maplibre-gl";
-import maplibregl, { GeoJSONSource } from "maplibre-gl";
+import maplibregl, {
+  GeoJSONSource,
+  NavigationControl,
+  GeolocateControl,
+} from "maplibre-gl";
 import type { GeoJSON } from "geojson";
 import { PMTiles, Protocol } from "pmtiles";
 import type { Position } from "geojson";
@@ -119,7 +123,16 @@ class Map {
     // });
 
     this.map.once("load", () => {
-      this.map.addControl(new maplibregl.NavigationControl());
+      this.map.addControl(
+        new GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true,
+          },
+          trackUserLocation: false,
+        }),
+        "bottom-right",
+      );
+      this.map.addControl(new NavigationControl(), "bottom-right");
 
       // this.map.addSource("transportation", {
       //   type: "vector",
