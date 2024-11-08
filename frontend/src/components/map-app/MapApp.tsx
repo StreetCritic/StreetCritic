@@ -7,7 +7,7 @@ import { useWay, useSegments, useDirections } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
 import { useAuth } from "react-oidc-context";
-import { Paper } from "@mantine/core";
+import { Box, Paper } from "@mantine/core";
 import { WaySelectHandler } from "@/components/map";
 import { PlusCircle } from "@phosphor-icons/react";
 
@@ -15,10 +15,11 @@ import WaySidebar from "@/components/way-sidebar";
 import ProfileControl from "@/components/profile-control";
 
 import { useNavigate } from "react-router-dom";
-import styles from "./map-app.module.css";
+import styles from "./MapApp.module.css";
 import Sidebar from "./Sidebar";
 import { LngLatLike } from "maplibre-gl";
 import useNavigateMap from "@/hooks/useNavigateMap";
+import LocationSearch from "../location-search";
 
 type Props = {
   selectedWay: number | null;
@@ -82,6 +83,10 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       <ProfileControl />
+
+      <div className={styles.locationSearch}>
+        <LocationSearch />
+      </div>
     </div>
   );
 }

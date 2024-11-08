@@ -17,3 +17,9 @@
 .actionWrap > * {
   pointer-events: all;
 }
+
+.locationSearch {
+  position: absolute;
+  top: 80px;
+  left: var(--mantine-spacing-md);
+}
