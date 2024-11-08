@@ -12,6 +12,7 @@ import { WaySelectHandler } from "@/components/map";
 import { PlusCircle } from "@phosphor-icons/react";
 
 import WaySidebar from "@/components/way-sidebar";
+import ProfileControl from "@/components/profile-control";
 
 import { useNavigate } from "react-router-dom";
 import styles from "./map-app.module.css";
@@ -79,6 +80,8 @@ export default function MapApp({ selectedWay }: Props) {
           <WaySidebar wayId={selectedWay} />
         </Sidebar>
       )}
+
+      <ProfileControl />
     </div>
   );
 }
