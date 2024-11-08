@@ -524,6 +524,7 @@ class Map {
 }
 
 export enum MapMode {
+  Browsing,
   Routing,
   WayAdding,
 }

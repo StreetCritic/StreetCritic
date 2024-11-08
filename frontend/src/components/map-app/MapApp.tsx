@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 
+import { useSelector } from "react-redux";
+
 import { default as Map, MapMode } from "@/components/map";
 import Button from "@/components/button";
 import { useWay, useSegments, useDirections } from "@/hooks";
@@ -12,6 +14,7 @@ import { WaySelectHandler } from "@/components/map";
 import { PlusCircle } from "@phosphor-icons/react";
 
 import WaySidebar from "@/components/way-sidebar";
+import WayAddingSidebar from "@/components/way-adding-sidebar";
 import ProfileControl from "@/components/profile-control";
 
 import { useNavigate } from "react-router-dom";
@@ -21,6 +24,7 @@ import { LngLatLike } from "maplibre-gl";
 import useNavigateMap from "@/hooks/useNavigateMap";
 import LocationSearch from "../location-search";
 import AddIcon from "../add-icon";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 
 type Props = {
   selectedWay: number | null;
@@ -30,8 +34,14 @@ type Props = {
 
 export default function MapApp({ selectedWay }: Props) {
   console.log("selected way", selectedWay);
+  const appState = useSelector(selectAppState);
 
-  const [mapMode, setMapMode] = useState(MapMode.Routing);
+  const mapMode =
+    appState.mode === AppMode.Routing
+      ? MapMode.Routing
+      : appState.mode === AppMode.WayAdding
+        ? MapMode.WayAdding
+        : MapMode.Browsing;
   const navigateMap = useNavigateMap();
   const auth = useAuth();
   const token = auth.user?.access_token || null;
@@ -80,6 +90,12 @@ export default function MapApp({ selectedWay }: Props) {
       {selectedWay && (
         <Sidebar>
           <WaySidebar wayId={selectedWay} />
+        </Sidebar>
+      )}
+
+      {appState.mode === AppMode.WayAdding && (
+        <Sidebar>
+          <WayAddingSidebar />
         </Sidebar>
       )}
 
