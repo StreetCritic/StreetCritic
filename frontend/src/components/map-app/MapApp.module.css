@@ -18,14 +18,12 @@
   pointer-events: all;
 }
 
-.locationSearch {
+.controls {
   position: absolute;
-  top: 80px;
+  top: var(--mantine-spacing-md);
   left: var(--mantine-spacing-md);
-}
-
-.addIcon {
-  position: absolute;
-  top: 140px;
-  left: var(--mantine-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  align-items: flex-start;
 }

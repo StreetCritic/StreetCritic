@@ -101,13 +101,9 @@ export default function MapApp({ selectedWay }: Props) {
         </Sidebar>
       )}
 
-      <ProfileControl />
-
-      <div className={styles.locationSearch}>
+      <div className={styles.controls}>
+        <ProfileControl />
         <LocationSearch />
-      </div>
-
-      <div className={styles.addIcon}>
         <AddIcon />
       </div>
     </div>
