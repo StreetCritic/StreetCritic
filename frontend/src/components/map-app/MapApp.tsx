@@ -27,6 +27,9 @@ import AddIcon from "../add-icon";
 import { AppMode, selectAppState } from "@/features/map/appSlice";
 import WayAddingIntroduction from "../way-adding-introduction";
 
+import { useDispatch } from "react-redux";
+import { switchedToWayAdding } from "@/features/map/appSlice";
+
 type Props = {
   selectedWay: number | null;
   center: LngLatLike;
@@ -34,6 +37,8 @@ type Props = {
 };
 
 export default function MapApp({ selectedWay }: Props) {
+  const dispatch = useDispatch();
+
   console.log("selected way", selectedWay);
   const appState = useSelector(selectAppState);
 
@@ -50,6 +55,7 @@ export default function MapApp({ selectedWay }: Props) {
   const [stops, way, segments, onPosition, onPositionChange, onRoutePosition] =
     useWay(mapMode);
 
+  const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
   const onWaySelect = (id: string) => {
@@ -94,17 +100,30 @@ export default function MapApp({ selectedWay }: Props) {
         </Sidebar>
       )}
 
+      {showWayAddingIntro && (
+        <WayAddingIntroduction
+          onAbort={() => setShowWayAddingIntro(false)}
+          onFinish={() => {
+            setShowWayAddingIntro(false);
+            dispatch(switchedToWayAdding());
+          }}
+        />
+      )}
+
       {appState.mode === AppMode.WayAdding && (
         <Sidebar>
           <WayAddingSidebar />
-          <WayAddingIntroduction />
         </Sidebar>
       )}
 
       <div className={styles.controls}>
         <ProfileControl />
         <LocationSearch />
-        <AddIcon />
+        <AddIcon
+          onClick={() => {
+            setShowWayAddingIntro(true);
+          }}
+        />
       </div>
     </div>
   );

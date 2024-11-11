@@ -1,27 +1,24 @@
 import { useState } from "react";
 import { Button, Text, Group, Stepper, Modal } from "@mantine/core";
 
-type Props = {};
+type Props = {
+  onAbort: () => void;
+  onFinish: () => void;
+};
 
 enum Steps {
   Hello,
   Final,
 }
 
-export default function WayAddingIntroduction({}: Props) {
-  const [modalOpen, setModalOpen] = useState(true);
+export default function WayAddingIntroduction({ onAbort, onFinish }: Props) {
   const [step, setStep] = useState(Steps.Hello);
-  if (!modalOpen) {
-    return null;
-  }
   return (
     <>
       <Modal
         opened
         title="Add a new way"
-        onClose={() => {
-          setModalOpen(false);
-        }}
+        onClose={() => onAbort()}
         withCloseButton={false}
         size="100%"
       >
@@ -40,12 +37,7 @@ export default function WayAddingIntroduction({}: Props) {
         </Stepper>
 
         <Group mt="xl" justify="space-between">
-          <Button
-            color="red"
-            onClick={() => {
-              setModalOpen(false);
-            }}
-          >
+          <Button color="red" onClick={() => onAbort()}>
             Abort
           </Button>
           <Group>
@@ -61,12 +53,7 @@ export default function WayAddingIntroduction({}: Props) {
               <Button onClick={() => setStep((step) => step + 1)}>Next</Button>
             )}
             {step === Steps.Final && (
-              <Button
-                onClick={() => {
-                  setModalOpen(false);
-                }}
-                color="green"
-              >
+              <Button onClick={() => onFinish()} color="green">
                 Let's go
               </Button>
             )}
