@@ -12,8 +12,10 @@ import {
   zoomUpdated,
 } from "@/features/map/mapSlice";
 import useMapSearchParams from "@/hooks/useMapSearchParams";
+import useMeta from "@/hooks/useMeta";
 
 export default function Map() {
+  useMeta({ title: "" });
   const [initDone, setInitDone] = useState(false);
   const { wayId } = useParams();
 

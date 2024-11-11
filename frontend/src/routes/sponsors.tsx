@@ -1,5 +1,6 @@
 import Container from "@/components/container";
 import { P, H1 } from "@/components/typography";
+import useMeta from "@/hooks/useMeta";
 
 /* export const metadata: Metadata = {
  *   title: "Sponsors",
@@ -7,6 +8,7 @@ import { P, H1 } from "@/components/typography";
  * };
  *  */
 export default function Home() {
+  useMeta({ title: "Our Sponsors" });
   return (
     <main>
       <Container>

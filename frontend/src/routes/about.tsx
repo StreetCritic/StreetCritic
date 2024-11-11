@@ -1,7 +1,9 @@
 import Container from "@/components/container";
 import { P, H1, H2 } from "@/components/typography";
+import useMeta from "@/hooks/useMeta";
 
 export default function About() {
+  useMeta({ title: "About" });
   return (
     <main>
       <Container>
