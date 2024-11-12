@@ -384,19 +384,17 @@ class Map {
   /**
    * Displays the given route.
    *
-   * @param route - The route to display.
+   * @param route - The route to display. Remove any displayed route if null.
    */
-  displayRoute(route: GeoJSON): void {
+  displayRoute(route: GeoJSON | null): void {
     const source = this.map.getSource("route");
     console.log("display route", route);
     if (source instanceof GeoJSONSource) {
-      // console.log('route segments', segments);
       source.setData(
-        route,
-        // || {
-        // type: "FeatureCollection",
-        // features: [],
-        // },
+        route || {
+          type: "FeatureCollection",
+          features: [],
+        },
       );
     }
   }
@@ -558,10 +556,10 @@ export function useMap(
 
   // Display route.
   useEffect(() => {
-    if (map && route) {
+    if (map) {
       map.displayRoute(route);
     }
-  }, [map, route]);
+  }, [map, route, mapState.stops]);
 
   // Display selected rating.
   useEffect(() => {
