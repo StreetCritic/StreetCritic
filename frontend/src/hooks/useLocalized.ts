@@ -9,6 +9,7 @@ sign-up = Registrieren
 `);
 
 const resourceEn = new FluentResource(`
+abort = Abort
 sign-up = Sign up
 
 add-way-title = Add a new way
