@@ -249,7 +249,6 @@ class Map {
         colors.push(i);
         colors.push(this.ratingColorScale(i / 10).hex());
       }
-      console.log("colors", colors);
 
       this.map.addLayer({
         id: "rated-segments",
@@ -340,10 +339,7 @@ class Map {
       });
 
       this.refreshWays();
-
       onLoad(this);
-
-      console.log("load");
     });
   }
 

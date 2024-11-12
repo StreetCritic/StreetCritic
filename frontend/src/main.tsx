@@ -42,11 +42,8 @@ const router = createBrowserRouter([
 ]);
 
 (async () => {
-  console.log("initIbre");
   await initIbre();
   initHooks();
-  console.log("initIbreDone");
-
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <Provider store={store}>
