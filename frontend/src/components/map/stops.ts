@@ -22,6 +22,7 @@ export default class Stops {
   map: Map;
   options: StopsOptions;
   lastChanged: number = 1;
+  disabled: boolean = true;
 
   private stopMarker: Marker[] = [];
 
@@ -51,7 +52,7 @@ export default class Stops {
     // }, [route, setStops]);
 
     this.map.on("click", (e) => {
-      if (!e.defaultPrevented) {
+      if (!this.disabled && !e.defaultPrevented) {
         this.handlePosition(e.lngLat);
       }
     });
@@ -66,6 +67,20 @@ export default class Stops {
       this.options.onReset();
       this.options.onAdd(0, coord);
     }
+  }
+
+  /**
+   * Disables adding stops.
+   */
+  disable(): void {
+    this.disabled = true;
+  }
+
+  /**
+   * Enables adding stops.
+   */
+  enable(): void {
+    this.disabled = false;
   }
 
   /**

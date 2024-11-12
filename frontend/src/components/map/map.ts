@@ -28,6 +28,7 @@ import {
   stopRemoved,
   stopsResetted,
 } from "@/features/map/mapSlice";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 
 export type PositionHandler = (point: LngLat) => void;
 export type WaySelectHandler = (id: string) => void;
@@ -464,12 +465,6 @@ class Map {
   // }
 }
 
-export enum MapMode {
-  Browsing,
-  Routing,
-  WayAdding,
-}
-
 export type MapOptions = {
   styleURL: string;
   center: LngLatLike;
@@ -480,7 +475,6 @@ export type MapOptions = {
   onWaySelect: WaySelectHandler;
   APIToken: string | null;
   selectedWay: number | null;
-  mode: MapMode;
 };
 
 /**
@@ -496,6 +490,7 @@ export function useMap(
 ) {
   const dispatch = useDispatch();
   const mapState = useSelector(selectMapState);
+  const appState = useSelector(selectAppState);
 
   const [map, setMap] = useState<null | Map>(null);
   const [stops, setStops] = useState<null | Stops>(null);
@@ -546,6 +541,16 @@ export function useMap(
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (stops) {
+      if ([AppMode.Routing, AppMode.WayAdding].includes(appState.mode)) {
+        stops.enable();
+      } else {
+        stops.disable();
+      }
+    }
+  }, [stops, appState.mode]);
 
   // Updated displayed stops.
   useEffect(() => {

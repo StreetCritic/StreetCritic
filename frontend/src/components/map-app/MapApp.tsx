@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { useSelector } from "react-redux";
 
-import { default as Map, MapMode } from "@/components/map";
+import { default as Map } from "@/components/map";
 import { useWay, useSegments, useDirections } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
@@ -38,17 +38,11 @@ export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
 
-  const mapMode =
-    appState.mode === AppMode.Routing
-      ? MapMode.Routing
-      : appState.mode === AppMode.WayAdding
-        ? MapMode.WayAdding
-        : MapMode.Browsing;
   const navigateMap = useNavigateMap();
   const auth = useAuth();
   const token = auth.user?.access_token || null;
 
-  const [way, segments] = useWay(mapMode);
+  const [way, segments] = useWay();
 
   const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
@@ -65,7 +59,6 @@ export default function MapApp({ selectedWay }: Props) {
         styleURL="/styles.json"
         APIToken={token}
         selectedWay={selectedWay}
-        mode={mapMode}
       />
       {/* <InConstructionModal /> */}
       {segments && wayCreateFormOpen && (

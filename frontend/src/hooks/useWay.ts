@@ -4,9 +4,9 @@ import { Point as WASMPoint, Route } from "ibre";
 import { LngLat } from "maplibre-gl";
 import { useSegmentsRoute } from "./useSegmentsRoute";
 import { useDirections } from "./useDirections";
-import { MapMode } from "@/components/map";
 import { useSelector } from "react-redux";
 import { selectMapState } from "@/features/map/mapSlice";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 
 /**
  * A stop on the map used for ways/routes.
@@ -20,21 +20,20 @@ export type Stop = {
 
 type Rets = [GeoJSON.GeoJSON, Route | null];
 
-export function useWay(mapMode: MapMode): Rets {
+export function useWay(): Rets {
+  const mode = useSelector(selectAppState).mode;
   const stops = useSelector(selectMapState).stops;
 
-  const route = useSegmentsRoute(mapMode === MapMode.WayAdding ? stops : []);
-  const directionsRoute = useDirections(
-    mapMode === MapMode.Routing ? stops : [],
-  );
+  const route = useSegmentsRoute(mode === AppMode.WayAdding ? stops : []);
+  const directionsRoute = useDirections(mode === AppMode.Routing ? stops : []);
 
   const way = useMemo(() => {
-    return mapMode === MapMode.Routing
+    return mode === AppMode.Routing
       ? directionsRoute?.feature?.geometry
-      : MapMode.WayAdding
+      : mode === AppMode.WayAdding
         ? route && JSON.parse(route.get_segments_as_geojson())
         : null;
-  }, [mapMode, route]);
+  }, [mode, route]);
 
   return [way, route];
 }
