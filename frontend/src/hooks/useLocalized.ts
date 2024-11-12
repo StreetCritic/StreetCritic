@@ -10,6 +10,7 @@ sign-up = Registrieren
 
 const resourceEn = new FluentResource(`
 abort = Abort
+continue = Continue
 sign-up = Sign up
 
 add-way-title = Add a new way
