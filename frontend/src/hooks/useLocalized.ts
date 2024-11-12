@@ -10,6 +10,9 @@ sign-up = Registrieren
 
 const resourceEn = new FluentResource(`
 sign-up = Sign up
+
+add-way-title = Add a new way
+add-way-intro = Select a start and a stop of the new way by clicking on the map.
 `);
 
 export default function useLocalize() {

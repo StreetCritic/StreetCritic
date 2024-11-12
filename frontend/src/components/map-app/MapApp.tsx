@@ -4,14 +4,12 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { default as Map, MapMode } from "@/components/map";
-import Button from "@/components/button";
 import { useWay, useSegments, useDirections } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
 import { useAuth } from "react-oidc-context";
 import { Box, Paper } from "@mantine/core";
 import { WaySelectHandler } from "@/components/map";
-import { PlusCircle } from "@phosphor-icons/react";
 
 import WaySidebar from "@/components/way-sidebar";
 import WayAddingSidebar from "@/components/way-adding-sidebar";
@@ -70,22 +68,11 @@ export default function MapApp({ selectedWay }: Props) {
         mode={mapMode}
       />
       {/* <InConstructionModal /> */}
-      {segments && !wayCreateFormOpen && (
-        <div className={styles.actionWrap}>
-          <Button
-            label="Add this way"
-            icon={<PlusCircle size={32} />}
-            onClick={() => setWayCreateFormOpen(true)}
-          />
-        </div>
-      )}
       {segments && wayCreateFormOpen && (
-        <div className={styles.actionWrap}>
-          <WayCreateForm
-            route={segments}
-            onClose={() => setWayCreateFormOpen(false)}
-          />
-        </div>
+        <WayCreateForm
+          route={segments}
+          onClose={() => setWayCreateFormOpen(false)}
+        />
       )}
       {selectedWay && (
         <Sidebar>
@@ -105,7 +92,10 @@ export default function MapApp({ selectedWay }: Props) {
 
       {appState.mode === AppMode.WayAdding && (
         <Sidebar>
-          <WayAddingSidebar />
+          <WayAddingSidebar
+            segments={segments}
+            onAddClick={() => setWayCreateFormOpen(true)}
+          />
         </Sidebar>
       )}
 
