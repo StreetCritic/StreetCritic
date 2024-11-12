@@ -13,6 +13,8 @@ import store from "./store";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
+import initIbre, { init_hooks as initHooks } from "ibre";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,10 +41,17 @@ const router = createBrowserRouter([
   },
 ]);
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
-  </StrictMode>,
-);
+(async () => {
+  console.log("initIbre");
+  await initIbre();
+  initHooks();
+  console.log("initIbreDone");
+
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </StrictMode>,
+  );
+})();

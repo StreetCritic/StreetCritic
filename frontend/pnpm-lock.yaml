@@ -69,6 +69,9 @@ importers:
       '@eslint/js':
         specifier: ^9.13.0
         version: 9.14.0
+      '@types/geojson':
+        specifier: ^7946.0.14
+        version: 7946.0.14
       '@types/react':
         specifier: ^18.3.12
         version: 18.3.12

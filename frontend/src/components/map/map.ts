@@ -7,7 +7,6 @@ import maplibregl, {
 } from "maplibre-gl";
 import type { GeoJSON } from "geojson";
 import { PMTiles, Protocol } from "pmtiles";
-import type { Position } from "geojson";
 // import { pointToTile } from '@mapbox/tilebelt';
 import layers from "protomaps-themes-base";
 import chroma from "chroma-js";
@@ -20,6 +19,15 @@ import type { Stop } from "@/hooks/useWay";
 
 // import { , init_hooks, Segment, Router, Route, LineString, Point as WASMPoint, Coord, Connector } from "ibre";
 import { RoutingError, Route, Point as WASMPoint, init_hooks } from "ibre";
+import Stops from "./stops";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectMapState,
+  stopAdded,
+  stopChanged,
+  stopRemoved,
+  stopsResetted,
+} from "@/features/map/mapSlice";
 
 export type PositionHandler = (point: LngLat) => void;
 export type WaySelectHandler = (id: string) => void;
@@ -34,9 +42,6 @@ export type PositionChangeHandler = (
 class Map {
   // The MapLibre instance.
   private map: LibreMap;
-  // Visible stop marker.
-  private stopMarker: Marker[];
-  private onPositionChange: PositionChangeHandler;
   private APIToken: string | null;
   private ratingColorScale: any;
 
@@ -47,12 +52,6 @@ class Map {
    * @param center - Initial center coordinates.
    * @param container - The HTML element to attach to.
    * @param onLoad - Callback which is called when the map is loaded.
-   * @param onPosition - Callback which is called when the user clicks on the
-   * map.
-   * @param onPositionChange - Callback which is called when a position is
-   * changed by the user. Index is the position of the index, lngLat the new position.
-   * @param onRoutePosition - Callback which is called when the user clicks on
-   * the displayed route.
    * @param onWaySelect - Callback which is called when the user clicks a
    * rating on the map.
    * @param APIToken - Auth token for the backend API.
@@ -64,17 +63,12 @@ class Map {
     onCenterChange: (center: LngLat) => void,
     container: HTMLElement,
     onLoad: (map: Map) => void,
-    onPosition: PositionHandler,
-    onPositionChange: PositionChangeHandler,
-    onRoutePosition: PositionHandler,
     onWaySelect: WaySelectHandler,
     APIToken: string | null,
     options: MapOptions,
   ) {
     const protocol = new Protocol();
     this.APIToken = APIToken;
-    this.onPositionChange = onPositionChange;
-    this.stopMarker = [];
     this.ratingColorScale = chroma.scale("Spectral");
     this.map = new LibreMap({
       container,
@@ -326,15 +320,6 @@ class Map {
         this.map.getCanvas().style.cursor = "crosshair";
       });
 
-      this.map.on("click", "route", (e) => {
-        console.log("click on route", e);
-        // console.log(e.lngLat);
-        // console.log(e.features);
-        e.preventDefault();
-        onRoutePosition(e.lngLat);
-        // console.log(this.map.queryRenderedFeatures(e.point));
-      });
-
       this.map.on("mouseenter", "route", () => {
         this.map.getCanvas().style.cursor = "copy";
       });
@@ -342,13 +327,6 @@ class Map {
       // Change it back to a pointer when it leaves.
       this.map.on("mouseleave", "route", () => {
         this.map.getCanvas().style.cursor = "crosshair";
-      });
-
-      this.map.on("click", (e) => {
-        if (!e.defaultPrevented) {
-          onPosition(e.lngLat);
-        }
-        // console.log(this.map.queryRenderedFeatures(e.point));
       });
 
       this.map.on("moveend", () => {
@@ -367,6 +345,13 @@ class Map {
 
       console.log("load");
     });
+  }
+
+  /**
+   * Returns the used MapLibre instance.
+   */
+  getMapLibre(): LibreMap {
+    return this.map;
   }
 
   async refreshWays(): Promise<void> {
@@ -418,44 +403,6 @@ class Map {
         // },
       );
     }
-  }
-
-  /**
-   * Displays the given stops.
-   *
-   * @param stops - The stops to display.
-   */
-  displayStops(stops: Stop[]): void {
-    this.stopMarker.forEach((m) => m.remove());
-    this.stopMarker = [];
-
-    let index = 0;
-    // console.log("we have stops", route.get_stops().length);
-    for (const stop of stops) {
-      console.log("add stop marker", index);
-      this.stopMarker.push(
-        new Marker({
-          color: index == 0 ? "#FFCCE6" : "#AB212A",
-          draggable: true,
-          scale: index == 0 ? 0.7 : 1.0,
-        }).setLngLat(stop),
-      );
-      index++;
-    }
-
-    this.stopMarker.forEach((m, i) => {
-      console.log("add dragend for", i);
-      m.getElement().addEventListener("click", (e) => {
-        e.preventDefault();
-        console.log("delete position i", i);
-        this.onPositionChange(i, null);
-      });
-      m.on("dragend", () => {
-        console.log("change position i", i);
-        this.onPositionChange(i, m.getLngLat());
-      });
-      m.addTo(this.map);
-    });
   }
 
   /**
@@ -535,11 +482,7 @@ export type MapOptions = {
   onCenterChange: (center: LngLat) => void;
   zoom: number;
   onZoomChange: (zoom: number) => void;
-  stops: Stop[];
   route: GeoJSON.GeoJSON | null;
-  onPosition: PositionHandler;
-  onPositionChange: PositionChangeHandler;
-  onRoutePosition: PositionHandler;
   onWaySelect: WaySelectHandler;
   APIToken: string | null;
   selectedWay: number | null;
@@ -552,24 +495,23 @@ export type MapOptions = {
  * @param container - The map container.
  * @param styleURL - URL to the MapLibre style.
  * @param center - Initial center coordinates.
- * @param onPosition - Callback which is called when the user clicks on the
  */
 export function useMap(
   container: React.RefObject<HTMLElement>,
   options: MapOptions,
 ) {
+  const dispatch = useDispatch();
+  const mapState = useSelector(selectMapState);
+
   const [map, setMap] = useState<null | Map>(null);
+  const [stops, setStops] = useState<null | Stops>(null);
 
   const {
     styleURL,
     center,
     onCenterChange,
     zoom,
-    stops,
     route,
-    onPosition,
-    onPositionChange,
-    onRoutePosition,
     onWaySelect,
     APIToken,
     selectedWay,
@@ -585,32 +527,45 @@ export function useMap(
         onCenterChange,
         container.current,
         setMap,
-        onPosition,
-        onPositionChange,
-        onRoutePosition,
         onWaySelect,
         APIToken,
         options,
       );
+      const stops = new Stops(theMap.getMapLibre(), {
+        onAdd: (index, stop) => {
+          dispatch(stopAdded({ index, lng: stop.lng, lat: stop.lat }));
+        },
+        onRemove: (index) => {
+          dispatch(stopRemoved(index));
+        },
+        onChange: (index, stop) => {
+          dispatch(stopChanged({ index, lng: stop.lng, lat: stop.lat }));
+        },
+        onReset: () => {
+          dispatch(stopsResetted());
+        },
+      });
+      setStops(stops);
       return () => {
+        // stops.destruct();
         theMap.destruct();
       };
     }
   }, []);
 
-  // Display stops.
+  // Updated displayed stops.
   useEffect(() => {
-    if (map && stops) {
-      map.displayStops(stops);
+    if (stops) {
+      stops.updateStops(mapState.stops);
     }
-  }, [stops, map]);
+  }, [stops, mapState.stops]);
 
   // Display route.
   useEffect(() => {
     if (map && route) {
       map.displayRoute(route);
     }
-  }, [route, map]);
+  }, [map, route]);
 
   // Display selected rating.
   useEffect(() => {

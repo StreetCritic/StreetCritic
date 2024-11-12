@@ -5,6 +5,8 @@ import { LngLat } from "maplibre-gl";
 import { useSegmentsRoute } from "./useSegmentsRoute";
 import { useDirections } from "./useDirections";
 import { MapMode } from "@/components/map";
+import { useSelector } from "react-redux";
+import { selectMapState } from "@/features/map/mapSlice";
 
 /**
  * A stop on the map used for ways/routes.
@@ -16,83 +18,25 @@ export type Stop = {
   lat: number;
 };
 
-type Rets = [
-  Stop[],
-  GeoJSON.GeoJSON,
-  Route | null,
-  PositionHandler,
-  PositionChangeHandler,
-  PositionHandler,
-];
+type Rets = [GeoJSON.GeoJSON, Route | null];
 
 export function useWay(mapMode: MapMode): Rets {
-  const [stops, setStops] = useState<Stop[]>([]);
+  const stops = useSelector(selectMapState).stops;
 
   const route = useSegmentsRoute(mapMode === MapMode.WayAdding ? stops : []);
   const directionsRoute = useDirections(
     mapMode === MapMode.Routing ? stops : [],
   );
 
-  console.log("current stops", stops);
-
-  const lastChanged = useRef(1);
-
-  const onPosition: PositionHandler = (newStop) => {
-    if (lastChanged.current === 0) {
-      console.log("set new stop");
-      setStops((prevStops) => [prevStops[0], newStop]);
-      lastChanged.current = 1;
-    } else {
-      setStops([newStop]);
-      lastChanged.current = 0;
-    }
-  };
-
-  const onPositionChange: PositionChangeHandler = (index, lngLat) => {
-    console.log("onPositionChange", index, lngLat, stops);
-    if (lngLat) {
-      console.log("set");
-      setStops((prevStops) => [
-        ...prevStops.slice(0, index),
-        lngLat,
-        ...prevStops.slice(index + 1),
-      ]);
-    } else {
-      console.log("delete");
-      setStops((prevStops) => [
-        ...prevStops.slice(0, index),
-        ...prevStops.slice(index + 1),
-      ]);
-    }
-  };
-
-  const routePositionRef = useRef((position: LngLat) => {});
-
-  useEffect(() => {
-    if (!route) {
-      return;
-    }
-    routePositionRef.current = (position: LngLat) => {
-      console.log("routePosition", position);
-      const extended = route
-        .getExtendedStops(new WASMPoint(position.lng, position.lat))
-        .map((stop) => ({ lng: stop.x(), lat: stop.y() }));
-      console.log("extedend is", extended);
-      setStops(extended);
-    };
-  }, [route, setStops]);
-
-  const onRoutePosition: PositionHandler = (routePosition: LngLat) => {
-    routePositionRef.current(routePosition);
-  };
-
-  const way =
-    mapMode === MapMode.Routing
+  const way = useMemo(() => {
+    return mapMode === MapMode.Routing
       ? directionsRoute?.feature?.geometry
-      : route && JSON.parse(route.get_segments_as_geojson());
-  console.log("the geometry", way);
+      : MapMode.WayAdding
+        ? route && JSON.parse(route.get_segments_as_geojson())
+        : null;
+  }, [mapMode, route]);
 
-  return [stops, way, route, onPosition, onPositionChange, onRoutePosition];
+  return [way, route];
 }
 
 export default useWay;

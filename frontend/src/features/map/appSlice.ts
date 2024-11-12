@@ -16,7 +16,7 @@ export type AppState = {
 };
 
 const initialState: AppState = {
-  mode: AppMode.Browsing,
+  mode: AppMode.WayAdding,
   locale: "en",
 };
 

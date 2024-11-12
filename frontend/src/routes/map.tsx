@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import styles from "./map.module.css";
-import initIbre from "ibre";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +15,6 @@ import useMeta from "@/hooks/useMeta";
 
 export default function Map() {
   useMeta({ title: "" });
-  const [initDone, setInitDone] = useState(false);
   const { wayId } = useParams();
 
   let [searchParams, setSearchParams] = useSearchParams();
@@ -50,18 +48,9 @@ export default function Map() {
     }
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      await initIbre();
-      setInitDone(true);
-    })();
-  });
-
   return (
     <main className={styles.root}>
-      {initDone && (
-        <MapApp selectedWay={wayId ? parseInt(wayId) : null}></MapApp>
-      )}
+      <MapApp selectedWay={wayId ? parseInt(wayId) : null}></MapApp>
     </main>
   );
 }

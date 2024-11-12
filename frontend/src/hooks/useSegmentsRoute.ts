@@ -10,16 +10,14 @@ import type { Stop } from "./useWay";
  * @param stops - Stops of the route; First is the start, last is the finish.
  */
 export function useSegmentsRoute(stops: Stop[]): Route | null {
-  const router = useMemo(
-    () =>
-      new MVTRouter(
-        "http://transport-tiles.streetcritic.org/function_zxy_query",
-      ),
-    [],
-  );
+  const router = useMemo(() => {
+    return new MVTRouter(
+      "http://transport-tiles.streetcritic.org/function_zxy_query",
+    );
+  }, []);
   const [route, setRoute] = useState<null | Route>(null);
   useEffect(() => {
-    if (!router || stops.length == 0) {
+    if (stops.length == 0) {
       return;
     }
     (async () => {
@@ -27,11 +25,11 @@ export function useSegmentsRoute(stops: Stop[]): Route | null {
         return new WASMPoint(stop.lng, stop.lat);
       };
       const wasm_stops = stops.map(toPoint);
+      console.log("findRoute");
       const route = await router.findRoute(wasm_stops);
-
       setRoute(route);
     })();
-  }, [router, stops]);
+  }, [stops]);
   if (stops.length === 0) {
     return null;
   }

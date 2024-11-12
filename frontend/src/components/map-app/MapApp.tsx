@@ -52,8 +52,7 @@ export default function MapApp({ selectedWay }: Props) {
   const auth = useAuth();
   const token = auth.user?.access_token || null;
 
-  const [stops, way, segments, onPosition, onPositionChange, onRoutePosition] =
-    useWay(mapMode);
+  const [way, segments] = useWay(mapMode);
 
   const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
@@ -66,10 +65,6 @@ export default function MapApp({ selectedWay }: Props) {
     <div className={styles.root}>
       <Map
         route={way}
-        stops={stops}
-        onPosition={onPosition}
-        onPositionChange={onPositionChange}
-        onRoutePosition={onRoutePosition}
         onWaySelect={onWaySelect}
         styleURL="/styles.json"
         APIToken={token}

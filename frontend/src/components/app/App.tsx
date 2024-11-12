@@ -49,7 +49,6 @@ type Props = {
 };
 
 export default function App({ children }: Props) {
-  console.log(config);
   return (
     <AuthProvider {...oidcConfig}>
       <MantineProvider theme={theme}>
