@@ -38,8 +38,6 @@ type Props = {
 
 export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
-
-  console.log("selected way", selectedWay);
   const appState = useSelector(selectAppState);
 
   const mapMode =
