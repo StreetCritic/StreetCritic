@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
+import { switchedToBrowsing } from "./appSlice";
 
 export type MapState = {
   // Map center.
@@ -66,6 +67,11 @@ export const mapSlice = createSlice({
     stopsResetted: (state) => {
       state.stops.length = 0;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(switchedToBrowsing, (state, action) => {
+      state.stops.length = 0;
+    });
   },
 });
 
