@@ -9,6 +9,8 @@ type Config = {
   keycloakClientId: String;
   // URL to Valhalla routing service
   valhallaURL: String;
+  // URL to location search service
+  locationSearchURL: String;
 };
 
 const config: Config = {
@@ -17,6 +19,7 @@ const config: Config = {
   keycloakRedirectURI: process.env.KEYCLOAK_REDIRECT_URI as string,
   keycloakClientId: process.env.KEYCLOAK_CLIENT_ID as string,
   valhallaURL: process.env.VALHALLA_URL as string,
+  locationSearchURL: process.env.LOCATION_SEARCH_URL as string,
 };
 
 export default config;

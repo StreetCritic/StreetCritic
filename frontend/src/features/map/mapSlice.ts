@@ -12,12 +12,16 @@ export type MapState = {
 
   // Stops on the map.
   stops: { lng: number; lat: number }[];
+
+  // Queried location
+  locationQuery: string | null;
 };
 
 const initialState: MapState = {
   center: { lng: 8.684966, lat: 50.110573 },
   zoom: 14,
   stops: [],
+  locationQuery: null,
 };
 
 export const mapSlice = createSlice({
@@ -67,6 +71,11 @@ export const mapSlice = createSlice({
     stopsResetted: (state) => {
       state.stops.length = 0;
     },
+
+    // User queried a location.
+    queriedLocation: (state, action: PayloadAction<string>) => {
+      state.locationQuery = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(switchedToBrowsing, (state, action) => {
@@ -82,6 +91,7 @@ export const {
   stopRemoved,
   stopChanged,
   stopsResetted,
+  queriedLocation,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
 export default mapSlice.reducer;

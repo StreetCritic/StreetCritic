@@ -27,6 +27,8 @@ import WayAddingIntroduction from "../way-adding-introduction";
 
 import { useDispatch } from "react-redux";
 import { switchedToWayAdding } from "@/features/map/appSlice";
+import LocationQuery from "../location-query";
+import { selectMapState } from "@/features/map/mapSlice";
 
 type Props = {
   selectedWay: number | null;
@@ -37,6 +39,7 @@ type Props = {
 export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
+  const mapState = useSelector(selectMapState);
 
   const navigateMap = useNavigateMap();
   const auth = useAuth();
@@ -70,6 +73,12 @@ export default function MapApp({ selectedWay }: Props) {
       {selectedWay && (
         <Sidebar>
           <WaySidebar wayId={selectedWay} />
+        </Sidebar>
+      )}
+
+      {!selectedWay && mapState.locationQuery && (
+        <Sidebar>
+          <LocationQuery query={mapState.locationQuery} />
         </Sidebar>
       )}
 
