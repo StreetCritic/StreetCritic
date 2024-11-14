@@ -1,18 +1,13 @@
 import { useState } from "react";
-import { Route } from "ibre";
 import {
   Button,
   Chip,
-  Paper,
   Text,
   Textarea,
   Group,
-  CloseButton,
-  Stack,
   Stepper,
   Modal,
 } from "@mantine/core";
-import { P } from "@/components/typography";
 
 import RatingSlider from "./RatingSlider";
 import config from "@/config";
@@ -24,20 +19,6 @@ type Props = {
   way_id: number;
   // Called when the form is closed.
   onClose: () => void;
-  // Called when the form is submitted.
-  /* onSubmit: () => void; */
-  // Called when the rating changes.
-  /* onRatingChange: (rating: number) => void; */
-  // The current rating.
-  /* rating: number; */
-  // The current tag list.
-  /* tags: string[]; */
-  // Called when the tag list changes.
-  /* onTagsChange: (tags: string[]) => void; */
-  // The current comment.
-  /* comment: string; */
-  // Called when the comment changes.
-  /* onCommentChange: (comment: string) => void; */
 };
 
 enum Steps {
@@ -47,17 +28,7 @@ enum Steps {
   Submit,
 }
 
-export default function RatingForm({
-  way_id,
-  onClose,
-  /* rating, */
-  /* onRatingChange, */
-  /* tags, */
-  /* onTagsChange, */
-  /* comment, */
-  /* onCommentChange, */
-  /* onSubmit, */
-}: Props) {
+export default function RatingForm({ way_id, onClose }: Props) {
   const [rating, setRating] = useState(50);
   const [tags, setTags] = useState([] as string[]);
   const [comment, setComment] = useState("");
@@ -96,7 +67,6 @@ export default function RatingForm({
 
   return (
     <>
-      {/* <Paper withBorder p="xl" radius="md" shadow="md" w="100%" maw="95%"> */}
       <Modal
         opened
         title="Submit a rating for your route"
