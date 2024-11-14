@@ -14,6 +14,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 
 import RatingForm from "@/components/rating-form";
+import useLocalize from "@/hooks/useLocalized";
 
 type Props = {
   way: any;
@@ -21,13 +22,14 @@ type Props = {
 };
 
 export default function WayInfo({ way, ratings }: Props) {
+  const __ = useLocalize();
   const [ratingFormOpen, setRatingFormOpen] = useState(false);
   return (
     <>
       {/* {data.datetime} */}
       Created on 2024/3/12
       <H1>{way.title}</H1>
-      Reviews:
+      {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
       {ratings.map((rating) => (
         <>
           <Rating

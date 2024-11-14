@@ -15,6 +15,9 @@ sign-up = Sign up
 
 add-way-title = Add a new way
 add-way-intro = Select a start and a stop of the new way by clicking on the map.
+
+reviews = Reviews
+reviews-empty = No reviews yet. Be the first to add one!
 `);
 
 export default function useLocalize() {
