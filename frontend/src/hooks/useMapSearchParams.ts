@@ -1,11 +1,14 @@
 import { selectMapState } from "@/features/map/mapSlice";
 import { useSelector } from "react-redux";
-import { createSearchParams, useNavigate } from "react-router-dom";
 
 export default function useMapSearchParams(): Record<string, string> {
   const mapState = useSelector(selectMapState);
-  return {
+  const params: Record<string, string> = {
     c: `${mapState.center.lng},${mapState.center.lat}`,
     z: `${mapState.zoom}`,
   };
+  if (mapState.locationMarker) {
+    params.lm = `${mapState.locationMarker.lng},${mapState.locationMarker.lat}`;
+  }
+  return params;
 }

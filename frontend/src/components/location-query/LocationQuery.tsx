@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import config from "@/config";
 import { P } from "../typography";
 import { useDispatch } from "react-redux";
-import { centerUpdated, queriedLocation } from "@/features/map/mapSlice";
+import { selectedLocation } from "@/features/map/mapSlice";
 import { MapPin } from "@phosphor-icons/react";
 
 type Props = {
@@ -39,11 +39,11 @@ export default function LocationQuery({ query }: Props) {
               href="#"
               onClick={() =>
                 dispatch(
-                  centerUpdated({
+                  selectedLocation({
                     lng: parseFloat(location.lon),
                     lat: parseFloat(location.lat),
                   }),
-                ) && dispatch(queriedLocation(""))
+                )
               }
             >
               {location.display_name}

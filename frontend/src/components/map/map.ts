@@ -29,6 +29,7 @@ import {
   stopsResetted,
 } from "@/features/map/mapSlice";
 import { AppMode, selectAppState } from "@/features/map/appSlice";
+import LocationMarker from "./locationMarker";
 
 export type PositionHandler = (point: LngLat) => void;
 export type WaySelectHandler = (id: string) => void;
@@ -477,6 +478,11 @@ export type MapOptions = {
   selectedWay: number | null;
 };
 
+type Plugins = {
+  stops: Stops;
+  locationMarker: LocationMarker;
+};
+
 /**
  * React hook to initialize and update the transport map.
  *
@@ -493,7 +499,7 @@ export function useMap(
   const appState = useSelector(selectAppState);
 
   const [map, setMap] = useState<null | Map>(null);
-  const [stops, setStops] = useState<null | Stops>(null);
+  const [plugins, setPlugins] = useState<Plugins | null>(null);
 
   const {
     styleURL,
@@ -534,7 +540,9 @@ export function useMap(
           dispatch(stopsResetted());
         },
       });
-      setStops(stops);
+      const locationMarker = new LocationMarker(theMap.getMapLibre());
+
+      setPlugins({ stops, locationMarker });
       return () => {
         // stops.destruct();
         theMap.destruct();
@@ -543,21 +551,21 @@ export function useMap(
   }, []);
 
   useEffect(() => {
-    if (stops) {
+    if (plugins?.stops) {
       if ([AppMode.Routing, AppMode.WayAdding].includes(appState.mode)) {
-        stops.enable();
+        plugins.stops.enable();
       } else {
-        stops.disable();
+        plugins.stops.disable();
       }
     }
-  }, [stops, appState.mode]);
+  }, [plugins?.stops, appState.mode]);
 
   // Updated displayed stops.
   useEffect(() => {
-    if (stops) {
-      stops.updateStops(mapState.stops);
+    if (plugins?.stops) {
+      plugins.stops.updateStops(mapState.stops);
     }
-  }, [stops, mapState.stops]);
+  }, [plugins?.stops, mapState.stops]);
 
   // Display route.
   useEffect(() => {
@@ -565,6 +573,18 @@ export function useMap(
       map.displayRoute(route);
     }
   }, [map, route, mapState.stops]);
+
+  // Show/hide location marker.
+  useEffect(() => {
+    if (!plugins?.locationMarker) {
+      return;
+    }
+    if (mapState.locationMarker) {
+      plugins.locationMarker.show(mapState.locationMarker);
+    } else {
+      plugins.locationMarker.remove();
+    }
+  }, [plugins?.locationMarker, mapState.locationMarker]);
 
   // Display selected rating.
   useEffect(() => {

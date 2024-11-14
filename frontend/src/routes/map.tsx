@@ -7,6 +7,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   centerUpdated,
+  changedLocationMarker,
+  selectedLocation,
   selectMapState,
   zoomUpdated,
 } from "@/features/map/mapSlice";
@@ -36,6 +38,13 @@ export default function Map() {
       centerCoords.length === 2 && !centerCoords.some(isNaN)
         ? [centerCoords[0], centerCoords[1]]
         : null;
+    const locationMarkerCoords = searchParams.get("lm")
+      ? searchParams.get("lm")!.split(",").map(parseFloat)
+      : [];
+    const locationMarker: [number, number] | null =
+      locationMarkerCoords.length === 2 && !locationMarkerCoords.some(isNaN)
+        ? [locationMarkerCoords[0], locationMarkerCoords[1]]
+        : null;
     const zoom: number | null = searchParams.get("z")
       ? parseFloat(searchParams.get("z") as string)
       : null;
@@ -45,6 +54,14 @@ export default function Map() {
     }
     if (center) {
       dispatch(centerUpdated({ lng: center[0], lat: center[1] }));
+    }
+    if (locationMarker) {
+      dispatch(
+        changedLocationMarker({
+          lng: locationMarker[0],
+          lat: locationMarker[1],
+        }),
+      );
     }
   }, []);
 

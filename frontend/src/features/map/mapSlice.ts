@@ -15,6 +15,9 @@ export type MapState = {
 
   // Queried location
   locationQuery: string | null;
+
+  // A displayed location marker.
+  locationMarker: { lng: number; lat: number } | null;
 };
 
 const initialState: MapState = {
@@ -22,6 +25,7 @@ const initialState: MapState = {
   zoom: 14,
   stops: [],
   locationQuery: null,
+  locationMarker: null,
 };
 
 export const mapSlice = createSlice({
@@ -76,6 +80,35 @@ export const mapSlice = createSlice({
     queriedLocation: (state, action: PayloadAction<string>) => {
       state.locationQuery = action.payload;
     },
+
+    // User selected a location.
+    selectedLocation: (
+      state,
+      action: PayloadAction<{ lng: number; lat: number }>,
+    ) => {
+      state.locationQuery = "";
+      state.locationMarker = {
+        lng: action.payload.lng,
+        lat: action.payload.lat,
+      };
+      state.center = {
+        lng: action.payload.lng,
+        lat: action.payload.lat,
+      };
+
+      state.zoom = 15;
+    },
+
+    // User changed the location marker.
+    changedLocationMarker: (
+      state,
+      action: PayloadAction<{ lng: number; lat: number }>,
+    ) => {
+      state.locationMarker = {
+        lng: action.payload.lng,
+        lat: action.payload.lat,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(switchedToBrowsing, (state, action) => {
@@ -92,6 +125,8 @@ export const {
   stopChanged,
   stopsResetted,
   queriedLocation,
+  selectedLocation,
+  changedLocationMarker,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
 export default mapSlice.reducer;
