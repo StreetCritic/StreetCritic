@@ -71,7 +71,7 @@ export default function MapApp({ selectedWay }: Props) {
         />
       )}
       {selectedWay && (
-        <Sidebar>
+        <Sidebar onClose={() => navigateMap("/", { replace: false })}>
           <WaySidebar wayId={selectedWay} />
         </Sidebar>
       )}
