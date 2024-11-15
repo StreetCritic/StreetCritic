@@ -26,6 +26,7 @@ export default function RatingSlider({ value, onChange }: Props) {
         size="xl"
         styles={styles}
         thumbSize={32}
+        my="xl"
         marks={[
           { value: 0, label: "0" },
           { value: 10, label: "1" },

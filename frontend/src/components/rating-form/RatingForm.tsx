@@ -9,6 +9,8 @@ import {
   Modal,
 } from "@mantine/core";
 
+import { H3, P } from "@/components";
+
 import RatingSlider from "./RatingSlider";
 import config from "@/config";
 
@@ -22,18 +24,28 @@ type Props = {
 };
 
 enum Steps {
-  Rating,
-  Tags,
+  GeneralRating,
+  CategoryRating,
   Comment,
   Submit,
 }
 
-export default function RatingForm({ way_id, onClose }: Props) {
-  const [rating, setRating] = useState(50);
-  const [tags, setTags] = useState([] as string[]);
-  const [comment, setComment] = useState("");
+type Ratings = {
+  general: number;
+  safety: number;
+  comfort: number;
+  beauty: number;
+};
 
-  const [step, setStep] = useState(Steps.Rating);
+export default function RatingForm({ way_id, onClose }: Props) {
+  const [rating, setRating] = useState<Ratings>({
+    general: 50,
+    safety: 50,
+    comfort: 50,
+    beauty: 50,
+  });
+  const [comment, setComment] = useState("");
+  const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
 
   const auth = useAuth();
@@ -45,9 +57,10 @@ export default function RatingForm({ way_id, onClose }: Props) {
        * } */
       const body = {
         way_id,
-        rating: Math.round(rating / 10),
-        tags,
         comment,
+        ...Object.fromEntries(
+          Object.entries(rating).map((k, v) => [k, Math.round(v / 10)]),
+        ),
       };
       const token = auth.user?.access_token;
       const response = await fetch(`${config.apiURL}/ratings`, {
@@ -65,14 +78,16 @@ export default function RatingForm({ way_id, onClose }: Props) {
     })();
   };
 
+  const updateRating = (key: string) => (v: number) =>
+    setRating((oldState: Ratings) => ({ ...oldState, [key]: v }));
+
   return (
     <>
       <Modal
         opened
-        title="Submit a rating for your route"
         onClose={() => setDiscardModalOpen(true)}
         withCloseButton={false}
-        size="100%"
+        size="50rem"
       >
         <Stepper
           active={step}
@@ -81,94 +96,66 @@ export default function RatingForm({ way_id, onClose }: Props) {
           size="sm"
           pt="md"
           pb="xl"
+          contentPadding="xl"
         >
-          <Stepper.Step label="Rate" description="Rate the route">
-            <Text my="xl">
-              Give a rating between 0 and 10, where 0 is the worst and 10 the
-              best route you can think of.
-            </Text>
-            <RatingSlider value={rating} onChange={setRating} />
+          <Stepper.Step label="Overall Rating">
+            <P>
+              Please rate the way on a scale from 0 to 10, where 0 represents
+              the worst possible way and 10 represents the best way you can
+              imagine.
+            </P>
+            <RatingSlider
+              value={rating.general}
+              onChange={updateRating("general")}
+            />
           </Stepper.Step>
-          <Stepper.Step
-            label="Set Tags"
-            description="Add tags that describe the route."
-          >
-            <Text my="xl">What is positive to say about the route?</Text>
-            <Chip.Group multiple value={tags} onChange={setTags}>
-              <Text fw="700">Comfort</Text>
-              <Group mt="md">
-                <Chip color="green" value="roomy">
-                  Roomy
-                </Chip>
-                <Chip color="green" value="paved">
-                  Well paved
-                </Chip>
-                <Chip color="green" value="little_traffic">
-                  Little traffic
-                </Chip>
-                <Chip color="green" value="few_stops">
-                  Few stops
-                </Chip>
-              </Group>
-            </Chip.Group>
-            <Text fw="700" mt="xl">
-              Beauty
-            </Text>
-            <Chip.Group multiple value={tags} onChange={setTags}>
-              <Group mt="md">
-                <Chip color="green" value="green">
-                  Green
-                </Chip>
-                <Chip color="green" value="nice_surroundings">
-                  Nice surroundings
-                </Chip>
-                <Chip color="green" value="quiet">
-                  Quiet
-                </Chip>
-                <Chip color="green" value="clean">
-                  Clean
-                </Chip>
-              </Group>
-            </Chip.Group>
-            <Text fw="700" mt="xl">
-              Safety
-            </Text>
-            <Chip.Group multiple value={tags} onChange={setTags}>
-              <Group mt="md">
-                <Chip color="green" value="little_motorized_traffic">
-                  Little motorized traffic
-                </Chip>
-                <Chip color="green" value="good_infrastructure">
-                  Good infrastructure
-                </Chip>
-              </Group>
-            </Chip.Group>
-            <Text size="sm" mt="xl">
-              Anything missing? Write more details in the next step!
-            </Text>
+
+          <Stepper.Step label="Category Rating">
+            <P>
+              Please rate the way on a scale from 0 to 10, where 0 represents
+              the most dangerous / least comfortable / ugliest way and 10
+              represents the safest / most comfortable / most beautiful way you
+              can imagine.
+            </P>
+            <H3>Safety</H3>
+            <RatingSlider
+              value={rating.safety}
+              onChange={updateRating("safety")}
+            />
+            <H3>Comfort</H3>
+            <RatingSlider
+              value={rating.comfort}
+              onChange={updateRating("comfort")}
+            />
+            <H3>Beauty</H3>
+            <RatingSlider
+              value={rating.beauty}
+              onChange={updateRating("beauty")}
+            />
           </Stepper.Step>
-          <Stepper.Step
-            label="Add comment"
-            description="Write more details in a text comment"
-          >
-            <Text my="xl">
-              If you want, you can give some more details about your review.
-            </Text>
+
+          <Stepper.Step label="Comment">
+            <P>
+              <strong>Please share more about why you gave this rating.</strong>
+              <br />
+              What stood out to you? What was safe or dangerous, comfortable or
+              uncomfortable, beautiful or ugly to you?
+            </P>
+
             <Textarea
-              label="Reason (optional)"
+              label="Comment (optional)"
               value={comment}
               autosize={true}
               minRows={5}
               maxRows={5}
               onChange={(e) => setComment(e.currentTarget.value)}
-              placeholder="Why did you rate the route like this? What's good about it, what's bad?"
             />
           </Stepper.Step>
           <Stepper.Completed>
-            <Text my="xl">
+            <P>
               You can now submit your rating. Feel free to go back to a previous
               step before finally submitting your rating.
-            </Text>
+            </P>
           </Stepper.Completed>
         </Stepper>
 
@@ -177,7 +164,9 @@ export default function RatingForm({ way_id, onClose }: Props) {
             Discard
           </Button>
           <Group>
-            {[Steps.Tags, Steps.Comment, Steps.Submit].includes(step) && (
+            {[Steps.CategoryRating, Steps.Comment, Steps.Submit].includes(
+              step,
+            ) && (
               <Button
                 variant="default"
                 onClick={() => setStep((step) => step - 1)}
@@ -185,7 +174,11 @@ export default function RatingForm({ way_id, onClose }: Props) {
                 Previous
               </Button>
             )}
-            {[Steps.Rating, Steps.Tags, Steps.Comment].includes(step) && (
+            {[
+              Steps.GeneralRating,
+              Steps.CategoryRating,
+              Steps.Comment,
+            ].includes(step) && (
               <Button onClick={() => setStep((step) => step + 1)}>Next</Button>
             )}
             {step === Steps.Submit && (

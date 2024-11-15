@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function P({ children }: Props) {
-  return <Text mb="xl">{children}</Text>;
+  return <Text mb="md">{children}</Text>;
 }
