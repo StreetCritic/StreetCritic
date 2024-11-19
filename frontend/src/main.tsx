@@ -5,6 +5,7 @@ import Root from "@/routes/root";
 import About from "@/routes/about";
 import Map from "@/routes/map";
 import Sponsors from "@/routes/sponsors";
+import Contact from "@/routes/contact";
 
 import ErrorPage from "./error-page";
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/sponsors",
         element: <Sponsors />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
       },
     ],
   },

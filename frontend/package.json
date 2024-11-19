@@ -12,6 +12,7 @@
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
     "@mantine/core": "^7.13.4",
+    "@mantine/form": "^7.14.1",
     "@mantine/hooks": "^7.13.4",
     "@mapbox/tilebelt": "^2.0.0",
     "@phosphor-icons/react": "^2.1.7",

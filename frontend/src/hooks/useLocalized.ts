@@ -10,6 +10,7 @@ sign-up = Registrieren
 
 const resourceEn = new FluentResource(`
 abort = Abort
+dismiss = Dismiss
 continue = Continue
 sign-up = Sign up
 
@@ -18,6 +19,12 @@ add-way-intro = Select a start and a stop of the new way by clicking on the map.
 
 reviews = Reviews
 reviews-empty = No reviews yet. Be the first to add one!
+
+form-submitted-success-title = Submission Successful
+form-submitted-success-body = Your message has been successfully submitted.
+
+form-submitted-error-title = Submission Failed
+form-submitted-error-body = There was an error while submitting your message. Please try again later.
 `);
 
 export default function useLocalize() {

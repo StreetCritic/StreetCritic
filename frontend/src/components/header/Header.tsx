@@ -51,6 +51,10 @@ export default function Header() {
             <Link to={"sponsors"} className={classes.link}>
               Sponsors
             </Link>
+
+            <Link to={"contact"} className={classes.link}>
+              Contact
+            </Link>
           </Group>
 
           <Group visibleFrom="sm">
@@ -104,6 +108,9 @@ export default function Header() {
           </Link>
           <Link to={"sponsors"} className={classes.link} onClick={toggleDrawer}>
             Sponsors
+          </Link>
+          <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
+            Contact
           </Link>
           <Divider my="sm" />
 
