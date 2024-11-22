@@ -372,10 +372,10 @@ class Map {
     });
     if (response.ok) {
       const json = await response.json();
-      console.log(json);
-
       const source = this.map.getSource("existing-ways");
-      source.setData(json);
+      if (source instanceof GeoJSONSource) {
+        source.setData(json);
+      }
     }
   }
 
