@@ -130,6 +130,14 @@ class Map {
       );
       this.map.addControl(new NavigationControl(), "bottom-right");
 
+      this.map.on("dragstart", () => {
+        this.map.getCanvas().style.cursor = "grabbing";
+      });
+
+      this.map.on("dragend", () => {
+        this.map.getCanvas().style.cursor = "";
+      });
+
       // this.map.addSource("transportation", {
       //   type: "vector",
       //   url: "pmtiles:///transportation.pmtiles",
@@ -318,7 +326,7 @@ class Map {
 
       // Change it back to a pointer when it leaves.
       this.map.on("mouseleave", "existing-ways", () => {
-        this.map.getCanvas().style.cursor = "crosshair";
+        this.map.getCanvas().style.cursor = "";
       });
 
       this.map.on("mouseenter", "route", () => {
@@ -327,7 +335,7 @@ class Map {
 
       // Change it back to a pointer when it leaves.
       this.map.on("mouseleave", "route", () => {
-        this.map.getCanvas().style.cursor = "crosshair";
+        this.map.getCanvas().style.cursor = "";
       });
 
       this.map.on("moveend", () => {

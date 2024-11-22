@@ -9,7 +9,7 @@
 }
 
 .map canvas {
-  cursor: crosshair;
+  cursor: default;
 }
 
 .debug {
