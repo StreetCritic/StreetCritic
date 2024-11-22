@@ -265,7 +265,7 @@ class Map {
         type: "line",
         source: {
           type: "vector",
-          url: "http://transport-tiles.streetcritic.org/rated_segments",
+          url: config.ratedSegmentsURL,
         },
         "source-layer": "function_query_rated_segments",
         paint: {

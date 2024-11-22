@@ -1,16 +1,23 @@
+/**
+ * The application configuration that is parsed from the .env file.
+ */
 type Config = {
   // URL to the StreetCritic API
-  apiURL: String;
+  apiURL: string;
   // Keycloak authority
-  keycloakAuthority: String;
+  keycloakAuthority: string;
   // Keycloak redirect URI
-  keycloakRedirectURI: String;
+  keycloakRedirectURI: string;
   // Keycloak client ID
-  keycloakClientId: String;
+  keycloakClientId: string;
   // URL to Valhalla routing service
-  valhallaURL: String;
+  valhallaURL: string;
   // URL to location search service
-  locationSearchURL: String;
+  locationSearchURL: string;
+  // URL to the transport tiles service
+  transportTilesURL: string;
+  // URL to the rated segments tiles
+  ratedSegmentsURL: string;
 };
 
 const config: Config = {
@@ -20,6 +27,8 @@ const config: Config = {
   keycloakClientId: process.env.KEYCLOAK_CLIENT_ID as string,
   valhallaURL: process.env.VALHALLA_URL as string,
   locationSearchURL: process.env.LOCATION_SEARCH_URL as string,
+  transportTilesURL: process.env.TRANSPORT_TILES_URL as string,
+  ratedSegmentsURL: process.env.RATED_SEGMENTS_URL as string,
 };
 
 export default config;

@@ -3,6 +3,7 @@ import type { GeoJSON, Feature, Position } from "geojson";
 import { MVTRouter, Point as WASMPoint, Route } from "ibre";
 
 import type { Stop } from "./useWay";
+import config from "@/config";
 
 /**
  * React hook to calculate the route.
@@ -11,9 +12,7 @@ import type { Stop } from "./useWay";
  */
 export function useSegmentsRoute(stops: Stop[]): Route | null {
   const router = useMemo(() => {
-    return new MVTRouter(
-      "http://transport-tiles.streetcritic.org/function_zxy_query",
-    );
+    return new MVTRouter(config.transportTilesURL);
   }, []);
   const [route, setRoute] = useState<null | Route>(null);
   useEffect(() => {
