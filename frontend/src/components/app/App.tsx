@@ -1,8 +1,9 @@
 "use client";
 
+import { initAuth } from "@/auth";
 import Header from "@/components/header";
 import { createTheme, MantineProvider, rem } from "@mantine/core";
-import config from "@/config";
+import { useEffect } from "react";
 
 const theme = createTheme({
   fontFamily: "Open Sans, sans-serif",
@@ -33,28 +34,23 @@ const theme = createTheme({
    * primaryColor: "streetcritic-green", */
 });
 
-import { AuthProvider } from "react-oidc-context";
-
-const oidcConfig = {
-  authority: config.keycloakAuthority,
-  client_id: config.keycloakClientId,
-  redirect_uri: config.keycloakRedirectURI,
-  onSigninCallback: (_user: any): void => {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  },
-};
-
 type Props = {
   children: React.ReactNode;
 };
 
+import { useDispatch } from "react-redux";
+
 export default function App({ children }: Props) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      initAuth(dispatch);
+    })();
+  });
   return (
-    <AuthProvider {...oidcConfig}>
-      <MantineProvider theme={theme}>
-        <Header />
-        {children}
-      </MantineProvider>
-    </AuthProvider>
+    <MantineProvider theme={theme}>
+      <Header />
+      {children}
+    </MantineProvider>
   );
 }

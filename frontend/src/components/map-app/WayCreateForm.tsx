@@ -15,8 +15,8 @@ import {
 import { P } from "@/components/typography";
 
 import config from "@/config";
-
-import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import { selectAppState } from "@/features/map/appSlice";
 
 type Props = {
   // The route to be rated;
@@ -59,12 +59,11 @@ export default function RatingForm({
 
   const [step, setStep] = useState(Steps.Title);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
-
-  const auth = useAuth();
+  const appState = useSelector(selectAppState);
 
   const onSubmit = () => {
     (async () => {
-      /* if (!route || !auth?.user) {
+      /* if (!route || !appState.user) {
        *   return;
        * } */
       const body = {
@@ -78,7 +77,7 @@ export default function RatingForm({
           stop: segment.get_stop(),
         });
       }
-      const token = auth.user?.access_token;
+      const token = appState.user?.accessToken;
       const response = await fetch(`${config.apiURL}/ways`, {
         method: "POST",
         headers: {

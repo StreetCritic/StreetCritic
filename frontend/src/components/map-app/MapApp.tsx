@@ -7,7 +7,6 @@ import { default as Map } from "@/components/map";
 import { useWay, useSegments, useDirections } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
-import { useAuth } from "react-oidc-context";
 import { Box, Paper } from "@mantine/core";
 import { WaySelectHandler } from "@/components/map";
 
@@ -42,8 +41,7 @@ export default function MapApp({ selectedWay }: Props) {
   const mapState = useSelector(selectMapState);
 
   const navigateMap = useNavigateMap();
-  const auth = useAuth();
-  const token = auth.user?.access_token || null;
+  const token = appState.user?.accessToken || null;
 
   const [way, segments] = useWay();
 

@@ -13,6 +13,7 @@ abort = Abort
 dismiss = Dismiss
 continue = Continue
 sign-up = Sign up
+log-in = Log in
 
 add-way-title = Add a new way
 add-way-intro = Select a start and a stop of the new way by clicking on the map.

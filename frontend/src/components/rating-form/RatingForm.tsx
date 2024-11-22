@@ -13,8 +13,8 @@ import { H3, P } from "@/components";
 
 import RatingSlider from "./RatingSlider";
 import config from "@/config";
-
-import { useAuth } from "react-oidc-context";
+import { useSelector } from "react-redux";
+import { selectAppState } from "@/features/map/appSlice";
 
 type Props = {
   // The way to be rated.
@@ -47,8 +47,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
   const [comment, setComment] = useState("");
   const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
-
-  const auth = useAuth();
+  const appState = useSelector(selectAppState);
 
   const onSubmit = () => {
     (async () => {
@@ -62,7 +61,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
           Object.entries(rating).map((k, v) => [k, Math.round(v / 10)]),
         ),
       };
-      const token = auth.user?.access_token;
+      const token = appState.user?.accessToken;
       const response = await fetch(`${config.apiURL}/ratings`, {
         method: "POST",
         headers: {

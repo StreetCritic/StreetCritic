@@ -1,14 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
 import Root from "@/routes/root";
 import About from "@/routes/about";
 import Map from "@/routes/map";
+import Login from "@/routes/login";
 import Sponsors from "@/routes/sponsors";
 import Contact from "@/routes/contact";
-
 import ErrorPage from "./error-page";
-
 import store from "./store";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -25,6 +23,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Map />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
       {
         path: "/way/:wayId",

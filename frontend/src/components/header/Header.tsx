@@ -1,7 +1,5 @@
 "use client";
 import { Link } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
-
 import {
   Box,
   Drawer,
@@ -19,9 +17,13 @@ import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
 import useLocalize from "@/hooks/useLocalized";
+import { useAuth } from "@/hooks";
+import { useSelector } from "react-redux";
+import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
+import { signIn, signOut } from "@/auth";
 
 export default function Header() {
-  const auth = useAuth();
+  const appState = useSelector(selectAppState);
   const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -58,22 +60,23 @@ export default function Header() {
           </Group>
 
           <Group visibleFrom="sm">
-            {auth.error && <p>Authentication error</p>}
-            {(auth.isLoading && <Loader color="blue" size="sm" />) ||
-              (auth.isAuthenticated && (
+            {appState.authState === AuthenticationState.Error && (
+              <p>Authentication error</p>
+            )}
+            {(appState.authState === AuthenticationState.Authenticating && (
+              <Loader color="blue" size="sm" />
+            )) ||
+              (appState.authState === AuthenticationState.Authenticated && (
                 <>
                   <UserNavigation
-                    userName={auth.user?.profile.name || ""}
-                    onLogout={() => void auth.signoutRedirect()}
+                    userName={appState.user?.name || ""}
+                    onLogout={signOut}
                   />
                 </>
               )) || (
                 <>
-                  <Button
-                    variant="default"
-                    onClick={() => void auth.signinRedirect()}
-                  >
-                    Log in
+                  <Button variant="default" onClick={signIn}>
+                    {__("log-in")}
                   </Button>
                   <Button>{__("sign-up")}</Button>
                 </>
@@ -115,7 +118,7 @@ export default function Header() {
           <Divider my="sm" />
 
           {/* <Group justify="center" grow pb="xl" px="md">
-              <Button variant="default">Log in</Button>
+              <Button variant="default">{__("log-in")}</Button>
               <Button>Sign up</Button>
               </Group> */}
         </ScrollArea>
