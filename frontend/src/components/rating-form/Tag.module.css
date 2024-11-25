@@ -1,0 +1,44 @@
+.root {
+  display: flex;
+  border-radius: 3px;
+  background: var(--mantine-color-gray-2);
+  align-items: center;
+}
+
+.positive {
+  background-color: var(--mantine-color-green-3);
+}
+
+.negative {
+  background-color: var(--mantine-color-red-3);
+}
+
+.root > span {
+}
+
+.root > button {
+  border: none;
+  padding: 0.2em 0.4em 0;
+  background: none;
+}
+
+.positive > button:nth-child(1),
+.negative > button:nth-child(1) {
+  cursor: pointer;
+}
+
+.root > button:not(:nth-child(1)) {
+  cursor: pointer;
+  background: var(--mantine-color-gray-1);
+  border-left: 1px solid gray;
+}
+
+.positive button:nth-child(2),
+root > button:nth-child(2):hover {
+  background: var(--mantine-color-green-2);
+}
+
+.negative button:nth-child(3),
+.root > button:nth-child(3):hover {
+  background: var(--mantine-color-red-2);
+}

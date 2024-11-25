@@ -1,17 +1,10 @@
 import { useState } from "react";
-import {
-  Button,
-  Chip,
-  Text,
-  Textarea,
-  Group,
-  Stepper,
-  Modal,
-} from "@mantine/core";
+import { Button, Text, Textarea, Group, Stepper, Modal } from "@mantine/core";
 
 import { H3, P } from "@/components";
 
 import RatingSlider from "./RatingSlider";
+import { default as Tag, State as TagState } from "./Tag";
 import config from "@/config";
 import { useSelector } from "react-redux";
 import { selectAppState } from "@/features/map/appSlice";
@@ -26,6 +19,7 @@ type Props = {
 enum Steps {
   GeneralRating,
   CategoryRating,
+  Tags,
   Comment,
   Submit,
 }
@@ -44,6 +38,37 @@ export default function RatingForm({ way_id, onClose }: Props) {
     comfort: 50,
     beauty: 50,
   });
+  const [tags, setTags] = useState(
+    Object.fromEntries(
+      [
+        "roomy",
+        "paved",
+        "little_traffic",
+        "few_stops",
+        "green",
+        "nice_surroundings",
+        "quiet",
+        "clean",
+        "little_motorized_traffic",
+        "infastructure",
+      ].map((x) => [x, TagState.Neutral]),
+    ),
+  );
+
+  console.log(tags);
+
+  const tag = (name: string, label: string) => (
+    <Tag
+      state={tags[name]}
+      onStateChange={(newState) => {
+        console.log(newState);
+        setTags((oldState) => ({ ...oldState, [name]: newState }));
+      }}
+    >
+      {label}
+    </Tag>
+  );
+
   const [comment, setComment] = useState("");
   const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
@@ -57,6 +82,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
       const body = {
         way_id,
         comment,
+        tags,
         ...Object.fromEntries(
           Object.entries(rating).map((k, v) => [k, Math.round(v / 10)]),
         ),
@@ -133,6 +159,35 @@ export default function RatingForm({ way_id, onClose }: Props) {
             />
           </Stepper.Step>
 
+          <Stepper.Step label="Tags">
+            <Text my="xl">
+              What is particularly good, what is particularly bad about the way?
+            </Text>
+            <Text fw="700">Comfort</Text>
+            <Group mt="md">
+              {tag("roomy", "Roomy")}
+              {tag("paved", "Well paved")}
+              {tag("little_traffic", "Little traffic")}
+              {tag("few_stops", "Few stops")}
+            </Group>
+            <Text fw="700" mt="xl">
+              Beauty
+            </Text>
+            <Group mt="md">
+              {tag("green", "Green")}
+              {tag("nice_surroundings", "Nice surroundings")}
+              {tag("quiet", "Quiet")}
+              {tag("clean", "Clean")}
+            </Group>
+            <Text fw="700" mt="xl">
+              Safety
+            </Text>
+            <Group mt="md">
+              {tag("little_motorized_traffic", "Little motorized traffic")}
+              {tag("good_infrastructure", "Good infrastructure")}
+            </Group>
+          </Stepper.Step>
+
           <Stepper.Step label="Comment">
             <P>
               <strong>Please share more about why you gave this rating.</strong>
@@ -163,9 +218,12 @@ export default function RatingForm({ way_id, onClose }: Props) {
             Discard
           </Button>
           <Group>
-            {[Steps.CategoryRating, Steps.Comment, Steps.Submit].includes(
-              step,
-            ) && (
+            {[
+              Steps.CategoryRating,
+              Steps.Tags,
+              Steps.Comment,
+              Steps.Submit,
+            ].includes(step) && (
               <Button
                 variant="default"
                 onClick={() => setStep((step) => step - 1)}
@@ -176,6 +234,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
             {[
               Steps.GeneralRating,
               Steps.CategoryRating,
+              Steps.Tags,
               Steps.Comment,
             ].includes(step) && (
               <Button onClick={() => setStep((step) => step + 1)}>Next</Button>
