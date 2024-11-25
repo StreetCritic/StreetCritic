@@ -1,9 +1,10 @@
-import { Text } from "@mantine/core";
+import Text from "./Text";
 
 type Props = {
   children: React.ReactNode;
 };
 
+// @deprecated
 export default function P({ children }: Props) {
-  return <Text mb="md">{children}</Text>;
+  return <Text>{children}</Text>;
 }
