@@ -161,7 +161,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
 
           <Stepper.Step label="Tags">
             <Text my="xl">
-              What is particularly good, what is particularly bad about the way?
+              What is notably good, what is notably bad about the way?
             </Text>
             <Text fw="700">Comfort</Text>
             <Group mt="md">

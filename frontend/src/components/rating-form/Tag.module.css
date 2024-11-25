@@ -34,7 +34,7 @@
 }
 
 .positive button:nth-child(2),
-root > button:nth-child(2):hover {
+.root > button:nth-child(2):hover {
   background: var(--mantine-color-green-2);
 }
 
