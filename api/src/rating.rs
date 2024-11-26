@@ -6,8 +6,6 @@ use axum::{
 };
 use serde::Deserialize;
 
-use std::collections::HashMap;
-
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Rating {
     id: u32,

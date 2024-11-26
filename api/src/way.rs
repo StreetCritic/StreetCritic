@@ -1,4 +1,3 @@
-use super::rating::Rating;
 use crate::{internal_error, ConnectionPool};
 use axum::{
     extract::{Path, Query, State},
