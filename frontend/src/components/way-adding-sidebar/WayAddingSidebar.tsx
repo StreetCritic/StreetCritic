@@ -1,5 +1,5 @@
 import { Route } from "ibre";
-import useLocalize from "@/hooks/useLocalized";
+import { useLocalize } from "@/hooks";
 import { H2, P } from "@/components/typography";
 import { useDispatch } from "react-redux";
 import { switchedToBrowsing } from "@/features/map/appSlice";

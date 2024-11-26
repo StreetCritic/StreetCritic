@@ -11,7 +11,7 @@ import {
 import { useForm } from "@mantine/form";
 import { Alert, H1 } from "@/components";
 import { useState } from "react";
-import { useLocalized } from "@/hooks";
+import { useLocalize } from "@/hooks";
 
 enum FormState {
   Default,
@@ -21,7 +21,7 @@ enum FormState {
 }
 
 export default function ContactForm() {
-  const __ = useLocalized();
+  const __ = useLocalize();
   const [formState, setFormState] = useState<FormState>(FormState.Default);
   const form = useForm({
     initialValues: {

@@ -38,6 +38,18 @@ form-submitted-error-body = There was an error while submitting your message. Pl
 way-create-form-intro = Provide a title for the route, e.g., 'Southern Main Street to Market Place.' Use the local name and language.
 way-create-form-about-to-submit = You can now submit your new route. If needed, feel free to go back to a previous step before finalizing your submission.
 way-create-form-discard-way-confirm = Are you sure to discard your new way?
+
+way-rating-tag-roomy = Roomy
+way-rating-tag-paved = Well paved
+way-rating-tag-little_traffic = Little traffic
+way-rating-tag-few_stops = Few stops
+way-rating-tag-green = Green
+way-rating-tag-nice_surroundings = Nice surroundings
+way-rating-tag-quiet = Quiet
+way-rating-tag-clean = Clean
+way-rating-tag-little_motorized_traffic = Little motorized traffic
+way-rating-tag-good_infrastructure = Good infrastructure
+
 `);
 
 export default function useLocalize() {

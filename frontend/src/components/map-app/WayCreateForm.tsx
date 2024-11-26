@@ -5,7 +5,7 @@ import { Button, Text, TextInput, Group, Stepper, Modal } from "@mantine/core";
 import config from "@/config";
 import { useSelector } from "react-redux";
 import { selectAppState } from "@/features/map/appSlice";
-import useLocalize from "@/hooks/useLocalized";
+import { useLocalize } from "@/hooks";
 
 type Props = {
   // The route to be rated;

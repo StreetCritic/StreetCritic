@@ -8,6 +8,7 @@ import { default as Tag, State as TagState } from "./Tag";
 import config from "@/config";
 import { useSelector } from "react-redux";
 import { selectAppState } from "@/features/map/appSlice";
+import { useLocalize } from "@/hooks";
 
 type Props = {
   // The way to be rated.
@@ -32,6 +33,7 @@ type Ratings = {
 };
 
 export default function RatingForm({ way_id, onClose }: Props) {
+  const __ = useLocalize();
   const [rating, setRating] = useState<Ratings>({
     general: 50,
     safety: 50,

@@ -16,8 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
-import useLocalize from "@/hooks/useLocalized";
-import { useAuth } from "@/hooks";
+import { useLocalize } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
 import { register, signIn, signOut } from "@/auth";

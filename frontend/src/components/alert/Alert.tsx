@@ -1,4 +1,4 @@
-import { useLocalized } from "@/hooks";
+import { useLocalize } from "@/hooks";
 import { Alert as MAlert } from "@mantine/core";
 import { Info, WarningCircle } from "@phosphor-icons/react";
 
@@ -23,7 +23,7 @@ const cfg = {
  * An alert box.
  */
 export default function Alert({ type, title, children }: Props) {
-  const __ = useLocalized();
+  const __ = useLocalize();
   return (
     <MAlert
       my="md"
