@@ -20,7 +20,7 @@ import useLocalize from "@/hooks/useLocalized";
 import { useAuth } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
-import { signIn, signOut } from "@/auth";
+import { register, signIn, signOut } from "@/auth";
 
 export default function Header() {
   const appState = useSelector(selectAppState);
@@ -78,7 +78,7 @@ export default function Header() {
                   <Button variant="default" onClick={signIn}>
                     {__("log-in")}
                   </Button>
-                  <Button>{__("sign-up")}</Button>
+                  <Button onClick={register}>{__("sign-up")}</Button>
                 </>
               )}
           </Group>

@@ -17,6 +17,10 @@ export function signIn() {
   userManager.signinRedirect();
 }
 
+export function register() {
+  document.location.href = `${config.keycloakAuthority}/protocol/openid-connect/registrations?client_id=${config.keycloakClientId}&scope=openid%20profile&redirect_uri=${encodeURIComponent(config.keycloakRedirectURI)}&response_type=code`;
+}
+
 export function signOut() {
   const userManager = new UserManager(oidcConfig);
   userManager.signoutRedirect();
