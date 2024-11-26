@@ -34,6 +34,11 @@ export default function WayAddingIntroduction({ onAbort, onFinish }: Props) {
           </strong>
         </Text>
         <Text>
+          Do you think there's a very nice or very awful way missing? If so,
+          those should be added first before considering ways that are more
+          average.
+        </Text>
+        <Text>
           A way <strong>should not be too long,</strong> e.g. don't add a way
           that consists of different sections that people would rate
           differently, e.g. a way along a street where the first half consists
