@@ -55,13 +55,10 @@ export default function RatingForm({ way_id, onClose }: Props) {
     ),
   );
 
-  console.log(tags);
-
   const tag = (name: string, label: string) => (
     <Tag
       state={tags[name]}
       onStateChange={(newState) => {
-        console.log(newState);
         setTags((oldState) => ({ ...oldState, [name]: newState }));
       }}
     >
@@ -97,7 +94,6 @@ export default function RatingForm({ way_id, onClose }: Props) {
         body: JSON.stringify(body),
       });
       if (response.ok) {
-        console.log("success");
         onClose();
       }
     })();
