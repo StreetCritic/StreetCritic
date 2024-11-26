@@ -14,7 +14,10 @@ CREATE TABLE way_rating (
   datetime TIMESTAMP,
   title TEXT,
   comment TEXT,
-  rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10)
+  general_rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10),
+  safety_rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10),
+  comfort_rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10),
+  beauty_rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10),
 );
 
 CREATE TABLE way_rating_votes (

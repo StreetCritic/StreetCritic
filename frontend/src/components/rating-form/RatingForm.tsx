@@ -57,14 +57,14 @@ export default function RatingForm({ way_id, onClose }: Props) {
     ),
   );
 
-  const tag = (name: string, label: string) => (
+  const tag = (name: string) => (
     <Tag
       state={tags[name]}
       onStateChange={(newState) => {
         setTags((oldState) => ({ ...oldState, [name]: newState }));
       }}
     >
-      {label}
+      {__(`way-rating-tag-${name}`)}
     </Tag>
   );
 
@@ -72,6 +72,16 @@ export default function RatingForm({ way_id, onClose }: Props) {
   const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
   const appState = useSelector(selectAppState);
+
+  const toTagString = ([tag, state]: [string, TagState]) => {
+    if (state === TagState.Positive) {
+      return tag;
+    }
+    if (state === TagState.Negative) {
+      return `-${tag}`;
+    }
+    return [];
+  };
 
   const onSubmit = () => {
     (async () => {
@@ -81,9 +91,12 @@ export default function RatingForm({ way_id, onClose }: Props) {
       const body = {
         way_id,
         comment,
-        tags,
+        tags: Object.entries(tags).flatMap(toTagString),
         ...Object.fromEntries(
-          Object.entries(rating).map((k, v) => [k, Math.round(v / 10)]),
+          Object.entries(rating).map(([k, v]) => [
+            `${k}_rating`,
+            Math.round(v / 10),
+          ]),
         ),
       };
       const token = appState.user?.accessToken;
@@ -163,26 +176,26 @@ export default function RatingForm({ way_id, onClose }: Props) {
             </Text>
             <Text fw="700">Comfort</Text>
             <Group mt="md">
-              {tag("roomy", "Roomy")}
-              {tag("paved", "Well paved")}
-              {tag("little_traffic", "Little traffic")}
-              {tag("few_stops", "Few stops")}
+              {tag("roomy")}
+              {tag("paved")}
+              {tag("little_traffic")}
+              {tag("few_stops")}
             </Group>
             <Text fw="700" mt="xl">
               Beauty
             </Text>
             <Group mt="md">
-              {tag("green", "Green")}
-              {tag("nice_surroundings", "Nice surroundings")}
-              {tag("quiet", "Quiet")}
-              {tag("clean", "Clean")}
+              {tag("green")}
+              {tag("nice_surroundings")}
+              {tag("quiet")}
+              {tag("clean")}
             </Group>
             <Text fw="700" mt="xl">
               Safety
             </Text>
             <Group mt="md">
-              {tag("little_motorized_traffic", "Little motorized traffic")}
-              {tag("good_infrastructure", "Good infrastructure")}
+              {tag("little_motorized_traffic")}
+              {tag("good_infrastructure")}
             </Group>
           </Stepper.Step>
 

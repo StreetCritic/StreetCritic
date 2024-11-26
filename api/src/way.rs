@@ -30,7 +30,6 @@ pub async fn get_way(
     State(pool): State<ConnectionPool>,
 ) -> Result<Json<Way>, (StatusCode, String)> {
     let conn = pool.get().await.map_err(internal_error)?;
-
     let row = conn
         .query_one(
             r"

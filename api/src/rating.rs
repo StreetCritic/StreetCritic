@@ -8,11 +8,14 @@ use serde::Deserialize;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Rating {
-    id: u32,
-    way_id: u32,
+    id: i32,
+    way_id: i32,
     user_id: String,
     datetime: time::PrimitiveDateTime,
-    rating: u8,
+    general_rating: u8,
+    safety_rating: u8,
+    comfort_rating: u8,
+    beauty_rating: u8,
     tags: Vec<String>,
     comment: String,
 }
@@ -26,8 +29,8 @@ pub async fn create_rating(
     let transaction = conn.transaction().await.map_err(internal_error)?;
 
     let row = transaction
-        .query_one("INSERT INTO way_rating (user_id, way_id, datetime, rating, comment) VALUES(1, $1, NOW(), $2, $3) RETURNING id",
-                   &[&payload.way_id, &(payload.rating as i32), &payload.comment])
+        .query_one("INSERT INTO way_rating (user_id, way_id, datetime, general_rating, safety_rating, comfort_rating, beauty_rating, comment) VALUES(1, $1, NOW(), $2, $3, $4, $5, $6) RETURNING id",
+                   &[&payload.way_id, &(payload.general_rating as i32), &(payload.safety_rating as i32), &(payload.comfort_rating as i32), &(payload.beauty_rating as i32), &payload.comment])
         .await
         .map_err(internal_error)?;
 
@@ -57,7 +60,10 @@ pub async fn create_rating(
 
 #[derive(Deserialize)]
 pub struct CreateRating {
-    rating: u8,
+    general_rating: u8,
+    safety_rating: u8,
+    comfort_rating: u8,
+    beauty_rating: u8,
     way_id: i32,
     comment: String,
     tags: Vec<String>,
@@ -87,18 +93,41 @@ pub async fn get_ratings(
         .map_err(internal_error)?;
 
     let mut ratings = Vec::new();
+    let tag_query = conn
+        .prepare(
+            r"
+            SELECT name
+            FROM way_rating_tag
+            WHERE way_rating_id=$1
+",
+        )
+        .await
+        .unwrap();
     for row in &rows {
+        let id = row.get::<_, i32>("id").try_into().unwrap();
+
+        let tag_rows = conn
+            .query(&tag_query, &[&id])
+            .await
+            .map_err(internal_error)?;
+
+        let mut tags: Vec<String> = Vec::new();
+        for tag_row in tag_rows {
+            tags.push(tag_row.get("name"))
+        }
+
         ratings.push(Rating {
-            id: row.get::<_, i32>("id").try_into().unwrap(),
+            id,
             // user_id: row.get("user_id"),
             user_id: "foo".into(),
             way_id: 0,
-            rating: row.get::<_, i32>("rating").try_into().unwrap(),
+            general_rating: row.get::<_, i32>("general_rating").try_into().unwrap(),
+            safety_rating: row.get::<_, i32>("safety_rating").try_into().unwrap(),
+            beauty_rating: row.get::<_, i32>("beauty_rating").try_into().unwrap(),
+            comfort_rating: row.get::<_, i32>("comfort_rating").try_into().unwrap(),
             datetime: row.get("datetime"),
-            // title: row.get("title"),
-            // mode: row.get("mode"),
             comment: row.get("comment"),
-            tags: Vec::new(),
+            tags,
         });
     }
     Ok(Json(ratings))

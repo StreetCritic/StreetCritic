@@ -9,10 +9,10 @@ BEGIN
 
     -- Get all way segments, ignore the ones without rating.
     start_stops AS (
-      SELECT start, stop, AVG(way_rating.rating) AS rating
+      SELECT start, stop, AVG(way_rating.general_rating) AS rating
         FROM way_segment LEFT JOIN way_rating
                              ON way_segment.way_id=way_rating.way_id
-       WHERE segment_id=_the_segment AND way_rating.rating IS NOT NULL
+       WHERE segment_id=_the_segment AND way_rating.general_rating IS NOT NULL
        GROUP BY start, stop
     ),
 

@@ -3,18 +3,17 @@
 import { useState } from "react";
 
 import { H1, P } from "@/components/typography";
-import { Group, Rating, Text, Pill } from "@mantine/core";
+import { Group, Rating, Badge } from "@mantine/core";
 import Button from "@/components/button";
 import {
   Heart,
-  HeartBreak,
   ThumbsUp,
   Sparkle,
   ThumbsDown,
 } from "@phosphor-icons/react/dist/ssr";
 
 import RatingForm from "@/components/rating-form";
-import useLocalize from "@/hooks/useLocalized";
+import { useLocalize } from "@/hooks";
 
 type Props = {
   way: any;
@@ -24,6 +23,24 @@ type Props = {
 export default function WayInfo({ way, ratings }: Props) {
   const __ = useLocalize();
   const [ratingFormOpen, setRatingFormOpen] = useState(false);
+
+  const tagToPill = (tag: string) => {
+    const negative = tag[0] === "-";
+    const label = tag[0] === "-" ? tag.slice(1) : tag;
+    return (
+      <Badge
+        variant="light"
+        autoContrast
+        leftSection={negative ? <ThumbsDown /> : <ThumbsUp />}
+        key={tag}
+        color={negative ? "red" : "green"}
+        size="lg"
+      >
+        {__(`way-rating-tag-${label}`)}
+      </Badge>
+    );
+  };
+
   return (
     <>
       {/* {data.datetime} */}
@@ -35,20 +52,12 @@ export default function WayInfo({ way, ratings }: Props) {
           <Rating
             my="lg"
             fractions={2}
-            defaultValue={rating.rating / 2}
+            defaultValue={rating.general_rating / 2}
             readOnly
             emptySymbol={<Heart size={32} color="#FA5252" />}
             fullSymbol={<Heart size={32} weight="fill" color="#FA5252" />}
           />
-          <Group my="lg">
-            <Pill color="green" size="lg">
-              Quiet
-            </Pill>
-            <Pill color="green" size="lg">
-              Good infrastructure
-            </Pill>
-            {rating.tags}
-          </Group>
+          <Group my="lg">{rating.tags.map(tagToPill)}</Group>
           <P>
             {rating.comment}
             {/* … <a href="#">Read more</a> */}
