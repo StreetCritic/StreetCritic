@@ -8,6 +8,15 @@
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
+.logoLink {
+  width: 50%;
+  max-width: 200px;
+}
+
+.logoLink img {
+  width: 95%;
+}
+
 .link {
   display: flex;
   align-items: center;

@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import {
   Box,
+  Stack,
   Drawer,
   Button,
   Divider,
@@ -27,20 +28,27 @@ export default function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
+  const loginButtons = (
+    <>
+      <Button variant="default" onClick={signIn}>
+        {__("log-in")}
+      </Button>
+      <Button onClick={register}>{__("sign-up")}</Button>
+    </>
+  );
+
   return (
     <Box>
       <header className={classes.header}>
-        <Group justify="space-between" h="100%">
-          <Link to={"/"}>
+        <Group wrap="nowrap" justify="space-between" h="100%">
+          <Link className={classes.logoLink} to={"/"}>
             <img
               src={new URL("logo.svg", import.meta.url)}
-              width={200}
-              height={33}
               alt="StreetCritic"
             />
           </Link>
 
-          <Group h="100%" gap={0} visibleFrom="sm">
+          <Group h="100%" gap={0} visibleFrom="md">
             <Link to={"/"} className={classes.link}>
               Home
             </Link>
@@ -58,35 +66,28 @@ export default function Header() {
             </Link>
           </Group>
 
-          <Group visibleFrom="sm">
+          <Group h="100%" wrap="nowrap">
             {appState.authState === AuthenticationState.Error && (
               <p>Authentication error</p>
             )}
-            {(appState.authState === AuthenticationState.Authenticating && (
+            {appState.authState === AuthenticationState.Authenticating && (
               <Loader color="blue" size="sm" />
-            )) ||
-              (appState.authState === AuthenticationState.Authenticated && (
-                <>
-                  <UserNavigation
-                    userName={appState.user?.name || ""}
-                    onLogout={signOut}
-                  />
-                </>
-              )) || (
-                <>
-                  <Button variant="default" onClick={signIn}>
-                    {__("log-in")}
-                  </Button>
-                  <Button onClick={register}>{__("sign-up")}</Button>
-                </>
-              )}
+            )}
+            {appState.authState === AuthenticationState.Authenticated && (
+              <UserNavigation
+                userName={appState.user?.name || ""}
+                onLogout={signOut}
+              />
+            )}
+            {appState.authState === AuthenticationState.Unauthenticated && (
+              <Group visibleFrom="sm">{loginButtons}</Group>
+            )}
+            <Burger
+              opened={drawerOpened}
+              onClick={toggleDrawer}
+              hiddenFrom="md"
+            />
           </Group>
-
-          <Burger
-            opened={drawerOpened}
-            onClick={toggleDrawer}
-            hiddenFrom="sm"
-          />
         </Group>
       </header>
 
@@ -95,8 +96,7 @@ export default function Header() {
         onClose={closeDrawer}
         size="100%"
         padding="md"
-        title="Navigation"
-        hiddenFrom="sm"
+        hiddenFrom="md"
         zIndex={1000000}
       >
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
@@ -114,12 +114,13 @@ export default function Header() {
           <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
             Contact
           </Link>
+
           <Divider my="sm" />
 
-          {/* <Group justify="center" grow pb="xl" px="md">
-              <Button variant="default">{__("log-in")}</Button>
-              <Button>Sign up</Button>
-              </Group> */}
+          <Stack align="flex-start" p="md">
+            {appState.authState === AuthenticationState.Unauthenticated &&
+              loginButtons}
+          </Stack>
         </ScrollArea>
       </Drawer>
     </Box>
