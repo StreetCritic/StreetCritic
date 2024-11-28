@@ -21,7 +21,11 @@ import { LngLatLike } from "maplibre-gl";
 import useNavigateMap from "@/hooks/useNavigateMap";
 import LocationSearch from "../location-search";
 import AddIcon from "../add-icon";
-import { AppMode, selectAppState } from "@/features/map/appSlice";
+import {
+  AppMode,
+  selectAppState,
+  switchedToBrowsing,
+} from "@/features/map/appSlice";
 import WayAddingIntroduction from "../way-adding-introduction";
 
 import { useDispatch } from "react-redux";
@@ -91,7 +95,7 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       {appState.mode === AppMode.WayAdding && (
-        <Sidebar>
+        <Sidebar onClose={() => dispatch(switchedToBrowsing())}>
           <WayAddingSidebar
             segments={segments}
             onAddClick={() => setWayCreateFormOpen(true)}

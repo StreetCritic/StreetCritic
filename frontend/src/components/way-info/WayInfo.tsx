@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { H1, P } from "@/components/typography";
+import { Title, P } from "@/components/typography";
 import { Group, Rating, Badge } from "@mantine/core";
 import Button from "@/components/button";
 import {
@@ -45,7 +45,7 @@ export default function WayInfo({ way, ratings }: Props) {
     <>
       {/* {data.datetime} */}
       Created on 2024/3/12
-      <H1>{way.title}</H1>
+      <Title size="h3">{way.title}</Title>
       {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
       {ratings.map((rating) => (
         <>
