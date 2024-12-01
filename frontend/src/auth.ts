@@ -41,7 +41,7 @@ export async function initAuth(dispatch: any) {
   const user = await userManager.getUser();
   console.log("getUser", user);
   if (user) {
-    const name = user.profile.name || "Unknown user";
+    const name = user.profile.preferred_username || "Unknown user";
     const accessToken = user.access_token || "";
     dispatch(userAuthenticated({ name, accessToken }));
   }
