@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "parcel src/index.html",
     "build": "tsc -b && parcel build src/index.html",
+    "type-check": "tsc -b",
     "lint": "eslint .",
     "format": "prettier src/ --write"
   },
