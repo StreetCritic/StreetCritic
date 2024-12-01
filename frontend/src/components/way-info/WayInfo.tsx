@@ -44,7 +44,7 @@ export default function WayInfo({ way, ratings }: Props) {
   return (
     <>
       {/* {data.datetime} */}
-      Created on 2024/3/12
+      {/* Created on 2024/3/12 */}
       <Title size="h3">{way.title}</Title>
       {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
       {ratings.map((rating) => (
@@ -62,11 +62,13 @@ export default function WayInfo({ way, ratings }: Props) {
             {rating.comment}
             {/* … <a href="#">Read more</a> */}
           </P>
+          {/*
           Was this review helpful?
           <Group>
             <ThumbsUp /> 12
             <ThumbsDown /> 3
           </Group>
+          */}
         </>
       ))}
       <br />
