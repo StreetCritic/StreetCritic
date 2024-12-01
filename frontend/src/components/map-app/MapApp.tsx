@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { default as Map } from "@/components/map";
-import { useWay, useSegments, useDirections } from "@/hooks";
+import { useWay, useSegments, useDirections, useUser } from "@/hooks";
 import WayCreateForm from "./WayCreateForm";
 import InConstructionModal from "./InConstructionModal";
 import { Box, Paper } from "@mantine/core";
@@ -43,9 +43,9 @@ export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
+  const user = useUser();
 
   const navigateMap = useNavigateMap();
-  const token = appState.user?.accessToken || null;
 
   const [way, segments] = useWay();
 
@@ -62,7 +62,6 @@ export default function MapApp({ selectedWay }: Props) {
         route={way}
         onWaySelect={onWaySelect}
         styleURL="/styles.json"
-        APIToken={token}
         selectedWay={selectedWay}
       />
       {/* <InConstructionModal /> */}

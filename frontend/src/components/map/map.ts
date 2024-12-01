@@ -30,6 +30,7 @@ import {
 } from "@/features/map/mapSlice";
 import { AppMode, selectAppState } from "@/features/map/appSlice";
 import LocationMarker from "./locationMarker";
+import User from "@/User";
 
 export type PositionHandler = (point: LngLat) => void;
 export type WaySelectHandler = (id: string) => void;
@@ -44,7 +45,7 @@ export type PositionChangeHandler = (
 class Map {
   // The MapLibre instance.
   private map: LibreMap;
-  private APIToken: string | null;
+  private user: User;
   private ratingColorScale: any;
 
   /**
@@ -56,8 +57,6 @@ class Map {
    * @param onLoad - Callback which is called when the map is loaded.
    * @param onWaySelect - Callback which is called when the user clicks a
    * rating on the map.
-   * @param APIToken - Auth token for the backend API.
-   * route.
    */
   constructor(
     styleURL: string,
@@ -66,12 +65,11 @@ class Map {
     container: HTMLElement,
     onLoad: (map: Map) => void,
     onWaySelect: WaySelectHandler,
-    APIToken: string | null,
     options: MapOptions,
   ) {
     const protocol = new Protocol();
-    this.APIToken = APIToken;
     this.ratingColorScale = chroma.scale("Spectral");
+    this.user = options.user;
     this.map = new LibreMap({
       container,
       // layers,
@@ -360,14 +358,15 @@ class Map {
     return this.map;
   }
 
+  /**
+   * Refreshes the visible ways.
+   */
   async refreshWays(): Promise<void> {
-    // if (!this.APIToken) {
-    //   return;
-    // }
     const bbox = this.map.getBounds().toArray().flat().join(",");
+    const token = await this.user.getAccessToken();
     const response = await fetch(`${config.apiURL}/ways?bbox=${bbox}`, {
       headers: {
-        Authorization: `Bearer ${this.APIToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -482,8 +481,8 @@ export type MapOptions = {
   onZoomChange: (zoom: number) => void;
   route: GeoJSON.GeoJSON | null;
   onWaySelect: WaySelectHandler;
-  APIToken: string | null;
   selectedWay: number | null;
+  user: User;
 };
 
 type Plugins = {
@@ -516,7 +515,6 @@ export function useMap(
     zoom,
     route,
     onWaySelect,
-    APIToken,
     selectedWay,
   } = options;
 
@@ -531,7 +529,6 @@ export function useMap(
         container.current,
         setMap,
         onWaySelect,
-        APIToken,
         options,
       );
       const stops = new Stops(theMap.getMapLibre(), {

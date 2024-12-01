@@ -10,8 +10,6 @@ export enum AppMode {
 export type User = {
   // Display name.
   name: string;
-  // Access token for API.
-  accessToken: string;
 };
 
 export enum AuthenticationState {
@@ -30,11 +28,10 @@ export type AppState = {
 
   // Authenticated user if present.
   user: User | null;
+
   // Authentication state.
   authState: AuthenticationState;
 };
-
-import { init } from "@/auth";
 
 const initialState: AppState = {
   mode: AppMode.Browsing,

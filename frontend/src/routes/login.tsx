@@ -1,12 +1,13 @@
-import { signinCallback } from "@/auth";
 import Container from "@/components/container";
 import { P } from "@/components/typography";
+import { useUser } from "@/hooks";
 import { useEffect } from "react";
 
 export default function About() {
+  const user = useUser();
   useEffect(() => {
     (async () => {
-      signinCallback();
+      user.signinCallback();
     })();
   });
   return (

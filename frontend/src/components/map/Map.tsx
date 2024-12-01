@@ -22,9 +22,11 @@ import {
 } from "./map";
 
 import styles from "./Map.module.css";
+import { useUser } from "@/hooks";
 
 export default function Map(mapOptions: MapOptions): React.JSX.Element {
   const dispatch = useDispatch();
+  const user = useUser();
   const mapState = useSelector(selectMapState);
 
   const container = useRef<HTMLDivElement>(null);
@@ -38,6 +40,7 @@ export default function Map(mapOptions: MapOptions): React.JSX.Element {
     onCenterChange: (center) => {
       dispatch(centerUpdated({ lng: center.lng, lat: center.lat }));
     },
+    user,
   });
   return (
     <div className={styles.root}>

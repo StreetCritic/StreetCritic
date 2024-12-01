@@ -17,12 +17,12 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
-import { useLocalize } from "@/hooks";
+import { useUser, useLocalize } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
-import { register, signIn, signOut } from "@/auth";
 
 export default function Header() {
+  const user = useUser();
   const appState = useSelector(selectAppState);
   const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -30,10 +30,10 @@ export default function Header() {
 
   const loginButtons = (
     <>
-      <Button variant="default" onClick={signIn}>
+      <Button variant="default" onClick={() => user.signIn()}>
         {__("log-in")}
       </Button>
-      <Button onClick={register}>{__("sign-up")}</Button>
+      <Button onClick={() => user.register()}>{__("sign-up")}</Button>
     </>
   );
 
@@ -76,7 +76,7 @@ export default function Header() {
             {appState.authState === AuthenticationState.Authenticated && (
               <UserNavigation
                 userName={appState.user?.name || ""}
-                onLogout={signOut}
+                onLogout={() => user.signOut()}
               />
             )}
             {appState.authState === AuthenticationState.Unauthenticated && (

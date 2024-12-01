@@ -1,7 +1,7 @@
 "use client";
 
-import { initAuth } from "@/auth";
 import Header from "@/components/header";
+import { useUser } from "@/hooks";
 import { createTheme, MantineProvider, rem } from "@mantine/core";
 import { useEffect } from "react";
 
@@ -41,10 +41,11 @@ type Props = {
 import { useDispatch } from "react-redux";
 
 export default function App({ children }: Props) {
+  const user = useUser();
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
-      initAuth(dispatch);
+      user.initAuth(dispatch);
     })();
   });
   return (

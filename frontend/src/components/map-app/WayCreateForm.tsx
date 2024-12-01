@@ -5,7 +5,7 @@ import { Button, Text, TextInput, Group, Stepper, Modal } from "@mantine/core";
 import config from "@/config";
 import { useSelector } from "react-redux";
 import { selectAppState } from "@/features/map/appSlice";
-import { useLocalize } from "@/hooks";
+import { useLocalize, useUser } from "@/hooks";
 
 type Props = {
   // The route to be rated;
@@ -21,6 +21,7 @@ enum Steps {
 
 export default function RatingForm({ route, onClose }: Props) {
   const __ = useLocalize();
+  const user = useUser();
   const [title, setTitle] = useState("");
 
   const [step, setStep] = useState(Steps.Title);
@@ -43,7 +44,7 @@ export default function RatingForm({ route, onClose }: Props) {
           stop: segment.get_stop(),
         });
       }
-      const token = appState.user?.accessToken;
+      const token = (await user.getAccessToken()) || "";
       const response = await fetch(`${config.apiURL}/ways`, {
         method: "POST",
         headers: {

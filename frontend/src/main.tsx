@@ -13,6 +13,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import initIbre, { init_hooks as initHooks } from "ibre";
+import User, { UserContext } from "./User";
 
 const router = createBrowserRouter([
   {
@@ -54,7 +55,9 @@ const router = createBrowserRouter([
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <UserContext.Provider value={new User()}>
+          <RouterProvider router={router} />
+        </UserContext.Provider>
       </Provider>
     </StrictMode>,
   );

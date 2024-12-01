@@ -8,7 +8,7 @@ import { default as Tag, State as TagState } from "./Tag";
 import config from "@/config";
 import { useSelector } from "react-redux";
 import { selectAppState } from "@/features/map/appSlice";
-import { useLocalize } from "@/hooks";
+import { useLocalize, useUser } from "@/hooks";
 
 type Props = {
   // The way to be rated.
@@ -34,6 +34,7 @@ type Ratings = {
 
 export default function RatingForm({ way_id, onClose }: Props) {
   const __ = useLocalize();
+  const user = useUser();
   const [rating, setRating] = useState<Ratings>({
     general: 50,
     safety: 50,
@@ -99,7 +100,7 @@ export default function RatingForm({ way_id, onClose }: Props) {
           ]),
         ),
       };
-      const token = appState.user?.accessToken;
+      const token = (await user.getAccessToken()) || "";
       const response = await fetch(`${config.apiURL}/ratings`, {
         method: "POST",
         headers: {
