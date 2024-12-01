@@ -18,7 +18,7 @@ BEGIN
       intervals._rating
       FROM way_segment
            LEFT JOIN segment ON way_segment.segment_id = segment.id
-           INNER JOIN  sc_get_stops_for_segment(way_segment.segment_id) AS intervals ON true
+           INNER JOIN  get_stops_for_segment(way_segment.segment_id) AS intervals ON true
      WHERE geom && ST_Transform(ST_TileEnvelope(z, x, y), 4326)
            -- SELECT
            --   ST_AsMVTGeom(
