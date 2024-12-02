@@ -117,15 +117,15 @@ class Map {
     // });
 
     this.map.once("load", () => {
-      this.map.addControl(
-        new GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: false,
-        }),
-        "bottom-right",
-      );
+      // this.map.addControl(
+      //   new GeolocateControl({
+      //     positionOptions: {
+      //       enableHighAccuracy: true,
+      //     },
+      //     trackUserLocation: false,
+      //   }),
+      //   "bottom-right",
+      // );
       this.map.addControl(new NavigationControl(), "bottom-right");
 
       this.map.on("dragstart", () => {
