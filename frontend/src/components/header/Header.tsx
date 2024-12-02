@@ -20,22 +20,13 @@ import UserNavigation from "./UserNavigation";
 import { useUser, useLocalize } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
+import { LoginButtons } from "@/components";
 
 export default function Header() {
-  const user = useUser();
   const appState = useSelector(selectAppState);
   const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
-
-  const loginButtons = (
-    <>
-      <Button variant="default" onClick={() => user.signIn()}>
-        {__("log-in")}
-      </Button>
-      <Button onClick={() => user.register()}>{__("sign-up")}</Button>
-    </>
-  );
 
   return (
     <Box>
@@ -80,7 +71,9 @@ export default function Header() {
               />
             )}
             {appState.authState === AuthenticationState.Unauthenticated && (
-              <Group visibleFrom="sm">{loginButtons}</Group>
+              <Group visibleFrom="sm">
+                <LoginButtons />
+              </Group>
             )}
             <Burger
               opened={drawerOpened}
@@ -118,8 +111,9 @@ export default function Header() {
           <Divider my="sm" />
 
           <Stack align="flex-start" p="md">
-            {appState.authState === AuthenticationState.Unauthenticated &&
-              loginButtons}
+            {appState.authState === AuthenticationState.Unauthenticated && (
+              <LoginButtons />
+            )}
           </Stack>
         </ScrollArea>
       </Drawer>

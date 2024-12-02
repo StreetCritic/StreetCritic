@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import { switchedToWayAdding } from "@/features/map/appSlice";
 import LocationQuery from "../location-query";
 import { selectMapState } from "@/features/map/mapSlice";
+import useLoginGate from "@/hooks/useLoginGate";
 
 type Props = {
   selectedWay: number | null;
@@ -43,6 +44,7 @@ export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
+  const [loginModal, requireAuthentication] = useLoginGate();
   const user = useUser();
 
   const navigateMap = useNavigateMap();
@@ -64,6 +66,7 @@ export default function MapApp({ selectedWay }: Props) {
         styleURL="/styles.json"
         selectedWay={selectedWay}
       />
+      {loginModal}
       {/* <InConstructionModal /> */}
       {segments && wayCreateFormOpen && (
         <WayCreateForm
@@ -111,7 +114,7 @@ export default function MapApp({ selectedWay }: Props) {
         <LocationSearch />
         <AddIcon
           onClick={() => {
-            setShowWayAddingIntro(true);
+            requireAuthentication(() => setShowWayAddingIntro(true));
           }}
         />
       </div>

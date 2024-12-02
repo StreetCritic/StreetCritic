@@ -23,6 +23,9 @@ yes = Yes
 
 title = Title
 
+authentication-required = Authentication required
+please-login-first = You have to login first or sign up for a StreetCritic account.
+
 add-way-title = Add a new way
 add-way-intro = Select a start and a stop of the new way by clicking on the map.
 

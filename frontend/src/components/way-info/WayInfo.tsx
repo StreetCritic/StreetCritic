@@ -13,7 +13,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 
 import RatingForm from "@/components/rating-form";
-import { useLocalize } from "@/hooks";
+import { useLocalize, useLoginGate } from "@/hooks";
 
 type Props = {
   way: any;
@@ -25,6 +25,7 @@ type Props = {
 export default function WayInfo({ way, ratings, onRefresh }: Props) {
   const __ = useLocalize();
   const [ratingFormOpen, setRatingFormOpen] = useState(false);
+  const [loginModal, requireAuthentication] = useLoginGate();
 
   const tagToPill = (tag: string) => {
     const negative = tag[0] === "-";
@@ -47,6 +48,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
     <>
       {/* {data.datetime} */}
       {/* Created on 2024/3/12 */}
+      {loginModal}
       <Title size="h3">{way.title}</Title>
       {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
       {ratings.map((rating) => (
@@ -78,7 +80,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
       <Button
         label="Rate this way"
         icon={<Sparkle size={32} />}
-        onClick={() => setRatingFormOpen(true)}
+        onClick={() => requireAuthentication(() => setRatingFormOpen(true))}
       />
       {ratingFormOpen && (
         <RatingForm
