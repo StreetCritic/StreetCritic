@@ -10,8 +10,10 @@ import { useLocalize, useUser } from "@/hooks";
 type Props = {
   // The route to be rated;
   route: Route;
-  // Called when the form is closed.
-  onClose: () => void;
+  // Called when the new way has been added.
+  onCreated: (wayId: number) => void;
+  // Called when the new way is discarded.
+  onDiscard: () => void;
 };
 
 enum Steps {
@@ -19,7 +21,10 @@ enum Steps {
   Submit,
 }
 
-export default function RatingForm({ route, onClose }: Props) {
+/**
+ * Form for way adding.
+ */
+export default function WayCreateForm({ route, onCreated, onDiscard }: Props) {
   const __ = useLocalize();
   const user = useUser();
   const [title, setTitle] = useState("");
@@ -54,8 +59,8 @@ export default function RatingForm({ route, onClose }: Props) {
         body: JSON.stringify(body),
       });
       if (response.ok) {
-        console.log("success");
-        onClose();
+        const json = await response.json();
+        onCreated(json.id);
       }
     })();
   };
@@ -128,7 +133,7 @@ export default function RatingForm({ route, onClose }: Props) {
             color="red"
             onClick={() => {
               setDiscardModalOpen(false);
-              onClose();
+              onDiscard();
             }}
           >
             {__("yes")}

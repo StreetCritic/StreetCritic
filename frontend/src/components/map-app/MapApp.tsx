@@ -52,7 +52,7 @@ export default function MapApp({ selectedWay }: Props) {
   const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
-  const onWaySelect = (id: string) => {
+  const onWaySelect = (id: number) => {
     navigateMap(`/way/${id}`, { replace: false });
   };
 
@@ -68,7 +68,11 @@ export default function MapApp({ selectedWay }: Props) {
       {segments && wayCreateFormOpen && (
         <WayCreateForm
           route={segments}
-          onClose={() => setWayCreateFormOpen(false)}
+          onCreated={(id: number) => {
+            dispatch(switchedToBrowsing());
+            onWaySelect(id);
+          }}
+          onDiscard={() => setWayCreateFormOpen(false)}
         />
       )}
       {selectedWay && (

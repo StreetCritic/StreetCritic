@@ -33,7 +33,7 @@ import LocationMarker from "./locationMarker";
 import User from "@/User";
 
 export type PositionHandler = (point: LngLat) => void;
-export type WaySelectHandler = (id: string) => void;
+export type WaySelectHandler = (id: number) => void;
 export type PositionChangeHandler = (
   index: number,
   lngLat: LngLat | null,

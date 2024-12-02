@@ -4,7 +4,7 @@ use axum::{
     http::StatusCode,
     Json,
 };
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
 use geojson::de::deserialize_geometry;
@@ -144,7 +144,7 @@ pub async fn get_ways(
 pub async fn create_way(
     State(pool): State<ConnectionPool>,
     Json(payload): Json<CreateWay>,
-) -> Result<Json<u64>, (StatusCode, String)> {
+) -> Result<Json<CreateWayResponse>, (StatusCode, String)> {
     let mut conn = pool.get().await.map_err(internal_error)?;
 
     let transaction = conn.transaction().await.map_err(internal_error)?;
@@ -179,11 +179,7 @@ pub async fn create_way(
     }
 
     transaction.commit().await.map_err(internal_error)?;
-
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    // (StatusCode::CREATED, Json(rating))
-    Ok(Json(1337))
+    Ok(Json(CreateWayResponse{id: way_id }))
 }
 
 #[derive(Deserialize)]
@@ -193,8 +189,15 @@ pub struct Segment {
     stop: f64,
 }
 
+/// Request object for the way create endpoint.
 #[derive(Deserialize)]
 pub struct CreateWay {
     segments: Vec<Segment>,
     title: String,
+}
+
+/// Response object for the way create endpoint.
+#[derive(Serialize)]
+pub struct CreateWayResponse {
+    id: i32,
 }
