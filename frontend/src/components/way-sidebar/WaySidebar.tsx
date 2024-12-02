@@ -12,25 +12,27 @@ export default function WaySidebar({ wayId }: Props) {
   const [wayData, setWayData] = useState(null);
   const [ratingsData, setRatingsData] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      setWayData(null);
-      setRatingsData(null);
-      setLoading(true);
-      const wayResponse = await fetch(`${config.apiURL}/ways/${wayId}`);
-      const way = await wayResponse.json();
-      setWayData(way);
+  const loadData = async () => {
+    setWayData(null);
+    setRatingsData(null);
+    setLoading(true);
+    const wayResponse = await fetch(`${config.apiURL}/ways/${wayId}`);
+    const way = await wayResponse.json();
+    setWayData(way);
 
-      // TODO use cache
-      const ratingsResponse = await fetch(
-        `${config.apiURL}/ratings?way_id=${wayId}`,
-        { cache: "no-store" },
-      );
-      const ratings = await ratingsResponse.json();
-      setRatingsData(ratings);
-      console.log(wayId, ratings, `${config.apiURL}/ratings?way_id=${wayId}`);
-      setLoading(false);
-    })();
+    // TODO use cache
+    const ratingsResponse = await fetch(
+      `${config.apiURL}/ratings?way_id=${wayId}`,
+      { cache: "no-store" },
+    );
+    const ratings = await ratingsResponse.json();
+    setRatingsData(ratings);
+    console.log(wayId, ratings, `${config.apiURL}/ratings?way_id=${wayId}`);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadData();
   }, [wayId]);
 
   if (loading) {
@@ -41,5 +43,7 @@ export default function WaySidebar({ wayId }: Props) {
     return <p>empty</p>;
   }
 
-  return <WayInfo way={wayData} ratings={ratingsData} />;
+  return (
+    <WayInfo way={wayData} ratings={ratingsData} onRefresh={() => loadData()} />
+  );
 }

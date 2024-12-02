@@ -18,9 +18,11 @@ import { useLocalize } from "@/hooks";
 type Props = {
   way: any;
   ratings: any[];
+  // Called when the way info should be refreshed.
+  onRefresh: () => void;
 };
 
-export default function WayInfo({ way, ratings }: Props) {
+export default function WayInfo({ way, ratings, onRefresh }: Props) {
   const __ = useLocalize();
   const [ratingFormOpen, setRatingFormOpen] = useState(false);
 
@@ -79,7 +81,13 @@ export default function WayInfo({ way, ratings }: Props) {
         onClick={() => setRatingFormOpen(true)}
       />
       {ratingFormOpen && (
-        <RatingForm way_id={way.id} onClose={() => setRatingFormOpen(false)} />
+        <RatingForm
+          way_id={way.id}
+          onClose={() => {
+            setRatingFormOpen(false);
+            onRefresh();
+          }}
+        />
       )}
     </>
   );
