@@ -33,12 +33,20 @@
   border-left: 1px solid gray;
 }
 
-.positive button:nth-child(2),
-.root > button:nth-child(2):hover {
+.root > button:nth-child(2):hover,
+.root > button:nth-child(3):hover {
+  background: var(--mantine-color-gray-4);
+}
+
+.positive button:nth-child(2) {
   background: var(--mantine-color-green-2);
 }
 
-.negative button:nth-child(3),
-.root > button:nth-child(3):hover {
+.negative button:nth-child(3) {
   background: var(--mantine-color-red-2);
+}
+
+.positive button:nth-child(2):hover,
+.negative button:nth-child(3):hover {
+  background: var(--mantine-color-gray-3);
 }
