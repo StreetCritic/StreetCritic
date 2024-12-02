@@ -18,12 +18,8 @@ type Props = {
 export default function ProfileControl({ onClick, label, icon }: Props) {
   return (
     <div className={styles.root}>
-      <a href="#">
-        <IconButton icon={<PersonSimpleBike size={24} />} active={true} />
-      </a>
-      <a href="#">
-        <IconButton icon={<PersonSimpleWalk size={24} />} active={false} />
-      </a>
+      <IconButton icon={<PersonSimpleBike size={24} />} active={true} />
+      {/* <IconButton icon={<PersonSimpleWalk size={24} />} active={false} /> */}
     </div>
   );
 }

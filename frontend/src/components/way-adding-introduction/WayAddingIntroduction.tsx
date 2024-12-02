@@ -23,8 +23,8 @@ export default function WayAddingIntroduction({ onAbort, onFinish }: Props) {
         size="50em"
       >
         <Text>
-          In the following steps, you may add a new way to StreetCritic that can
-          be rated by you or other users.
+          In the following steps, you may add a new bicycle way to StreetCritic
+          that can be rated by you or other users.
         </Text>
         <Text>
           <strong>

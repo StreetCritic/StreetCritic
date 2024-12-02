@@ -138,8 +138,8 @@ export default function RatingForm({ way_id, onClose }: Props) {
           <Stepper.Step label="Overall Rating">
             <P>
               Please rate the way on a scale from 0 to 10, where 0 represents
-              the worst possible way and 10 represents the best way you can
-              imagine.
+              the worst possible bicycle way and 10 represents the best bicycle
+              way you can imagine.
             </P>
             <RatingSlider
               value={rating.general}
@@ -219,8 +219,8 @@ export default function RatingForm({ way_id, onClose }: Props) {
           </Stepper.Step>
           <Stepper.Completed>
             <P>
-              You can now submit your rating. Feel free to go back to a previous
-              step before finally submitting your rating.
+              You can now submit your rating for this bicycle way. Feel free to
+              go back to a previous step before finally submitting your rating.
             </P>
           </Stepper.Completed>
         </Stepper>

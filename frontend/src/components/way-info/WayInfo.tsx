@@ -48,6 +48,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
     <>
       {/* {data.datetime} */}
       {/* Created on 2024/3/12 */}
+      Bicycle way
       {loginModal}
       <Title size="h3">{way.title}</Title>
       {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}

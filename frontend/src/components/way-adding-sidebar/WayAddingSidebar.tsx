@@ -1,6 +1,6 @@
 import { Route } from "ibre";
 import { useLocalize } from "@/hooks";
-import { H2, P } from "@/components/typography";
+import { H2, P, Alert } from "@/components";
 import { useDispatch } from "react-redux";
 import { switchedToBrowsing } from "@/features/map/appSlice";
 import { Button, Flex } from "@mantine/core";
@@ -17,6 +17,7 @@ export default function WayAddingSidebar({ segments, onAddClick }: Props) {
     <div>
       <H2>{__("add-way-title")}</H2>
       <P>{__("add-way-intro")}</P>
+      <Alert type="under-construction">{__("add-way-info")}</Alert>
       <Flex gap="md" align="center" justify="space-between">
         {segments && (
           <Button onClick={() => onAddClick()}>{__("continue")}</Button>

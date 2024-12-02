@@ -26,8 +26,9 @@ title = Title
 authentication-required = Authentication required
 please-login-first = You have to login first or sign up for a StreetCritic account.
 
-add-way-title = Add a new way
-add-way-intro = Select a start and a stop of the new way by clicking on the map.
+add-way-title = Add a new bicycle way
+add-way-intro = Select a start and a stop of the new way for bicyclist by clicking on the map.
+add-way-info = Currently, there is a limit in the length of the way. You will notice that. Also, there are some usability problems which have high priority and will be solved shortly.
 
 reviews = Reviews
 reviews-empty = No reviews yet. Be the first to add one!
