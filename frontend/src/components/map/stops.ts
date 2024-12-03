@@ -91,7 +91,7 @@ export default class Stops {
     this.stopMarker = [];
     let index = 0;
     for (const stop of stops) {
-      console.log("add stop marker", index);
+      // console.log("add stop marker", index);
       this.stopMarker.push(
         new Marker({
           color: index == 0 ? "#FFCCE6" : "#AB212A",
@@ -111,7 +111,7 @@ export default class Stops {
         this.options.onRemove(i);
       });
       m.on("dragend", () => {
-        console.log("change position i", i);
+        // console.log("change position i", i);
         this.options.onChange(i, m.getLngLat());
       });
       m.addTo(this.map);

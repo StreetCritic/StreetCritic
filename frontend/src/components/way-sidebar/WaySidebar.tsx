@@ -27,7 +27,6 @@ export default function WaySidebar({ wayId }: Props) {
     );
     const ratings = await ratingsResponse.json();
     setRatingsData(ratings);
-    console.log(wayId, ratings, `${config.apiURL}/ratings?way_id=${wayId}`);
     setLoading(false);
   };
 

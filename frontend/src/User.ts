@@ -56,7 +56,6 @@ export default class User {
    */
   async getAccessToken(): Promise<string | null> {
     const user = await this.userManager.getUser();
-    console.log("get access token user", user);
     if (user) {
       return user.access_token;
     }
@@ -68,7 +67,6 @@ export default class User {
    */
   async signinCallback() {
     const user = await this.userManager.signinCallback(window.location.href);
-    console.log("signin", user);
     window.history.replaceState({}, document.title, window.location.pathname);
     window.location.assign("/");
     if (user) {
@@ -82,7 +80,6 @@ export default class User {
   async initAuth(dispatch: Dispatch) {
     Log.setLogger(console);
     const user = await this.userManager.getUser();
-    console.log("getUser", user);
     if (user) {
       const name = user.profile.preferred_username || "Unknown user";
       dispatch(userAuthenticated({ name }));

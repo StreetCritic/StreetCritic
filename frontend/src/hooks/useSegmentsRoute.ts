@@ -23,7 +23,6 @@ export function useSegmentsRoute(stops: Stop[]): Route | null {
         return new WASMPoint(stop.lng, stop.lat);
       };
       const wasm_stops = stops.map(toPoint);
-      console.log("findRoute");
       const route = await router.findRoute(wasm_stops);
       setRoute(route);
     })();

@@ -271,19 +271,19 @@ class Map {
         "highway-name-path",
       );
 
-      this.map.on("click", "rated-segments", (e) => {
-        console.log("click on rated segment", e);
+      // this.map.on("click", "rated-segments", (e) => {
+        // console.log("click on rated segment", e);
         // console.log(e.lngLat);
         // console.log(e.features);
-        e.preventDefault();
-        const ratings = this.map.queryRenderedFeatures(e.point, {
-          layers: ["rated-segments"],
-        });
-        console.log(ratings);
-      });
+        // e.preventDefault();
+        // const ratings = this.map.queryRenderedFeatures(e.point, {
+        //   layers: ["rated-segments"],
+        // });
+        // console.log(ratings);
+      // });
 
       this.map.on("click", "existing-ways", (e) => {
-        console.log("click on existing way", e);
+        // console.log("click on existing way", e);
         // console.log(e.lngLat);
         // console.log(e.features);
         e.preventDefault();
@@ -376,7 +376,6 @@ class Map {
    */
   displayRoute(route: GeoJSON | null): void {
     const source = this.map.getSource("route");
-    console.log("display route", route);
     if (source instanceof GeoJSONSource) {
       source.setData(
         route || {
