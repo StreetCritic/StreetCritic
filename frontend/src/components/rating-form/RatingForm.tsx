@@ -6,8 +6,6 @@ import { H3, P } from "@/components";
 import RatingSlider from "./RatingSlider";
 import { default as Tag, State as TagState } from "./Tag";
 import config from "@/config";
-import { useSelector } from "react-redux";
-import { selectAppState } from "@/features/map/appSlice";
 import { useLocalize, useUser } from "@/hooks";
 
 type Props = {
@@ -72,7 +70,6 @@ export default function RatingForm({ way_id, onClose }: Props) {
   const [comment, setComment] = useState("");
   const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
-  const appState = useSelector(selectAppState);
 
   const toTagString = ([tag, state]: [string, TagState]) => {
     if (state === TagState.Positive) {

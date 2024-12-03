@@ -33,6 +33,8 @@ export default function WaySidebar({ wayId }: Props) {
 
   useEffect(() => {
     loadData();
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wayId]);
 
   if (loading) {

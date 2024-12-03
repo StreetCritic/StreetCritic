@@ -1,43 +1,30 @@
 "use client";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useSelector } from "react-redux";
+import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
 
-import { default as Map } from "@/components/map";
-import { useWay, useSegments, useDirections, useUser } from "@/hooks";
-import WayCreateForm from "./WayCreateForm";
-import InConstructionModal from "./InConstructionModal";
-import { Box, Paper } from "@mantine/core";
-import { WaySelectHandler } from "@/components/map";
-
-import WaySidebar from "@/components/way-sidebar";
-import WayAddingSidebar from "@/components/way-adding-sidebar";
-import ProfileControl from "@/components/profile-control";
-
-import { useNavigate } from "react-router-dom";
-import styles from "./MapApp.module.css";
-import Sidebar from "./Sidebar";
-import { LngLatLike } from "maplibre-gl";
-import useNavigateMap from "@/hooks/useNavigateMap";
-import LocationSearch from "../location-search";
 import AddIcon from "../add-icon";
+import LocationQuery from "../location-query";
+import LocationSearch from "../location-search";
+import Sidebar from "./Sidebar";
+import WayAddingIntroduction from "../way-adding-introduction";
+import WayCreateForm from "./WayCreateForm";
+import { WaySidebar, WayAddingSidebar, ProfileControl } from "@/components";
+import { default as Map } from "@/components/map";
+
 import {
   AppMode,
   selectAppState,
   switchedToBrowsing,
 } from "@/features/map/appSlice";
-import WayAddingIntroduction from "../way-adding-introduction";
-
-import { useDispatch } from "react-redux";
 import { switchedToWayAdding } from "@/features/map/appSlice";
-import LocationQuery from "../location-query";
 import { selectMapState } from "@/features/map/mapSlice";
-import useLoginGate from "@/hooks/useLoginGate";
+
+import styles from "./MapApp.module.css";
 
 type Props = {
   selectedWay: number | null;
-  center: LngLatLike;
-  onCenterUpdate: (center: LngLatLike) => void;
 };
 
 export default function MapApp({ selectedWay }: Props) {
@@ -45,12 +32,8 @@ export default function MapApp({ selectedWay }: Props) {
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
   const [loginModal, requireAuthentication] = useLoginGate();
-  const user = useUser();
-
   const navigateMap = useNavigateMap();
-
   const [way, segments] = useWay();
-
   const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
@@ -60,12 +43,7 @@ export default function MapApp({ selectedWay }: Props) {
 
   return (
     <div className={styles.root}>
-      <Map
-        route={way}
-        onWaySelect={onWaySelect}
-        styleURL="/styles.json"
-        selectedWay={selectedWay}
-      />
+      <Map route={way} onWaySelect={onWaySelect} selectedWay={selectedWay} />
       {loginModal}
       {/* <InConstructionModal /> */}
       {segments && wayCreateFormOpen && (

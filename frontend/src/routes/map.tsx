@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./map.module.css";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   centerUpdated,
   changedLocationMarker,
-  selectedLocation,
   selectMapState,
   zoomUpdated,
 } from "@/features/map/mapSlice";
@@ -19,14 +18,16 @@ export default function Map() {
   useMeta({ title: "" });
   const { wayId } = useParams();
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const mapSearchParams = useMapSearchParams();
 
   const dispatch = useDispatch();
   const mapState = useSelector(selectMapState);
 
   useEffect(() => {
-    setSearchParams((_) => mapSearchParams, { replace: true });
+    setSearchParams(() => mapSearchParams, { replace: true });
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapState]);
 
   // Set map zoom and center based on URL params.
@@ -63,6 +64,8 @@ export default function Map() {
         }),
       );
     }
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

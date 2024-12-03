@@ -1,24 +1,20 @@
-import { useState, useEffect, useRef, useMemo } from "react";
-import { Map as LibreMap, LngLat, Marker, type LngLatLike } from "maplibre-gl";
+import { useState, useEffect } from "react";
 import maplibregl, {
+  Map as LibreMap,
+  LngLat,
+  type LngLatLike,
   GeoJSONSource,
   NavigationControl,
-  GeolocateControl,
+  StyleSpecification,
 } from "maplibre-gl";
 import type { GeoJSON } from "geojson";
-import { PMTiles, Protocol } from "pmtiles";
-// import { pointToTile } from '@mapbox/tilebelt';
-import layers from "protomaps-themes-base";
+import { Protocol } from "pmtiles";
 import chroma from "chroma-js";
 
 import config from "@/config";
-
 import style from "./style.json";
 
-import type { Stop } from "@/hooks/useWay";
-
-// import { , init_hooks, Segment, Router, Route, LineString, Point as WASMPoint, Coord, Connector } from "ibre";
-import { RoutingError, Route, Point as WASMPoint, init_hooks } from "ibre";
+import { init_hooks } from "ibre";
 import Stops from "./stops";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -46,12 +42,11 @@ class Map {
   // The MapLibre instance.
   private map: LibreMap;
   private user: User;
-  private ratingColorScale: any;
+  private ratingColorScale: chroma.Scale;
 
   /**
    * Initializes the map.
    *
-   * @param styleURL - URL to the MapLibre style.
    * @param center - Initial center coordinates.
    * @param container - The HTML element to attach to.
    * @param onLoad - Callback which is called when the map is loaded.
@@ -59,7 +54,6 @@ class Map {
    * rating on the map.
    */
   constructor(
-    styleURL: string,
     center: LngLatLike,
     onCenterChange: (center: LngLat) => void,
     container: HTMLElement,
@@ -67,29 +61,12 @@ class Map {
     onWaySelect: WaySelectHandler,
     options: MapOptions,
   ) {
-    const protocol = new Protocol();
+    new Protocol();
     this.ratingColorScale = chroma.scale("Spectral");
     this.user = options.user;
     this.map = new LibreMap({
       container,
-      // layers,
-      style,
-      // style: {
-      // version: 8,
-      // glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
-      // sprite: "https://protomaps.github.io/basemaps-assets/sprites/v3/light",
-      // sources: {
-      //   "protomaps": {
-      //     type: "vector",
-      //     "tiles": [
-      //       "https://tiles.streetcritic.org/basemap/{z}/{x}/{y}.mvt"
-      //     ],
-      //     "maxzoom": 15,
-      //     attribution: '<a href="https://protomaps.com">Protomaps</a> © <a href="https://openstreetmap.org">OpenStreetMap</a>'
-      //   }
-      // },
-      // layers: layers("protomaps", "light")
-      // },
+      style: style as StyleSpecification,
       center,
       zoom: options.zoom,
       attributionControl: {
@@ -383,11 +360,13 @@ class Map {
    *
    * @param id - The rating to display.
    */
-  async displayRating(id: number): void {
+  async displayRating(id: number) {
     const response = await fetch(`${config.apiURL}/ratings/${id}`);
     const data = await response.json();
     const source = this.map.getSource("existing-ways");
-    source.setData(data.geometry);
+    if (source instanceof GeoJSONSource) {
+      source.setData(data.geometry);
+    }
   }
 
   /**
@@ -474,7 +453,6 @@ class Map {
 }
 
 export type MapOptions = {
-  styleURL: string;
   center: LngLatLike;
   onCenterChange: (center: LngLat) => void;
   zoom: number;
@@ -494,8 +472,6 @@ type Plugins = {
  * React hook to initialize and update the transport map.
  *
  * @param container - The map container.
- * @param styleURL - URL to the MapLibre style.
- * @param center - Initial center coordinates.
  */
 export function useMap(
   container: React.RefObject<HTMLElement>,
@@ -508,22 +484,14 @@ export function useMap(
   const [map, setMap] = useState<null | Map>(null);
   const [plugins, setPlugins] = useState<Plugins | null>(null);
 
-  const {
-    styleURL,
-    center,
-    onCenterChange,
-    zoom,
-    route,
-    onWaySelect,
-    selectedWay,
-  } = options;
+  const { center, onCenterChange, zoom, route, onWaySelect, selectedWay } =
+    options;
 
   // Initialize the map.
   useEffect(() => {
     init_hooks();
     if (container.current) {
       const theMap = new Map(
-        styleURL,
         center,
         onCenterChange,
         container.current,
@@ -553,6 +521,8 @@ export function useMap(
         theMap.destruct();
       };
     }
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -600,11 +570,15 @@ export function useMap(
 
   // Update center when changed.
   useEffect(() => {
-    map && map.setCenter(center);
+    if (map) {
+      map.setCenter(center);
+    }
   }, [map, center]);
 
   // Update zoom when changed.
   useEffect(() => {
-    map && map.setZoom(zoom);
+    if (map) {
+      map.setZoom(zoom);
+    }
   }, [map, zoom]);
 }

@@ -23,7 +23,7 @@ export default function Home() {
           .
         </P>
         <img
-          src={new URL("bmbf_logo.jpg", import.meta.url)}
+          src={new URL("bmbf_logo.jpg", import.meta.url).href}
           width={402}
           height={343}
           alt="Sponsored by the Federal Ministry of Education and Research"

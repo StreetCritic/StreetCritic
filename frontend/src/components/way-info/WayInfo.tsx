@@ -16,7 +16,11 @@ import RatingForm from "@/components/rating-form";
 import { useLocalize, useLoginGate } from "@/hooks";
 
 type Props = {
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   way: any;
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ratings: any[];
   // Called when the way info should be refreshed.
   onRefresh: () => void;

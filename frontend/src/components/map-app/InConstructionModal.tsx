@@ -2,7 +2,7 @@ import { CloseButton, Group, Container, Paper, Overlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 export default function InConstructionModal() {
-  const [opened, { open, close }] = useDisclosure(true);
+  const [opened, { close }] = useDisclosure(true);
   return (
     <>
       {opened && (

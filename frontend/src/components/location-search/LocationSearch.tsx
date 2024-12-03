@@ -1,5 +1,5 @@
 import { queriedLocation } from "@/features/map/mapSlice";
-import { TextInput, Flex } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";

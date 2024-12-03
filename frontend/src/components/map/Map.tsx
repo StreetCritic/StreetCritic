@@ -1,11 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { LngLatLike } from "maplibre-gl";
-import { Route } from "ibre";
-import { Point } from "@/hooks/useRoute";
-import { LngLat } from "maplibre-gl";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectMapState,
@@ -13,18 +9,18 @@ import {
   zoomUpdated,
 } from "@/features/map/mapSlice";
 
-import {
-  useMap,
-  WaySelectHandler,
-  PositionHandler,
-  PositionChangeHandler,
-  MapOptions,
-} from "./map";
+import { useMap, WaySelectHandler } from "./map";
 
 import styles from "./Map.module.css";
 import { useUser } from "@/hooks";
 
-export default function Map(mapOptions: MapOptions): React.JSX.Element {
+type Props = {
+  route: GeoJSON.GeoJSON | null;
+  onWaySelect: WaySelectHandler;
+  selectedWay: number | null;
+};
+
+export default function Map(mapOptions: Props): React.JSX.Element {
   const dispatch = useDispatch();
   const user = useUser();
   const mapState = useSelector(selectMapState);
@@ -48,9 +44,3 @@ export default function Map(mapOptions: MapOptions): React.JSX.Element {
     </div>
   );
 }
-
-/* <div className={styles.debug} id="debug">
- *   <div id="debug-coords" />
- *   <div id="debug-id" />
- *   <a href="" id="download">download</a>
- * </div> */

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Valhalla } from "@routingjs/valhalla";
-import type { Feature, Position } from "geojson";
+import type { Feature } from "geojson";
 import type { Stop } from "./useWay";
 import config from "@/config";
 

@@ -61,10 +61,10 @@ export default function useLocalize() {
 
   return (id: string) => {
     const bundle = new FluentBundle(appState.locale);
-    const errors = bundle.addResource(
+    const _errors = bundle.addResource(
       appState.locale == "de" ? resourceDe : resourceEn,
     );
-    let welcome = bundle.getMessage(id);
+    const welcome = bundle.getMessage(id);
     let text = "";
     if (welcome?.value) {
       text = bundle.formatPattern(welcome.value, { name: "Anna" });

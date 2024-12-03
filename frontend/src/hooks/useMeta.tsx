@@ -15,5 +15,5 @@ export default function useMeta({ title }: Props) {
     } else {
       document.title = `${title} — StreetCritic`;
     }
-  }, []);
+  }, [title]);
 }

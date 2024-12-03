@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { CloseButton, Flex, Paper } from "@mantine/core";
+import { CloseButton, Paper } from "@mantine/core";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import cx from "clsx";
 

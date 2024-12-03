@@ -8,6 +8,7 @@ import {
 } from "oidc-client-ts";
 import { userAuthenticated } from "@/features/map/appSlice";
 import { createContext } from "react";
+import { Dispatch } from "@reduxjs/toolkit";
 
 const settings: UserManagerSettings = {
   authority: config.keycloakAuthority,
@@ -78,7 +79,7 @@ export default class User {
   /**
    * Initialises authentication on app start, retrieves user if authenticated.
    */
-  async initAuth(dispatch: any) {
+  async initAuth(dispatch: Dispatch) {
     Log.setLogger(console);
     const user = await this.userManager.getUser();
     console.log("getUser", user);

@@ -4,7 +4,6 @@ import {
   Box,
   Stack,
   Drawer,
-  Button,
   Divider,
   Burger,
   ScrollArea,
@@ -17,14 +16,14 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
-import { useUser, useLocalize } from "@/hooks";
+import { useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
 import { LoginButtons } from "@/components";
 
 export default function Header() {
   const appState = useSelector(selectAppState);
-  const __ = useLocalize();
+  const user = useUser();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
@@ -34,7 +33,7 @@ export default function Header() {
         <Group wrap="nowrap" justify="space-between" h="100%">
           <Link className={classes.logoLink} to={"/"}>
             <img
-              src={new URL("logo.svg", import.meta.url)}
+              src={new URL("logo.svg", import.meta.url).href}
               alt="StreetCritic"
             />
           </Link>

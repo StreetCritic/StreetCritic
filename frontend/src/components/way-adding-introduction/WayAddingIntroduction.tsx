@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Text } from "@/components";
 import { Button, Group, Modal } from "@mantine/core";
 
@@ -7,13 +6,7 @@ type Props = {
   onFinish: () => void;
 };
 
-enum Steps {
-  Hello,
-  Final,
-}
-
 export default function WayAddingIntroduction({ onAbort, onFinish }: Props) {
-  const [step, setStep] = useState(Steps.Hello);
   return (
     <>
       <Modal

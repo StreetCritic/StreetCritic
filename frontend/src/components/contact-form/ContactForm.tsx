@@ -4,7 +4,6 @@ import {
   Textarea,
   SimpleGrid,
   Group,
-  Title,
   Button,
   Fieldset,
 } from "@mantine/core";
@@ -19,6 +18,13 @@ enum FormState {
   Submitted,
   Error,
 }
+
+type Values = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+};
 
 export default function ContactForm() {
   const __ = useLocalize();
@@ -37,7 +43,7 @@ export default function ContactForm() {
     },
   });
 
-  const submit = (values: any) => {
+  const submit = (values: Values) => {
     (async () => {
       setFormState(FormState.Submitting);
       try {
@@ -56,7 +62,7 @@ export default function ContactForm() {
           return;
         }
         throw new Error();
-      } catch (e) {
+      } catch (_) {
         setFormState(FormState.Error);
       }
     })();
@@ -74,7 +80,7 @@ export default function ContactForm() {
     <>
       <H1>Get in touch</H1>
       <form
-        onSubmit={form.onSubmit((values: any) => {
+        onSubmit={form.onSubmit((values: Values) => {
           submit(values);
         })}
       >

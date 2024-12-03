@@ -7,12 +7,11 @@ import { CaretDown, SignOut } from "@phosphor-icons/react";
 import classes from "./UserNavigation.module.css";
 
 type Props = {
-  mobile?: boolean;
   userName: string;
   onLogout: () => void;
 };
 
-export default function UserNavigation({ userName, onLogout, mobile }: Props) {
+export default function UserNavigation({ userName, onLogout }: Props) {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   return (
     <Menu

@@ -3,8 +3,6 @@ import { Route } from "ibre";
 import { Button, Text, TextInput, Group, Stepper, Modal } from "@mantine/core";
 
 import config from "@/config";
-import { useSelector } from "react-redux";
-import { selectAppState } from "@/features/map/appSlice";
 import { useLocalize, useUser } from "@/hooks";
 
 type Props = {
@@ -31,7 +29,6 @@ export default function WayCreateForm({ route, onCreated, onDiscard }: Props) {
 
   const [step, setStep] = useState(Steps.Title);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
-  const appState = useSelector(selectAppState);
 
   const onSubmit = () => {
     (async () => {
@@ -40,7 +37,7 @@ export default function WayCreateForm({ route, onCreated, onDiscard }: Props) {
        * } */
       const body = {
         title,
-        segments: [] as any,
+        segments: [] as { id: string; start: number; stop: number }[],
       };
       for (const segment of route.get_segments()) {
         body.segments.push({

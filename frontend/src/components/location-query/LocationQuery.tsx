@@ -10,9 +10,16 @@ type Props = {
   query: string;
 };
 
+type Location = {
+  osm_id: string;
+  lon: string;
+  lat: string;
+  display_name: string;
+};
+
 export default function LocationQuery({ query }: Props) {
   const dispatch = useDispatch();
-  const [locations, setLocations] = useState<any[] | null>(null);
+  const [locations, setLocations] = useState<Location[] | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -30,7 +37,7 @@ export default function LocationQuery({ query }: Props) {
 
   return (
     <div>
-      {locations.map((location: any) => (
+      {locations.map((location: Location) => (
         <div key={location.osm_id}>
           <P>
             <MapPin size={16} />

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { switchedToBrowsing } from "./appSlice";
@@ -111,7 +111,7 @@ export const mapSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(switchedToBrowsing, (state, action) => {
+    builder.addCase(switchedToBrowsing, (state, _action) => {
       state.stops.length = 0;
     });
   },

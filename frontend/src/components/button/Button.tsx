@@ -1,4 +1,4 @@
-import { Button as MantineButton, rem } from "@mantine/core";
+import { Button as MantineButton } from "@mantine/core";
 
 type Props = {
   onClick: () => void;

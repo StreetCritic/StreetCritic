@@ -1,7 +1,5 @@
-import { PositionHandler, PositionChangeHandler } from "@/components/map";
-import { useState, useEffect, useRef, useMemo } from "react";
-import { Point as WASMPoint, Route } from "ibre";
-import { LngLat } from "maplibre-gl";
+import { useMemo } from "react";
+import { Route } from "ibre";
 import { useSegmentsRoute } from "./useSegmentsRoute";
 import { useDirections } from "./useDirections";
 import { useSelector } from "react-redux";
@@ -33,6 +31,8 @@ export function useWay(): Rets {
       : mode === AppMode.WayAdding
         ? route && JSON.parse(route.get_segments_as_geojson())
         : null;
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, route]);
 
   return [way, route];

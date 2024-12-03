@@ -2,6 +2,8 @@ import { ThumbsDown, ThumbsUp } from "@phosphor-icons/react";
 import cx from "clsx";
 import styles from "./Tag.module.css";
 
+// TODO
+// eslint-disable-next-line react-refresh/only-export-components
 export enum State {
   Neutral,
   Positive,

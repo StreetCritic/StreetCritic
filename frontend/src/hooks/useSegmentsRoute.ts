@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import type { GeoJSON, Feature, Position } from "geojson";
 import { MVTRouter, Point as WASMPoint, Route } from "ibre";
 
 import type { Stop } from "./useWay";
@@ -28,6 +27,8 @@ export function useSegmentsRoute(stops: Stop[]): Route | null {
       const route = await router.findRoute(wasm_stops);
       setRoute(route);
     })();
+    // TODO
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stops]);
   if (stops.length === 0) {
     return null;
