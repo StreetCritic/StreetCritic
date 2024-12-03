@@ -18,7 +18,7 @@ import { init_hooks } from "ibre";
 import { useStops } from "./stops";
 import { useSelector } from "react-redux";
 import { selectMapState } from "@/features/map/mapSlice";
-import LocationMarker from "./locationMarker";
+import { useLocationMarker } from "./locationMarker";
 import User from "@/User";
 
 export type PositionHandler = (point: LngLat) => void;
@@ -455,10 +455,6 @@ export type MapOptions = {
   user: User;
 };
 
-type Plugins = {
-  locationMarker: LocationMarker;
-};
-
 /**
  * React hook to initialize and update the transport map.
  *
@@ -471,8 +467,8 @@ export function useMap(
   const mapState = useSelector(selectMapState);
 
   const [map, setMap] = useState<null | Map>(null);
-  const [plugins, setPlugins] = useState<Plugins | null>(null);
   useStops(map);
+  useLocationMarker(map);
 
   const { center, onCenterChange, zoom, route, onWaySelect, selectedWay } =
     options;
@@ -489,11 +485,7 @@ export function useMap(
         onWaySelect,
         options,
       );
-      const locationMarker = new LocationMarker(theMap.getMapLibre());
-
-      setPlugins({ locationMarker });
       return () => {
-        // stops.destruct();
         theMap.destruct();
       };
     }
@@ -507,18 +499,6 @@ export function useMap(
       map.displayRoute(route);
     }
   }, [map, route, mapState.stops]);
-
-  // Show/hide location marker.
-  useEffect(() => {
-    if (!plugins?.locationMarker) {
-      return;
-    }
-    if (mapState.locationMarker) {
-      plugins.locationMarker.show(mapState.locationMarker);
-    } else {
-      plugins.locationMarker.remove();
-    }
-  }, [plugins?.locationMarker, mapState.locationMarker]);
 
   // Display selected rating.
   useEffect(() => {
