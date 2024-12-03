@@ -15,16 +15,9 @@ import config from "@/config";
 import style from "./style.json";
 
 import { init_hooks } from "ibre";
-import Stops from "./stops";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectMapState,
-  stopAdded,
-  stopChanged,
-  stopRemoved,
-  stopsResetted,
-} from "@/features/map/mapSlice";
-import { AppMode, selectAppState } from "@/features/map/appSlice";
+import { useStops } from "./stops";
+import { useSelector } from "react-redux";
+import { selectMapState } from "@/features/map/mapSlice";
 import LocationMarker from "./locationMarker";
 import User from "@/User";
 
@@ -38,7 +31,7 @@ export type PositionChangeHandler = (
 /**
  * Implements a wrapper for MapLibre.
  */
-class Map {
+export class Map {
   // The MapLibre instance.
   private map: LibreMap;
   private user: User;
@@ -272,14 +265,14 @@ class Map {
       );
 
       // this.map.on("click", "rated-segments", (e) => {
-        // console.log("click on rated segment", e);
-        // console.log(e.lngLat);
-        // console.log(e.features);
-        // e.preventDefault();
-        // const ratings = this.map.queryRenderedFeatures(e.point, {
-        //   layers: ["rated-segments"],
-        // });
-        // console.log(ratings);
+      // console.log("click on rated segment", e);
+      // console.log(e.lngLat);
+      // console.log(e.features);
+      // e.preventDefault();
+      // const ratings = this.map.queryRenderedFeatures(e.point, {
+      //   layers: ["rated-segments"],
+      // });
+      // console.log(ratings);
       // });
 
       this.map.on("click", "existing-ways", (e) => {
@@ -463,7 +456,6 @@ export type MapOptions = {
 };
 
 type Plugins = {
-  stops: Stops;
   locationMarker: LocationMarker;
 };
 
@@ -476,12 +468,11 @@ export function useMap(
   container: React.RefObject<HTMLElement>,
   options: MapOptions,
 ) {
-  const dispatch = useDispatch();
   const mapState = useSelector(selectMapState);
-  const appState = useSelector(selectAppState);
 
   const [map, setMap] = useState<null | Map>(null);
   const [plugins, setPlugins] = useState<Plugins | null>(null);
+  useStops(map);
 
   const { center, onCenterChange, zoom, route, onWaySelect, selectedWay } =
     options;
@@ -498,23 +489,9 @@ export function useMap(
         onWaySelect,
         options,
       );
-      const stops = new Stops(theMap.getMapLibre(), {
-        onAdd: (index, stop) => {
-          dispatch(stopAdded({ index, lng: stop.lng, lat: stop.lat }));
-        },
-        onRemove: (index) => {
-          dispatch(stopRemoved(index));
-        },
-        onChange: (index, stop) => {
-          dispatch(stopChanged({ index, lng: stop.lng, lat: stop.lat }));
-        },
-        onReset: () => {
-          dispatch(stopsResetted());
-        },
-      });
       const locationMarker = new LocationMarker(theMap.getMapLibre());
 
-      setPlugins({ stops, locationMarker });
+      setPlugins({ locationMarker });
       return () => {
         // stops.destruct();
         theMap.destruct();
@@ -523,23 +500,6 @@ export function useMap(
     // TODO
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (plugins?.stops) {
-      if ([AppMode.Routing, AppMode.WayAdding].includes(appState.mode)) {
-        plugins.stops.enable();
-      } else {
-        plugins.stops.disable();
-      }
-    }
-  }, [plugins?.stops, appState.mode]);
-
-  // Updated displayed stops.
-  useEffect(() => {
-    if (plugins?.stops) {
-      plugins.stops.updateStops(mapState.stops);
-    }
-  }, [plugins?.stops, mapState.stops]);
 
   // Display route.
   useEffect(() => {

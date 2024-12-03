@@ -1,5 +1,16 @@
+import { AppMode, selectAppState } from "@/features/map/appSlice";
+import {
+  selectMapState,
+  stopAdded,
+  stopChanged,
+  stopRemoved,
+  stopsResetted,
+} from "@/features/map/mapSlice";
 import { Stop } from "@/hooks";
-import { LngLat, Map, Marker } from "maplibre-gl";
+import { LngLat, Map as LibreMap, Marker } from "maplibre-gl";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Map } from "./map";
 
 export type StopsOptions = {
   // Called when a stop gets added.
@@ -19,14 +30,14 @@ export type StopsOptions = {
  * Handles stop manipulation
  */
 export default class Stops {
-  map: Map;
+  map: LibreMap;
   options: StopsOptions;
   lastChanged: number = 1;
   disabled: boolean = true;
 
   private stopMarker: Marker[] = [];
 
-  constructor(map: Map, options: StopsOptions) {
+  constructor(map: LibreMap, options: StopsOptions) {
     this.map = map;
     this.options = options;
 
@@ -117,4 +128,52 @@ export default class Stops {
       m.addTo(this.map);
     });
   }
+}
+
+/**
+ * Initialises stops functionality.
+ */
+export function useStops(map: Map | null) {
+  const [stops, setStops] = useState<Stops | null>(null);
+  const dispatch = useDispatch();
+  const mapState = useSelector(selectMapState);
+  const appState = useSelector(selectAppState);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    const stops = new Stops(map.getMapLibre(), {
+      onAdd: (index, stop) => {
+        dispatch(stopAdded({ index, lng: stop.lng, lat: stop.lat }));
+      },
+      onRemove: (index) => {
+        dispatch(stopRemoved(index));
+      },
+      onChange: (index, stop) => {
+        dispatch(stopChanged({ index, lng: stop.lng, lat: stop.lat }));
+      },
+      onReset: () => {
+        dispatch(stopsResetted());
+      },
+    });
+    setStops(stops);
+  }, [map, dispatch]);
+
+  useEffect(() => {
+    if (stops) {
+      if ([AppMode.Routing, AppMode.WayAdding].includes(appState.mode)) {
+        stops.enable();
+      } else {
+        stops.disable();
+      }
+    }
+  }, [stops, appState.mode]);
+
+  // Updated displayed stops.
+  useEffect(() => {
+    if (stops) {
+      stops.updateStops(mapState.stops);
+    }
+  }, [stops, mapState.stops]);
 }
