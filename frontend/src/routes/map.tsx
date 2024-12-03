@@ -9,7 +9,6 @@ import {
   centerUpdated,
   changedLocationMarker,
   selectMapState,
-  zoomUpdated,
 } from "@/features/map/mapSlice";
 import useMapSearchParams from "@/hooks/useMapSearchParams";
 import useMeta from "@/hooks/useMeta";
@@ -51,10 +50,12 @@ export default function Map() {
       : null;
 
     if (zoom) {
-      dispatch(zoomUpdated(zoom));
+      dispatch(centerUpdated({ zoom, updateView: true }));
     }
     if (center) {
-      dispatch(centerUpdated({ lng: center[0], lat: center[1] }));
+      dispatch(
+        centerUpdated({ lng: center[0], lat: center[1], updateView: true }),
+      );
     }
     if (locationMarker) {
       dispatch(

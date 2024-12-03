@@ -2,13 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { switchedToBrowsing } from "./appSlice";
+import config from "@/config";
 
 export type MapState = {
   // Map center.
-  center: { lng: number; lat: number };
-
-  // Map zoom (integer).
-  zoom: number;
+  // If updateView is true, updates the map view once and sets this too false.
+  center: { lng: number; lat: number; zoom: number; updateView: boolean };
 
   // Stops on the map.
   stops: { lng: number; lat: number }[];
@@ -21,8 +20,7 @@ export type MapState = {
 };
 
 const initialState: MapState = {
-  center: { lng: 8.684966, lat: 50.110573 },
-  zoom: 14,
+  center: config.defaultMapCenter,
   stops: [],
   locationQuery: null,
   locationMarker: null,
@@ -33,17 +31,26 @@ export const mapSlice = createSlice({
   initialState,
   reducers: {
     // Updates the map center.
+    // Only updates map view if updateView is true.
     centerUpdated: (
       state,
-      action: PayloadAction<{ lng: number; lat: number }>,
+      action: PayloadAction<{
+        lng?: number;
+        lat?: number;
+        zoom?: number;
+        updateView: boolean;
+      }>,
     ) => {
-      state.center.lng = action.payload.lng;
-      state.center.lat = action.payload.lat;
-    },
-
-    // Updates the map zoom (rounds to integer first).
-    zoomUpdated: (state, action: PayloadAction<number>) => {
-      state.zoom = action.payload;
+      if (action.payload.lng) {
+        state.center.lng = action.payload.lng;
+      }
+      if (action.payload.lat) {
+        state.center.lat = action.payload.lat;
+      }
+      if (action.payload.zoom) {
+        state.center.zoom = action.payload.zoom;
+      }
+      state.center.updateView = action.payload.updateView;
     },
 
     // Stop has been added.
@@ -94,9 +101,9 @@ export const mapSlice = createSlice({
       state.center = {
         lng: action.payload.lng,
         lat: action.payload.lat,
+        updateView: true,
+        zoom: 15,
       };
-
-      state.zoom = 15;
     },
 
     // User changed the location marker.
@@ -119,7 +126,6 @@ export const mapSlice = createSlice({
 
 export const {
   centerUpdated,
-  zoomUpdated,
   stopAdded,
   stopRemoved,
   stopChanged,

@@ -1,3 +1,5 @@
+import { MapState } from "./features/map/mapSlice";
+
 /**
  * The application configuration that is parsed from the .env file.
  */
@@ -18,6 +20,7 @@ type Config = {
   transportTilesURL: string;
   // URL to the rated segments tiles
   ratedSegmentsURL: string;
+  defaultMapCenter: MapState["center"];
 };
 
 const config: Config = {
@@ -29,6 +32,12 @@ const config: Config = {
   locationSearchURL: process.env.LOCATION_SEARCH_URL as string,
   transportTilesURL: process.env.TRANSPORT_TILES_URL as string,
   ratedSegmentsURL: process.env.RATED_SEGMENTS_URL as string,
+  defaultMapCenter: {
+    zoom: 14,
+    lng: 8.684966,
+    lat: 50.110573,
+    updateView: false,
+  },
 };
 
 export default config;

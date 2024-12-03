@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import maplibregl, {
   Map as LibreMap,
   LngLat,
@@ -16,17 +16,21 @@ import style from "./style.json";
 
 import { init_hooks } from "ibre";
 import { useStops } from "./stops";
-import { useSelector } from "react-redux";
-import { selectMapState } from "@/features/map/mapSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import { useLocationMarker } from "./locationMarker";
-import User from "@/User";
+import { useNavigateMap, useUser } from "@/hooks";
+
+type WaySelectHandler = (way: number) => void;
 
 export type PositionHandler = (point: LngLat) => void;
-export type WaySelectHandler = (id: number) => void;
 export type PositionChangeHandler = (
   index: number,
   lngLat: LngLat | null,
 ) => void;
+
+// A function that returns an API access token.
+export type GetAccessTokenFn = () => Promise<string | null>;
 
 /**
  * Implements a wrapper for MapLibre.
@@ -34,7 +38,7 @@ export type PositionChangeHandler = (
 export class Map {
   // The MapLibre instance.
   private map: LibreMap;
-  private user: User;
+  private _getAccessToken: GetAccessTokenFn;
   private ratingColorScale: chroma.Scale;
 
   /**
@@ -47,21 +51,22 @@ export class Map {
    * rating on the map.
    */
   constructor(
-    center: LngLatLike,
-    onCenterChange: (center: LngLat) => void,
+    onCenterChange: (center: LngLat, zoom: number) => void,
     container: HTMLElement,
     onLoad: (map: Map) => void,
     onWaySelect: WaySelectHandler,
-    options: MapOptions,
+    options: {
+      getAccessToken: GetAccessTokenFn;
+    },
   ) {
     new Protocol();
+    this._getAccessToken = options.getAccessToken;
     this.ratingColorScale = chroma.scale("Spectral");
-    this.user = options.user;
     this.map = new LibreMap({
       container,
+      center: config.defaultMapCenter,
+      zoom: config.defaultMapCenter.zoom,
       style: style as StyleSpecification,
-      center,
-      zoom: options.zoom,
       attributionControl: {
         customAttribution:
           '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap Mitwirkende</a> <a href = "https://www.maptiler.com/copyright/" target="_blank" >&copy; MapTiler</a>',
@@ -306,15 +311,13 @@ export class Map {
         this.map.getCanvas().style.cursor = "";
       });
 
-      this.map.on("moveend", () => {
+      const updateCenter = () => {
         this.refreshWays();
-        onCenterChange(this.map.getCenter());
-      });
+        onCenterChange(this.map.getCenter(), this.map.getZoom());
+      };
 
-      this.map.on("zoomend", () => {
-        this.refreshWays();
-        options.onZoomChange(this.map.getZoom());
-      });
+      this.map.on("moveend", updateCenter);
+      this.map.on("zoomend", updateCenter);
 
       this.refreshWays();
       onLoad(this);
@@ -333,7 +336,7 @@ export class Map {
    */
   async refreshWays(): Promise<void> {
     const bbox = this.map.getBounds().toArray().flat().join(",");
-    const token = await this.user.getAccessToken();
+    const token = await this._getAccessToken();
     const response = await fetch(`${config.apiURL}/ways?bbox=${bbox}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -445,14 +448,8 @@ export class Map {
 }
 
 export type MapOptions = {
-  center: LngLatLike;
-  onCenterChange: (center: LngLat) => void;
-  zoom: number;
-  onZoomChange: (zoom: number) => void;
   route: GeoJSON.GeoJSON | null;
-  onWaySelect: WaySelectHandler;
   selectedWay: number | null;
-  user: User;
 };
 
 /**
@@ -465,33 +462,58 @@ export function useMap(
   options: MapOptions,
 ) {
   const mapState = useSelector(selectMapState);
+  const dispatch = useDispatch();
+  const [map, setMap] = useState<Map | null>(null);
+  const onWaySelectRef = useRef((_: number) => {});
 
-  const [map, setMap] = useState<null | Map>(null);
   useStops(map);
   useLocationMarker(map);
+  const navigateMap = useNavigateMap();
 
-  const { center, onCenterChange, zoom, route, onWaySelect, selectedWay } =
-    options;
+  const { route, selectedWay } = options;
+
+  const user = useUser();
+  const getAccessToken = useCallback(async () => {
+    return await user.getAccessToken();
+  }, [user]);
+
+  useEffect(() => {
+    onWaySelectRef.current = (way: number) => {
+      navigateMap(`/way/${way}`, { replace: false });
+    };
+  }, [navigateMap]);
 
   // Initialize the map.
   useEffect(() => {
-    init_hooks();
     if (container.current) {
+      init_hooks();
+      const onCenterChange = (center: LngLat, zoom: number) => {
+        dispatch(
+          centerUpdated({
+            lng: center.lng,
+            lat: center.lat,
+            zoom,
+            updateView: false,
+          }),
+        );
+      };
       const theMap = new Map(
-        center,
         onCenterChange,
         container.current,
         setMap,
-        onWaySelect,
-        options,
+        (way: number) => {
+          onWaySelectRef.current(way);
+        },
+        {
+          getAccessToken,
+        },
       );
+      console.log("map created");
       return () => {
         theMap.destruct();
       };
     }
-    // TODO
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getAccessToken, dispatch, container, onWaySelectRef]);
 
   // Display route.
   useEffect(() => {
@@ -509,15 +531,10 @@ export function useMap(
 
   // Update center when changed.
   useEffect(() => {
-    if (map) {
-      map.setCenter(center);
+    if (map && mapState.center.updateView) {
+      map.setCenter(mapState.center);
+      map.setZoom(mapState.center.zoom);
+      dispatch(centerUpdated({ ...mapState.center, updateView: false }));
     }
-  }, [map, center]);
-
-  // Update zoom when changed.
-  useEffect(() => {
-    if (map) {
-      map.setZoom(zoom);
-    }
-  }, [map, zoom]);
+  }, [map, mapState.center, mapState.center.updateView, dispatch]);
 }

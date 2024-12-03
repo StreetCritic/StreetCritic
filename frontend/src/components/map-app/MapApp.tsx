@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
@@ -37,13 +37,16 @@ export default function MapApp({ selectedWay }: Props) {
   const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
-  const onWaySelect = (id: number) => {
-    navigateMap(`/way/${id}`, { replace: false });
-  };
+  const onWaySelect = useCallback(
+    (id: number) => {
+      navigateMap(`/way/${id}`, { replace: false });
+    },
+    [navigateMap],
+  );
 
   return (
     <div className={styles.root}>
-      <Map route={way} onWaySelect={onWaySelect} selectedWay={selectedWay} />
+      <Map route={way} selectedWay={selectedWay} />
       {loginModal}
       {/* <InConstructionModal /> */}
       {segments && wayCreateFormOpen && (

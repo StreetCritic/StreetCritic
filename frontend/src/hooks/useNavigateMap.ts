@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import {
   createSearchParams,
   NavigateOptions,
@@ -11,13 +12,16 @@ export default function useNavigateMap(): (
 ) => void {
   const mapSearchParams = useMapSearchParams();
   const navigate = useNavigate();
-  return (pathname: string, options: NavigateOptions | undefined) => {
-    navigate(
-      {
-        pathname,
-        search: `?${createSearchParams(mapSearchParams)}`,
-      },
-      options,
-    );
-  };
+  return useCallback(
+    (pathname: string, options: NavigateOptions | undefined) => {
+      navigate(
+        {
+          pathname,
+          search: `?${createSearchParams(mapSearchParams)}`,
+        },
+        options,
+      );
+    },
+    [mapSearchParams, navigate],
+  );
 }
