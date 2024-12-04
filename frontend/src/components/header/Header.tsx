@@ -43,16 +43,20 @@ export default function Header() {
               Home
             </Link>
 
-            <Link to={"about"} className={classes.link}>
+            <Link to={"/about"} className={classes.link}>
               About
             </Link>
 
-            <Link to={"sponsors"} className={classes.link}>
+            <Link to={"/sponsors"} className={classes.link}>
               Sponsors
             </Link>
 
-            <Link to={"contact"} className={classes.link}>
+            <Link to={"/contact"} className={classes.link}>
               Contact
+            </Link>
+
+            <Link to={"/terms-of-use"} className={classes.link}>
+              Terms of Use
             </Link>
           </Group>
 
@@ -105,6 +109,13 @@ export default function Header() {
           </Link>
           <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
             Contact
+          </Link>
+          <Link
+            to={"/terms-of-use"}
+            className={classes.link}
+            onClick={toggleDrawer}
+          >
+            Terms of Use
           </Link>
 
           <Divider my="sm" />
