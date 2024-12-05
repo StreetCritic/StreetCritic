@@ -230,7 +230,7 @@ export class Map {
       const colors = [];
       for (let i = 0; i <= 10; i++) {
         colors.push(i);
-        colors.push(this.ratingColorScale(i / 10).hex());
+        colors.push(this.ratingColorScale((10 - i) / 10).hex());
       }
 
       this.map.addLayer({

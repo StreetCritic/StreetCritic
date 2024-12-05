@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import WayAddingIntroduction from "../way-adding-introduction";
 import WayCreateForm from "./WayCreateForm";
 import { WaySidebar, WayAddingSidebar, ProfileControl } from "@/components";
-import { default as Map } from "@/components/map";
+import { default as Map, Legend } from "@/components/map";
 
 import {
   AppMode,
@@ -98,6 +98,10 @@ export default function MapApp({ selectedWay }: Props) {
             requireAuthentication(() => setShowWayAddingIntro(true));
           }}
         />
+      </div>
+
+      <div className={styles.legend}>
+        <Legend />
       </div>
     </div>
   );
