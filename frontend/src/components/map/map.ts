@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import maplibregl, {
   Map as LibreMap,
   LngLat,
@@ -19,9 +19,7 @@ import { useStops } from "./stops";
 import { useDispatch, useSelector } from "react-redux";
 import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import { useLocationMarker } from "./locationMarker";
-import { useNavigateMap, useUser } from "@/hooks";
-
-type WaySelectHandler = (way: number) => void;
+import { useWayDisplay } from "./wayDisplay";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -38,7 +36,6 @@ export type GetAccessTokenFn = () => Promise<string | null>;
 export class Map {
   // The MapLibre instance.
   private map: LibreMap;
-  private _getAccessToken: GetAccessTokenFn;
   private ratingColorScale: chroma.Scale;
 
   /**
@@ -54,13 +51,8 @@ export class Map {
     onCenterChange: (center: LngLat, zoom: number) => void,
     container: HTMLElement,
     onLoad: (map: Map) => void,
-    onWaySelect: WaySelectHandler,
-    options: {
-      getAccessToken: GetAccessTokenFn;
-    },
   ) {
     new Protocol();
-    this._getAccessToken = options.getAccessToken;
     this.ratingColorScale = chroma.scale("Spectral");
     this.map = new LibreMap({
       container,
@@ -159,14 +151,6 @@ export class Map {
         },
       });
 
-      this.map.addSource("existing-ways", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
       this.map.addSource("segments-parsed", {
         type: "geojson",
         data: {
@@ -254,21 +238,6 @@ export class Map {
         },
       });
 
-      this.map.addLayer(
-        {
-          id: "existing-ways",
-          type: "line",
-          source: "existing-ways",
-          paint: {
-            "line-color": "#000000",
-            "line-opacity": 0.3,
-            "line-width": 6,
-            // "line-dasharray": [6, 3],
-          },
-        },
-        "highway-name-path",
-      );
-
       // this.map.on("click", "rated-segments", (e) => {
       // console.log("click on rated segment", e);
       // console.log(e.lngLat);
@@ -280,28 +249,6 @@ export class Map {
       // console.log(ratings);
       // });
 
-      this.map.on("click", "existing-ways", (e) => {
-        // console.log("click on existing way", e);
-        // console.log(e.lngLat);
-        // console.log(e.features);
-        e.preventDefault();
-        const ratings = this.map.queryRenderedFeatures(e.point, {
-          layers: ["existing-ways"],
-        });
-        if (ratings.length > 0) {
-          onWaySelect(ratings[0].properties.id);
-        }
-      });
-
-      this.map.on("mouseenter", "existing-ways", () => {
-        this.map.getCanvas().style.cursor = "pointer";
-      });
-
-      // Change it back to a pointer when it leaves.
-      this.map.on("mouseleave", "existing-ways", () => {
-        this.map.getCanvas().style.cursor = "";
-      });
-
       this.map.on("mouseenter", "route", () => {
         this.map.getCanvas().style.cursor = "copy";
       });
@@ -312,14 +259,12 @@ export class Map {
       });
 
       const updateCenter = () => {
-        this.refreshWays();
         onCenterChange(this.map.getCenter(), this.map.getZoom());
       };
 
       this.map.on("moveend", updateCenter);
       this.map.on("zoomend", updateCenter);
 
-      this.refreshWays();
       onLoad(this);
     });
   }
@@ -329,26 +274,6 @@ export class Map {
    */
   getMapLibre(): LibreMap {
     return this.map;
-  }
-
-  /**
-   * Refreshes the visible ways.
-   */
-  async refreshWays(): Promise<void> {
-    const bbox = this.map.getBounds().toArray().flat().join(",");
-    const token = await this._getAccessToken();
-    const response = await fetch(`${config.apiURL}/ways?bbox=${bbox}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      const json = await response.json();
-      const source = this.map.getSource("existing-ways");
-      if (source instanceof GeoJSONSource) {
-        source.setData(json);
-      }
-    }
   }
 
   /**
@@ -464,24 +389,12 @@ export function useMap(
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const [map, setMap] = useState<Map | null>(null);
-  const onWaySelectRef = useRef((_: number) => {});
 
   useStops(map);
   useLocationMarker(map);
-  const navigateMap = useNavigateMap();
+  useWayDisplay(map);
 
   const { route, selectedWay } = options;
-
-  const user = useUser();
-  const getAccessToken = useCallback(async () => {
-    return await user.getAccessToken();
-  }, [user]);
-
-  useEffect(() => {
-    onWaySelectRef.current = (way: number) => {
-      navigateMap(`/way/${way}`, { replace: false });
-    };
-  }, [navigateMap]);
 
   // Initialize the map.
   useEffect(() => {
@@ -497,23 +410,13 @@ export function useMap(
           }),
         );
       };
-      const theMap = new Map(
-        onCenterChange,
-        container.current,
-        setMap,
-        (way: number) => {
-          onWaySelectRef.current(way);
-        },
-        {
-          getAccessToken,
-        },
-      );
+      const theMap = new Map(onCenterChange, container.current, setMap);
       console.log("map created");
       return () => {
         theMap.destruct();
       };
     }
-  }, [getAccessToken, dispatch, container, onWaySelectRef]);
+  }, [dispatch, container]);
 
   // Display route.
   useEffect(() => {
