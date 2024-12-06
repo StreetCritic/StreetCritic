@@ -1,4 +1,9 @@
-use axum::{extract::Extension, http::StatusCode, routing::get, routing::post, Router};
+use axum::{
+    extract::Extension,
+    http::StatusCode,
+    routing::{get, post},
+    Router,
+};
 
 use bb8::Pool;
 use bb8_postgres::PostgresConnectionManager;
@@ -58,11 +63,13 @@ async fn main() {
         // `GET /` goes to `root`
         // .route("/", get(root))
         // `POST /users` goes to `create_user`
-        .route("/ratings", get(get_ratings).post(create_rating))
+        .route("/ways", post(create_way))
+        .route("/ratings", post(create_rating))
         // .route("/ratings/:id", get(get_rating))
-        .route("/ways", get(get_ways).post(create_way))
+        .route_layer(axum::middleware::from_fn(middleware::auth::auth))
+        .route("/ways", get(get_ways))
+        .route("/ratings", get(get_ratings))
         .route("/ways/:id", get(get_way))
-        // .route_layer(axum::middleware::from_fn(middleware::auth::auth))
         .layer(Extension(config.access.token))
         .layer(CorsLayer::permissive())
         .with_state(pool);
