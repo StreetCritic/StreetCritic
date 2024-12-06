@@ -1,8 +1,13 @@
 import config from "@/config";
 import { useNavigateMap, useUser } from "@/hooks";
-import { GeoJSONSource, Map as LibreMap } from "maplibre-gl";
+import { FeatureCollection, MultiLineString } from "geojson";
+import { GeoJSONSource, Map as LibreMap, Marker } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GetAccessTokenFn, Map } from "./map";
+import MarkerElement from "./Marker";
+
+import { Way as APIWay } from "@/api-bindings/Way";
+import { createRoot } from "react-dom/client";
 
 type WaySelectHandler = (way: number) => void;
 
@@ -18,10 +23,13 @@ type Props = {
 export default class WayDisplay {
   map: LibreMap;
   private _getAccessToken: GetAccessTokenFn;
+  private wayMarker: Record<string, Marker> = {};
+  private onWaySelect: WaySelectHandler;
 
   constructor({ map, onWaySelect, getAccessToken }: Props) {
     this.map = map;
     this._getAccessToken = getAccessToken;
+    this.onWaySelect = onWaySelect;
 
     this.map.addSource("existing-ways", {
       type: "geojson",
@@ -45,26 +53,6 @@ export default class WayDisplay {
       "highway-name-path",
     );
 
-    this.map.on("click", "existing-ways", (e) => {
-      // console.log("click on existing way", e);
-      // console.log(e.lngLat);
-      // console.log(e.features);
-      e.preventDefault();
-      const ratings = this.map.queryRenderedFeatures(e.point, {
-        layers: ["existing-ways"],
-      });
-      if (ratings.length > 0) {
-        onWaySelect(ratings[0].properties.id);
-      }
-    });
-
-    this.map.on("mouseenter", "existing-ways", () => {
-      this.map.getCanvas().style.cursor = "pointer";
-    });
-    this.map.on("mouseleave", "existing-ways", () => {
-      this.map.getCanvas().style.cursor = "";
-    });
-
     this.map.on("moveend", () => this.refreshWays());
     this.map.on("zoomend", () => this.refreshWays());
     this.refreshWays();
@@ -82,8 +70,38 @@ export default class WayDisplay {
       },
     });
     if (response.ok) {
-      const json = await response.json();
+      const json: FeatureCollection<MultiLineString, APIWay> =
+        await response.json();
       const source = this.map.getSource("existing-ways");
+      const newMarkers: typeof this.wayMarker = {};
+      for (const way of json.features) {
+        const id = way.properties.id;
+        if (this.wayMarker[id]) {
+          newMarkers[id] = this.wayMarker[id];
+          continue;
+        }
+        const coordinate =
+          way.geometry.coordinates[
+            Math.round(way.geometry.coordinates.length / 2)
+          ][0];
+        if (coordinate.length == 2) {
+          const rootNode = document.createElement("div");
+          const root = createRoot(rootNode);
+          const marker = new Marker({
+            offset: [0, -15],
+            element: rootNode,
+          }).setLngLat([coordinate[0], coordinate[1]]);
+          root.render(MarkerElement({ onClick: () => this.onWaySelect(id) }));
+          newMarkers[id] = marker;
+          marker.addTo(this.map);
+        }
+      }
+      for (const id of Object.keys(this.wayMarker)) {
+        if (!newMarkers[id]) {
+          this.wayMarker[id].remove();
+        }
+      }
+      this.wayMarker = newMarkers;
       if (source instanceof GeoJSONSource) {
         source.setData(json);
       }
@@ -120,6 +138,7 @@ export function useWayDisplay(map: Map | null) {
     }
     if (wayDisplay) {
       console.warn("wayDisplay already created");
+      return;
     }
     setWayDisplay(
       new WayDisplay({
@@ -130,5 +149,5 @@ export function useWayDisplay(map: Map | null) {
         getAccessToken,
       }),
     );
-  }, [map, getAccessToken, onWaySelectRef]);
+  }, [map, getAccessToken, onWaySelectRef, wayDisplay]);
 }

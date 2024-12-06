@@ -26,6 +26,9 @@
       "@/*": [
         "./src/*",
       ],
+      "@/api-bindings/*": [
+        "../api/bindings/*",
+      ],
       "niceways-geo-lib": [
         "../niceways/geo-lib/pkg"
       ]

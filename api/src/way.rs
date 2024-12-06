@@ -4,16 +4,20 @@ use axum::{
     http::StatusCode,
     Extension, Json,
 };
+use ts_rs::TS;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 use geojson::de::deserialize_geometry;
 use geojson::ser::serialize_geometry;
 
+#[derive(TS)]
+#[ts(export)]
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Way {
     id: u32,
     user_id: String,
+    #[ts(as = "Vec<u8>")]
     datetime: time::PrimitiveDateTime,
     title: String,
     // comment: String,
@@ -22,6 +26,7 @@ pub struct Way {
         serialize_with = "serialize_geometry",
         deserialize_with = "deserialize_geometry"
     )]
+    #[ts(skip)]
     geometry: geo_types::Geometry<f64>,
 }
 
