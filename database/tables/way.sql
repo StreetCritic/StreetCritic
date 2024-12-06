@@ -1,6 +1,6 @@
 CREATE TABLE way (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES account(id),
+  user_id VARCHAR(36) NOT NULL,
   datetime TIMESTAMP,
   title TEXT,
   comment TEXT
@@ -10,7 +10,7 @@ CREATE TABLE way_rating (
   id SERIAL PRIMARY KEY,
   way_id INTEGER REFERENCES way(id),
   followup_to INTEGER REFERENCES way_rating(id),
-  user_id INTEGER REFERENCES account(id),
+  user_id VARCHAR(36) NOT NULL,
   datetime TIMESTAMP,
   title TEXT,
   comment TEXT,
@@ -20,9 +20,9 @@ CREATE TABLE way_rating (
   beauty_rating INTEGER NOT NULL CHECK (rating >= 0 AND rating <= 10),
 );
 
-CREATE TABLE way_rating_votes (
+CREATE TABLE way_rating_vote (
   way_rating_id INTEGER REFERENCES way_rating(id),
-  user_id INTEGER REFERENCES account(id),
+  user_id VARCHAR(36) NOT NULL,
   upvote BOOLEAN NOT NULL,
   datetime TIMESTAMP,
   PRIMARY KEY(way_rating_id, user_id)

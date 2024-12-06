@@ -10,6 +10,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::config::TokenConfig;
 
+#[derive(Debug, Clone)]
+pub struct User {
+    pub id: String,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
     sub: String,
@@ -21,11 +26,17 @@ struct Claims {
 pub async fn auth(
     Extension(config): Extension<TokenConfig>,
     headers: HeaderMap,
-    request: Request,
+    mut request: Request,
     next: Next,
 ) -> Result<Response, StatusCode> {
     match get_token(&headers) {
-        Some(token) if token_is_valid(token, &config) => Ok(next.run(request).await),
+        Some(token) => match get_user_from_token(token, &config) {
+            Some(user) => {
+                request.extensions_mut().insert(user);
+                Ok(next.run(request).await)
+            }
+            _ => Err(StatusCode::UNAUTHORIZED),
+        },
         _ => Err(StatusCode::UNAUTHORIZED),
     }
 }
@@ -44,14 +55,16 @@ fn get_token(headers: &HeaderMap) -> Option<&str> {
         })
 }
 
-/// Check if the given token is valid.
-fn token_is_valid(token: &str, config: &TokenConfig) -> bool {
+/// Check if the given token is valid and return User if so.
+fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
     let mut validation = Validation::new(Algorithm::RS256);
     validation.set_audience(&[config.audience.as_str()]);
     validation.set_issuer(&[config.issuer.as_str()]);
     let key = &DecodingKey::from_rsa_pem(&config.sign_public_key.as_ref()).unwrap();
     match decode::<Claims>(&token, &key, &validation) {
-        Ok(_token) => true,
-        Err(_e) => false,
+        Ok(token) => Some(User {
+            id: token.claims.sub,
+        }),
+        Err(_e) => None,
     }
 }

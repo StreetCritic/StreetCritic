@@ -1,10 +1,10 @@
-use crate::{internal_error, ConnectionPool};
+use crate::{internal_error, middleware::auth::User, ConnectionPool};
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
-    Json,
+    Extension, Json,
 };
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 use geojson::de::deserialize_geometry;
@@ -142,6 +142,7 @@ pub async fn get_ways(
 }
 
 pub async fn create_way(
+    Extension(user): Extension<User>,
     State(pool): State<ConnectionPool>,
     Json(payload): Json<CreateWay>,
 ) -> Result<Json<CreateWayResponse>, (StatusCode, String)> {
@@ -151,8 +152,8 @@ pub async fn create_way(
 
     let row = transaction
         .query_one(
-            "INSERT INTO way (user_id, datetime, title) VALUES(1, NOW(), $1) RETURNING id",
-            &[&payload.title],
+            "INSERT INTO way (user_id, datetime, title) VALUES($1, NOW(), $2) RETURNING id",
+            &[&user.id, &payload.title],
         )
         .await
         .map_err(internal_error)?;
@@ -179,7 +180,7 @@ pub async fn create_way(
     }
 
     transaction.commit().await.map_err(internal_error)?;
-    Ok(Json(CreateWayResponse{id: way_id }))
+    Ok(Json(CreateWayResponse { id: way_id }))
 }
 
 #[derive(Deserialize)]

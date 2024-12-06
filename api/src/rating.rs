@@ -1,8 +1,8 @@
-use crate::{internal_error, ConnectionPool};
+use crate::{internal_error, middleware::auth::User, ConnectionPool};
 use axum::{
     extract::{Query, State},
     http::StatusCode,
-    Json,
+    Extension, Json,
 };
 use serde::Deserialize;
 
@@ -21,6 +21,7 @@ pub struct Rating {
 }
 
 pub async fn create_rating(
+    Extension(user): Extension<User>,
     State(pool): State<ConnectionPool>,
     Json(payload): Json<CreateRating>,
 ) -> Result<Json<u64>, (StatusCode, String)> {
@@ -29,8 +30,8 @@ pub async fn create_rating(
     let transaction = conn.transaction().await.map_err(internal_error)?;
 
     let row = transaction
-        .query_one("INSERT INTO way_rating (user_id, way_id, datetime, general_rating, safety_rating, comfort_rating, beauty_rating, comment) VALUES(1, $1, NOW(), $2, $3, $4, $5, $6) RETURNING id",
-                   &[&payload.way_id, &(payload.general_rating as i32), &(payload.safety_rating as i32), &(payload.comfort_rating as i32), &(payload.beauty_rating as i32), &payload.comment])
+        .query_one("INSERT INTO way_rating (user_id, way_id, datetime, general_rating, safety_rating, comfort_rating, beauty_rating, comment) VALUES($1, $2, NOW(), $3, $4, $5, $6, $7) RETURNING id",
+                   &[&user.id, &payload.way_id, &(payload.general_rating as i32), &(payload.safety_rating as i32), &(payload.comfort_rating as i32), &(payload.beauty_rating as i32), &payload.comment])
         .await
         .map_err(internal_error)?;
 
