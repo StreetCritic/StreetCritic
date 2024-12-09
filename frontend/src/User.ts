@@ -91,7 +91,11 @@ export default class User {
     let user = await this.userManager.getUser();
     if (user) {
       if (user.expired) {
-        user = await this.userManager.signinSilent();
+        try {
+          user = await this.userManager.signinSilent();
+        } catch (_) {
+          user = null;
+        }
         if (!user) {
           showNotification({
             title: "Session expired",
