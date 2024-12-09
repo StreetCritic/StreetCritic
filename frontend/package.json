@@ -15,6 +15,7 @@
     "@mantine/core": "^7.14.3",
     "@mantine/form": "^7.14.3",
     "@mantine/hooks": "^7.14.3",
+    "@mantine/notifications": "^7.14.3",
     "@mapbox/tilebelt": "^2.0.2",
     "@phosphor-icons/react": "^2.1.7",
     "@reduxjs/toolkit": "^2.4.0",

@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/header";
+import { Notifications } from "@mantine/notifications";
 import { useUser } from "@/hooks";
 import { createTheme, MantineProvider, rem } from "@mantine/core";
 import { useEffect } from "react";
@@ -50,6 +51,7 @@ export default function App({ children }: Props) {
   });
   return (
     <MantineProvider theme={theme}>
+      <Notifications />
       <Header />
       {children}
     </MantineProvider>

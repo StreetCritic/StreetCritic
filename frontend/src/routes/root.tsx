@@ -1,5 +1,6 @@
 import "./globals.css";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 import App from "@/components/app";
 import { Outlet } from "react-router-dom";
