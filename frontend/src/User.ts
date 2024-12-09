@@ -10,6 +10,8 @@ import { userAuthenticated } from "@/features/map/appSlice";
 import { createContext } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
 
+import { showNotification } from "@/notifications";
+
 const settings: UserManagerSettings = {
   authority: config.keycloakAuthority,
   client_id: config.keycloakClientId,
@@ -75,12 +77,31 @@ export default class User {
   }
 
   /**
-   * Initialises authentication on app start, retrieves user if authenticated.
+   * Initialises authentication on app start.
+   *
+   * If a user is present in the browsers local storage, check the session. If
+   * the access token is expired, try to get a fresh one (with a refresh token).
+   * If that fails, remove the user from the storage.
+   *
+   * If the user is present and the access token not exired, or the refresh
+   * succeeded, store the user in the app store.
    */
   async initAuth(dispatch: Dispatch) {
     Log.setLogger(console);
-    const user = await this.userManager.getUser();
+    let user = await this.userManager.getUser();
     if (user) {
+      if (user.expired) {
+        user = await this.userManager.signinSilent();
+        if (!user) {
+          showNotification({
+            title: "Session expired",
+            message: "Your user session has expired. Pleas log in again.",
+            type: "warning",
+          });
+          await this.userManager.removeUser();
+          return;
+        }
+      }
       const name = user.profile.preferred_username || "Unknown user";
       dispatch(userAuthenticated({ name }));
     }
