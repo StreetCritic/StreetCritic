@@ -7,36 +7,48 @@ export default function About() {
   return (
     <main>
       <Container>
-        <H1>We collect subjective data on traffic routes.</H1>
-        <H2>Which societal challenge does StreetCritic address?</H2>
+        <H1>
+          StreetCritic collects data and builds digital tools to support
+          sustainable mobility
+        </H1>
+
+        <H2>Gathering insights about streets</H2>
+
         <P>
-          Sustainable mobility is a prerequisite for solving many societal
-          challenges, such as climate change, reduced quality of life,
-          particularly in urban areas, and limited mobility for an aging
-          society. Many solutions require not only objective but also subjective
-          route data: Do I feel safe on the route? Can I make good progress? Is
-          the route pleasant? These questions depend on more factors than just
-          path width, surface, traffic volume, etc., and are difficult to
-          measure. We are developing a data format, processes, and tools to
-          capture this data. Additionally, with a routing function, it should be
-          possible to suggest particularly beautiful, safe, and/or fast routes.
+          Is a street comfortable, safe, and beautiful for cyclists or
+          pedestrians? StreetCritic is a crowdsourcing platform that collects
+          this kind of subjective feedback. This data can be used to enhance
+          digital tools such as online maps and navigation systems.
+          Additionally, it serves as a valuable resource for initiatives,
+          researchers, and transportation planners aiming to create sustainable
+          transportation and urban environments.
         </P>
-        <H2>How are we addressing the problem?</H2>
+
+        <H2>Smarter digital tools for cyclists and pedestrians</H2>
+
         <P>
-          The core of the project is a specification of the database structure
-          as well as processes and tools for collecting and evaluating this
-          data. The data is stored in a geo-database and relates to specific
-          objects within the OpenStreetMap. We provide an application interface
-          through which the data can be accessed and supplemented by other
-          projects. A web application allows intuitive evaluation of routes and
-          paths in various dimensions, as well as navigation based on this data.
+          StreetCritic is focused on improving digital tools like online maps
+          and navigation services for sustainable transportation, with a special
+          focus on cyclists and pedestrians. Our goal is to help you identify
+          pleasant routes, avoid unsafe streets, and make your journey easier
+          and more enjoyable.
         </P>
-        <H2>Who is StreetCritic aimed at?</H2>
+
+        <H2>Let's start conversations about our streets!</H2>
+
         <P>
-          The target groups are primarily pedestrians, cyclists, and wheelchair
-          users. They will be particularly reached through the routing function,
-          which calculates safe, fast, and/or beautiful routes. Additionally, we
-          target initiatives and associations for sustainable mobility.
+          StreetCritic aims to inspire discussions about how our streets are
+          designed and used. Questions like: Do we need so much parking space?
+          How can we address pollution? How can we design streets to be more
+          beautiful and welcoming? Why is infrastructure uncomfortable in
+          certain areas?
+        </P>
+
+        <H2>Open Source, Open Data</H2>
+
+        <P>
+          StreetCritic builds on principles of transparency and collaboration by
+          creating and sharing Open Source Software and Open Data.
         </P>
       </Container>
     </main>
