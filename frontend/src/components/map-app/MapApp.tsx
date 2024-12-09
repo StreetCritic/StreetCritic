@@ -48,7 +48,6 @@ export default function MapApp({ selectedWay }: Props) {
     <div className={styles.root}>
       <Map route={way} selectedWay={selectedWay} />
       {loginModal}
-      {/* <InConstructionModal /> */}
       {segments && wayCreateFormOpen && (
         <WayCreateForm
           route={segments}
