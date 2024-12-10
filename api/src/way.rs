@@ -6,8 +6,6 @@ use axum::{
 };
 use ts_rs::TS;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
 use geojson::de::deserialize_geometry;
 use geojson::ser::serialize_geometry;
 
@@ -78,17 +76,22 @@ pub async fn get_way(
     Ok(Json(way))
 }
 
-// basic handler that responds with a static string
+
+/// Parameters for /ways endpoint.
+#[derive(Deserialize)]
+pub struct GetWaysParams {
+    bbox: String,
+}
+
+/// Returns all ways in the given bounding box.
 pub async fn get_ways(
-    Query(params): Query<HashMap<String, String>>,
+    Query(params): Query<GetWaysParams>,
     State(pool): State<ConnectionPool>,
 ) -> Result<String, (StatusCode, String)> {
     let conn = pool.get().await.map_err(internal_error)?;
 
     // left bottom right top
-    let bbox_param = params.get("bbox").unwrap().clone();
-    let bbox_coords: Vec<&str> = bbox_param.split(",").collect();
-
+    let bbox_coords: Vec<&str> = params.bbox.split(",").collect();
     let left: f64 = bbox_coords.get(0).unwrap().parse().unwrap();
     let bottom: f64 = bbox_coords.get(1).unwrap().parse().unwrap();
     let right: f64 = bbox_coords.get(2).unwrap().parse().unwrap();
