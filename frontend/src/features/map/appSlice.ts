@@ -54,6 +54,11 @@ export const appSlice = createSlice({
       state.mode = AppMode.Browsing;
     },
 
+    // User switched to routing mode.
+    switchedToRouting: (state) => {
+      state.mode = AppMode.Routing;
+    },
+
     // User was authenticated.
     userAuthenticated: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
@@ -62,7 +67,11 @@ export const appSlice = createSlice({
   },
 });
 
-export const { switchedToBrowsing, switchedToWayAdding, userAuthenticated } =
-  appSlice.actions;
+export const {
+  switchedToBrowsing,
+  switchedToWayAdding,
+  switchedToRouting,
+  userAuthenticated,
+} = appSlice.actions;
 export const selectAppState = (state: RootState) => state.app;
 export default appSlice.reducer;

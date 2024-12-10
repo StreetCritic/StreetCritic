@@ -1,4 +1,5 @@
 export * from "./typography";
+export { default as ActionIcon } from "./action-icon";
 export { default as Alert } from "./alert";
 export { default as ContactForm } from "./contact-form";
 export { default as Container } from "./container";
@@ -6,5 +7,6 @@ export { default as Loader } from "./loader";
 export { default as LoginButtons } from "./login-buttons";
 export { default as LoginModal } from "./login-modal";
 export { default as ProfileControl } from "./profile-control";
+export { default as RoutingSidebar } from "./routing-sidebar";
 export { default as WayAddingSidebar } from "./way-adding-sidebar";
 export { default as WaySidebar } from "./way-sidebar";

@@ -1,10 +1,10 @@
 import { useLocalize } from "@/hooks";
 import { Alert as MAlert } from "@mantine/core";
-import { Info, Shovel, WarningCircle } from "@phosphor-icons/react";
+import { Flask, Info, Shovel, WarningCircle } from "@phosphor-icons/react";
 
 type Props = {
   title?: string;
-  type: "success" | "error" | "info" | "under-construction";
+  type: "success" | "error" | "info" | "under-construction" | "experimental";
   children: React.ReactNode;
 };
 
@@ -16,6 +16,10 @@ const cfg = {
   error: {
     color: "red",
     icon: <WarningCircle size={32} />,
+  },
+  experimental: {
+    color: "blue",
+    icon: <Flask size={32} />,
   },
   info: {
     color: "yellow",

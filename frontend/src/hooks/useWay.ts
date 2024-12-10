@@ -31,9 +31,7 @@ export function useWay(): Rets {
       : mode === AppMode.WayAdding
         ? route && JSON.parse(route.get_segments_as_geojson())
         : null;
-    // TODO
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, route]);
+  }, [mode, route, directionsRoute]);
 
   return [way, route];
 }

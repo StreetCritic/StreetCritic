@@ -1,8 +1,12 @@
 .root {
-  background: var(--mantine-primary-color-filled);
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 0 0 2px #0000001a;
+  opacity: 0.85;
+}
+
+.root:hover {
+  opacity: 1;
 }
 
 .root a {

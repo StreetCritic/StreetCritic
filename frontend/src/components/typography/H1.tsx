@@ -6,7 +6,7 @@ type Props = {
 
 export default function H1({ children }: Props) {
   return (
-    <Title order={1} mb="md" ta="center">
+    <Title order={1} mb="md" c="gray.9" ta="center">
       {children}
     </Title>
   );
