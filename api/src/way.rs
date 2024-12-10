@@ -105,14 +105,14 @@ pub async fn get_ways(
                 SELECT ST_AsGeoJSON(ST_Union(
                     CASE WHEN way_segment.start > way_segment.stop
                     THEN ST_LineSubstring(
-                        ST_Reverse(segment.geom), way_segment.stop, way_segment.start)
+                        ST_Reverse(segment.geom), (1.0-way_segment.start), (1.0-way_segment.stop))
                     ELSE ST_LineSubstring(
                         segment.geom, way_segment.start, way_segment.stop)
                     END)
                 )
                 FROM way_segment LEFT JOIN segment
                 ON way_segment.segment_id=segment.id
-                WHERE way_id=way.id
+                WHERE way_id=way.id AND way_segment.start != way_segment.stop
             ) AS geom
             FROM way
             WHERE id IN
