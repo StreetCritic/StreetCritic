@@ -20,6 +20,7 @@ import { useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
 import { LoginButtons } from "@/components";
+import { GithubLogo, MastodonLogo } from "@phosphor-icons/react";
 
 export default function Header() {
   const appState = useSelector(selectAppState);
@@ -58,6 +59,17 @@ export default function Header() {
             <Link to={"/terms-of-use"} className={classes.link}>
               Terms of Use
             </Link>
+          </Group>
+          <Group h="100%" gap={10} className={classes.socialMediaLinks}>
+            <a
+              href="https://digitalcourage.social/@streetcritic"
+              target="_blank"
+            >
+              <MastodonLogo size={32} />
+            </a>
+            <a href="https://github.com/streetcritic" target="_blank">
+              <GithubLogo size={32} />
+            </a>
           </Group>
 
           <Group h="100%" wrap="nowrap">

@@ -66,3 +66,11 @@
   border-top: rem(1px) solid
     light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
 }
+
+.socialMediaLinks a {
+  color: var(--mantine-color-gray-7);
+}
+
+.socialMediaLinks a:hover {
+  color: var(--mantine-color-gray-9);
+}
