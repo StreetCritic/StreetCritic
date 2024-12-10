@@ -1,5 +1,5 @@
 import { queriedLocation } from "@/features/map/mapSlice";
-import { TextInput } from "@mantine/core";
+import { Box, TextInput } from "@mantine/core";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ export default function LocationSearch() {
   const [query, setQuery] = useState("");
   const icon = <MagnifyingGlass size={28} weight="bold" />;
   return (
-    <div className={styles.root}>
+    <Box className={styles.root}>
       <form
         onSubmit={(e) => {
           dispatch(queriedLocation(query));
@@ -19,6 +19,7 @@ export default function LocationSearch() {
         }}
       >
         <TextInput
+          w={query.length > 0 ? 300 : 120}
           rightSectionPointerEvents="none"
           rightSection={icon}
           placeholder="Search..."
@@ -26,6 +27,6 @@ export default function LocationSearch() {
           value={query}
         />
       </form>
-    </div>
+    </Box>
   );
 }

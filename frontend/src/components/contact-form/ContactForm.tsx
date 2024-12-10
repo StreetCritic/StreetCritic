@@ -8,7 +8,7 @@ import {
   Fieldset,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Alert, H1 } from "@/components";
+import { Alert, Title } from "@/components";
 import { useState } from "react";
 import { useLocalize } from "@/hooks";
 
@@ -78,7 +78,7 @@ export default function ContactForm() {
 
   return (
     <>
-      <H1>Get in touch</H1>
+      <Title>Get in touch</Title>
       <form
         onSubmit={form.onSubmit((values: Values) => {
           submit(values);

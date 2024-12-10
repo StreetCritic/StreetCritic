@@ -1,5 +1,5 @@
 import Container from "@/components/container";
-import { P, H1 } from "@/components/typography";
+import { P, Title } from "@/components/typography";
 import useMeta from "@/hooks/useMeta";
 
 /* export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <main>
       <Container>
-        <H1>Our Sponsors</H1>
+        <Title>Our Sponsors</Title>
         <P>
           From September 2024 to February 2025, the development of the prototype
           of StreetCritic is sponsered by the German Ministry of Education and

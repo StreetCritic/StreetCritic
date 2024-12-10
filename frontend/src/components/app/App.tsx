@@ -3,7 +3,7 @@
 import Header from "@/components/header";
 import { Notifications } from "@mantine/notifications";
 import { useUser } from "@/hooks";
-import { createTheme, MantineProvider, rem } from "@mantine/core";
+import { Avatar, createTheme, MantineProvider, rem } from "@mantine/core";
 import { useEffect } from "react";
 
 const theme = createTheme({
@@ -17,6 +17,17 @@ const theme = createTheme({
       // ...up to h6
       h6: { fontWeight: "900" },
     },
+  },
+  components: {
+    Avatar: Avatar.extend({
+      vars: (_theme, _props) => {
+        return {
+          root: {
+            "--avatar-bg": "white",
+          },
+        };
+      },
+    }),
   },
   /* colors: {
    *   'streetcritic-green': [

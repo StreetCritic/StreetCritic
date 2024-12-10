@@ -1,5 +1,5 @@
 import Container from "@/components/container";
-import { P, H1, H2 } from "@/components/typography";
+import { Title, P, H2 } from "@/components/typography";
 import useMeta from "@/hooks/useMeta";
 
 export default function About() {
@@ -7,10 +7,10 @@ export default function About() {
   return (
     <main>
       <Container>
-        <H1>
+        <Title>
           StreetCritic collects data and builds digital tools to support
           sustainable mobility
-        </H1>
+        </Title>
 
         <H2>Gathering insights about streets</H2>
 

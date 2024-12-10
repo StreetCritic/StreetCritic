@@ -1,4 +1,8 @@
 .root {
-  /* height: calc(100vh - var(--header-height)); */
-  height: calc(100vh - 70px);
+  height: 100%;
+  width: 100%;
+  @media (min-width: $mantine-breakpoint-md) {
+    height: calc(100vh - var(--header-height));
+    height: rem(42px);
+  }
 }

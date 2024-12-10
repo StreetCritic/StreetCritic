@@ -15,6 +15,11 @@
 
 .controls {
   top: var(--mantine-spacing-md);
+  pointer-events: none;
+}
+
+.controls > * {
+  pointer-events: auto;
 }
 
 .legend {

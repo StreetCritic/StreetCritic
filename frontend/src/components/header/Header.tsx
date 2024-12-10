@@ -19,8 +19,9 @@ import UserNavigation from "./UserNavigation";
 import { useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
-import { LoginButtons } from "@/components";
-import { GithubLogo, MastodonLogo } from "@phosphor-icons/react";
+import { ActionIcon, LoginButtons } from "@/components";
+import SocialMediaLinks from "./SocialMediaLinks";
+import LogoLink from "./LogoLink";
 
 export default function Header() {
   const appState = useSelector(selectAppState);
@@ -30,14 +31,12 @@ export default function Header() {
 
   return (
     <Box>
-      <header className={classes.header}>
+      <header className={classes.root}>
         <Group wrap="nowrap" justify="space-between" h="100%">
-          <Link className={classes.logoLink} to={"/"}>
-            <img
-              src={new URL("logo.svg", import.meta.url).href}
-              alt="StreetCritic"
-            />
-          </Link>
+          <Box hiddenFrom="md"></Box>
+          <Box visibleFrom="md" w="50%" maw="200px">
+            <LogoLink />
+          </Box>
 
           <Group h="100%" gap={0} visibleFrom="md">
             <Link to={"/"} className={classes.link}>
@@ -60,24 +59,15 @@ export default function Header() {
               Terms of Use
             </Link>
           </Group>
-          <Group h="100%" gap={10} className={classes.socialMediaLinks}>
-            <a
-              href="https://digitalcourage.social/@streetcritic"
-              target="_blank"
-            >
-              <MastodonLogo size={32} />
-            </a>
-            <a href="https://github.com/streetcritic" target="_blank">
-              <GithubLogo size={32} />
-            </a>
-          </Group>
+
+          <SocialMediaLinks visibleFrom="md" />
 
           <Group h="100%" wrap="nowrap">
             {appState.authState === AuthenticationState.Error && (
               <p>Authentication error</p>
             )}
             {appState.authState === AuthenticationState.Authenticating && (
-              <Loader color="blue" size="sm" />
+              <Loader color="blue" size="md" />
             )}
             {appState.authState === AuthenticationState.Authenticated && (
               <UserNavigation
@@ -86,15 +76,18 @@ export default function Header() {
               />
             )}
             {appState.authState === AuthenticationState.Unauthenticated && (
-              <Group visibleFrom="sm">
+              <Group visibleFrom="md">
                 <LoginButtons />
               </Group>
             )}
-            <Burger
-              opened={drawerOpened}
-              onClick={toggleDrawer}
-              hiddenFrom="md"
-            />
+            <Box hiddenFrom="md">
+              <ActionIcon
+                label="Menu"
+                color="white"
+                onClick={toggleDrawer}
+                icon={<Burger opened={drawerOpened} />}
+              />
+            </Box>
           </Group>
         </Group>
       </header>
@@ -108,6 +101,10 @@ export default function Header() {
         zIndex={1000000}
       >
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
+          <Box w="50%" maw="200px" p="md">
+            <LogoLink />
+          </Box>
+
           <Divider my="sm" />
 
           <Link to={""} className={classes.link} onClick={toggleDrawer}>
@@ -137,6 +134,10 @@ export default function Header() {
               <LoginButtons />
             )}
           </Stack>
+
+          <Box p="md">
+            <SocialMediaLinks />
+          </Box>
         </ScrollArea>
       </Drawer>
     </Box>
