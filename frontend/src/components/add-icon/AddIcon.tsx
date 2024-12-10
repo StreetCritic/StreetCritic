@@ -1,5 +1,5 @@
 import styles from "./AddIcon.module.css";
-import { Plus } from "@phosphor-icons/react";
+import { MapPinPlus } from "@phosphor-icons/react";
 
 type Props = {
   onClick: () => void;
@@ -12,7 +12,7 @@ export default function AddIcon({ onClick }: Props) {
   return (
     <div className={styles.root}>
       <a href="#" onClick={onClick}>
-        <Plus size={32} weight="bold" />
+        <MapPinPlus size={32} weight="fill" />
       </a>
     </div>
   );

@@ -1,5 +1,5 @@
 .root {
-  background: white;
+  background: var(--mantine-primary-color-filled);
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 0 0 2px #0000001a;
@@ -11,5 +11,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: inherit;
+  color: var(--mantine-color-white);
 }
