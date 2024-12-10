@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import { useLocationMarker } from "./locationMarker";
 import { useWayDisplay } from "./wayDisplay";
+import GeoLocate from "./geoLocate";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -84,15 +85,6 @@ export class Map {
     // });
 
     this.map.once("load", () => {
-      // this.map.addControl(
-      //   new GeolocateControl({
-      //     positionOptions: {
-      //       enableHighAccuracy: true,
-      //     },
-      //     trackUserLocation: false,
-      //   }),
-      //   "bottom-right",
-      // );
       this.map.addControl(new NavigationControl(), "bottom-right");
 
       this.map.on("dragstart", () => {
@@ -411,6 +403,7 @@ export function useMap(
         );
       };
       const theMap = new Map(onCenterChange, container.current, setMap);
+      new GeoLocate(theMap.getMapLibre());
       console.log("map created");
       return () => {
         theMap.destruct();
