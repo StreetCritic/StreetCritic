@@ -109,22 +109,24 @@ export default function MapApp({ selectedWay }: Props) {
       <div className={styles.controls}>
         <ProfileControl />
         <LocationSearch />
-        <Group>
-          <ActionIcon
-            label="Add way"
-            color="blue"
-            icon={<MapPinPlus size={32} weight="fill" />}
-            onClick={() => {
-              requireAuthentication(() => setShowWayAddingIntro(true));
-            }}
-          />
-          <ActionIcon
-            label="Start routing"
-            color="gray.7"
-            icon={<TrafficSign size={32} weight="fill" />}
-            onClick={() => dispatch(switchedToRouting())}
-          />
-        </Group>
+        {appState.mode === AppMode.Browsing && (
+          <Group>
+            <ActionIcon
+              label="Add way"
+              color="blue"
+              icon={<MapPinPlus size={32} weight="fill" />}
+              onClick={() => {
+                requireAuthentication(() => setShowWayAddingIntro(true));
+              }}
+            />
+            <ActionIcon
+              label="Start routing"
+              color="gray.7"
+              icon={<TrafficSign size={32} weight="fill" />}
+              onClick={() => dispatch(switchedToRouting())}
+            />
+          </Group>
+        )}
       </div>
 
       <div className={styles.legend}>
