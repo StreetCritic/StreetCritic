@@ -9,7 +9,6 @@ import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
 import LocationQuery from "../location-query";
 import LocationSearch from "../location-search";
 import Sidebar from "./Sidebar";
-import WayAddingIntroduction from "../way-adding-introduction";
 import WayCreateForm from "./WayCreateForm";
 import {
   ActionIcon,
@@ -45,7 +44,6 @@ export default function MapApp({ selectedWay }: Props) {
   const [loginModal, requireAuthentication] = useLoginGate();
   const navigateMap = useNavigateMap();
   const [way, segments] = useWay();
-  const [showWayAddingIntro, setShowWayAddingIntro] = useState(false);
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
   const onWaySelect = useCallback(
@@ -82,16 +80,6 @@ export default function MapApp({ selectedWay }: Props) {
         </Sidebar>
       )}
 
-      {showWayAddingIntro && (
-        <WayAddingIntroduction
-          onAbort={() => setShowWayAddingIntro(false)}
-          onFinish={() => {
-            setShowWayAddingIntro(false);
-            dispatch(switchedToWayAdding());
-          }}
-        />
-      )}
-
       {appState.mode === AppMode.WayAdding && (
         <Sidebar onClose={() => dispatch(switchedToBrowsing())}>
           <WayAddingSidebar
@@ -116,9 +104,9 @@ export default function MapApp({ selectedWay }: Props) {
               label="Add way"
               color="blue"
               icon={<MapPinPlus size={32} weight="fill" />}
-              onClick={() => {
-                requireAuthentication(() => setShowWayAddingIntro(true));
-              }}
+              onClick={() =>
+                requireAuthentication(() => dispatch(switchedToWayAdding()))
+              }
             />
             <ActionIcon
               label="Start routing"

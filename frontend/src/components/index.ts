@@ -1,4 +1,5 @@
 export * from "./typography";
+export { default as Accordion } from "./accordion";
 export { default as ActionIcon } from "./action-icon";
 export { default as Alert } from "./alert";
 export { default as ContactForm } from "./contact-form";
