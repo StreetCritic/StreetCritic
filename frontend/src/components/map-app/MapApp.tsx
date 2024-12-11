@@ -63,6 +63,7 @@ export default function MapApp({ selectedWay }: Props) {
         <WayCreateForm
           route={segments}
           onCreated={(id: number) => {
+            setWayCreateFormOpen(false);
             dispatch(switchedToBrowsing());
             onWaySelect(id);
           }}
