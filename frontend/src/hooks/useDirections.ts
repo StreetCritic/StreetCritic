@@ -3,6 +3,8 @@ import { Valhalla } from "@routingjs/valhalla";
 import type { Feature } from "geojson";
 import type { Stop } from "./useWay";
 import config from "@/config";
+import { useDispatch } from "react-redux";
+import { receivedDirections } from "@/features/map/directionsSlice";
 
 /**
  * A calculated route.
@@ -21,6 +23,7 @@ export type Route = {
  */
 export function useDirections(stops: Stop[]): Route | null {
   const [route, setRoute] = useState<null | Route>(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (stops.length === 0) {
       return;
@@ -36,6 +39,16 @@ export function useDirections(stops: Stop[]): Route | null {
               "bicycle",
             )
           : null;
+      if (directions) {
+        const direction = directions.directions[0];
+        dispatch(
+          receivedDirections({
+            feature: direction.feature as Feature,
+            distance: direction.feature.properties.distance || 0,
+            duration: direction.feature.properties.duration || 0,
+          }),
+        );
+      }
       setRoute({
         stops,
         feature: directions
@@ -43,7 +56,7 @@ export function useDirections(stops: Stop[]): Route | null {
           : null,
       });
     })();
-  }, [stops]);
+  }, [stops, dispatch]);
   if (stops.length === 0) {
     return null;
   }

@@ -27,8 +27,9 @@ import {
   selectAppState,
   switchedToBrowsing,
   switchedToRouting,
+  switchedToWayAdding,
+  closedRouting,
 } from "@/features/map/appSlice";
-import { switchedToWayAdding } from "@/features/map/appSlice";
 import { selectMapState } from "@/features/map/mapSlice";
 
 import styles from "./MapApp.module.css";
@@ -100,7 +101,7 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       {appState.mode === AppMode.Routing && (
-        <Sidebar onClose={() => dispatch(switchedToBrowsing())}>
+        <Sidebar onClose={() => dispatch(closedRouting())}>
           <RoutingSidebar />
         </Sidebar>
       )}

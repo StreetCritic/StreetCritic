@@ -173,13 +173,12 @@ export class Map {
         source: "route",
         layout: {
           "line-join": "round",
-          "line-cap": "round",
         },
         paint: {
-          // "line-color": "#00B3E6",
-          "line-color": "#FF0000",
-          "line-opacity": 0.7,
+          "line-color": "#0000FF",
+          "line-opacity": 0.5,
           "line-width": 5,
+          "line-dasharray": [3, 1],
         },
       });
 

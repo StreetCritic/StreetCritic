@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
-import { switchedToBrowsing } from "./appSlice";
+import { closedRouting, switchedToBrowsing } from "./appSlice";
 import config from "@/config";
 
 export type MapState = {
@@ -119,6 +119,9 @@ export const mapSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(switchedToBrowsing, (state, _action) => {
+      state.stops.length = 0;
+    });
+    builder.addCase(closedRouting, (state, _action) => {
       state.stops.length = 0;
     });
   },
