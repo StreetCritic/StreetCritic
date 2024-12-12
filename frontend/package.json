@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
+    "@hello-pangea/dnd": "^17.0.0",
     "@mantine/core": "^7.14.3",
     "@mantine/form": "^7.14.3",
     "@mantine/hooks": "^7.14.3",

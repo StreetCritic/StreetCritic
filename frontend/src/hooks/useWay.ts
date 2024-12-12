@@ -19,8 +19,12 @@ export type Stop = {
 type Rets = [GeoJSON.GeoJSON, Route | null];
 
 export function useWay(): Rets {
+  const allStops = useSelector(selectMapState).stops;
   const mode = useSelector(selectAppState).mode;
-  const stops = useSelector(selectMapState).stops;
+  const stops = useMemo(
+    () => allStops.filter((stop) => !stop.inactive),
+    [allStops],
+  );
 
   const route = useSegmentsRoute(mode === AppMode.WayAdding ? stops : []);
   const directionsRoute = useDirections(mode === AppMode.Routing ? stops : []);

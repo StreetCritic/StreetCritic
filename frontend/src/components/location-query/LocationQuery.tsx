@@ -1,35 +1,21 @@
-import { useEffect, useState } from "react";
-import config from "@/config";
 import { P } from "../typography";
 import { useDispatch } from "react-redux";
 import { selectedLocation } from "@/features/map/mapSlice";
 import { MapPin } from "@phosphor-icons/react";
+import {
+  default as useLocationSearch,
+  type Location,
+} from "@/hooks/useLocationSearch";
 
 type Props = {
   // The location query.
   query: string;
 };
 
-type Location = {
-  osm_id: string;
-  lon: string;
-  lat: string;
-  display_name: string;
-};
-
 export default function LocationQuery({ query }: Props) {
   const dispatch = useDispatch();
-  const [locations, setLocations] = useState<Location[] | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const locationsResponse = await fetch(
-        `${config.locationSearchURL}?q=${encodeURIComponent(query)}&format=jsonv2&email=${encodeURIComponent("c--nominatim-streetcritic@2foo.net")}`,
-      );
-      const locations = await locationsResponse.json();
-      setLocations(locations);
-    })();
-  }, [query]);
+  const { locations } = useLocationSearch({ query });
 
   if (!locations) {
     return <p>---</p>;

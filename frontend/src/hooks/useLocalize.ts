@@ -31,7 +31,7 @@ add-way-intro = Select a start and a stop of the new way for bicyclist by clicki
 add-way-info = Currently, there is a limit in the length of the way. You will notice that. Also, there are some usability problems which have high priority and will be solved shortly.
 
 routing-title = Routing
-routing-intro = Click on the map to select the starting point and ending point of your new route. The calculated route will then be displayed.
+routing-intro = Click on the map to add waypoints or search for locations below.
 routing-experimental = Routing is still in the experimental phase. New features will be added, and any issues will be addressed over time.
 routing-calculated-route = Calculated route:
 

@@ -4,7 +4,6 @@ import {
   stopAdded,
   stopChanged,
   stopRemoved,
-  stopsResetted,
 } from "@/features/map/mapSlice";
 import { Stop } from "@/hooks";
 import { LngLat, Map as LibreMap, Marker } from "maplibre-gl";
@@ -14,16 +13,13 @@ import { Map } from "./map";
 
 export type StopsOptions = {
   // Called when a stop gets added.
-  onAdd: (index: number, stop: Stop) => void;
+  onAdd: (stop: Stop) => void;
 
   // Called when a stop gets removed.
   onRemove: (index: number) => void;
 
   // Called when a stop gets changed.
   onChange: (index: number, stop: Stop) => void;
-
-  // Called when stops get resetted.
-  onReset: () => void;
 };
 
 /**
@@ -32,7 +28,6 @@ export type StopsOptions = {
 export default class Stops {
   map: LibreMap;
   options: StopsOptions;
-  lastChanged: number = 1;
   disabled: boolean = true;
 
   private stopMarker: Marker[] = [];
@@ -70,14 +65,7 @@ export default class Stops {
   }
 
   private handlePosition(coord: LngLat) {
-    if (this.lastChanged === 0) {
-      this.lastChanged = 1;
-      this.options.onAdd(1, coord);
-    } else {
-      this.lastChanged = 0;
-      this.options.onReset();
-      this.options.onAdd(0, coord);
-    }
+    this.options.onAdd(coord);
   }
 
   /**
@@ -102,12 +90,16 @@ export default class Stops {
     this.stopMarker = [];
     let index = 0;
     for (const stop of stops) {
-      // console.log("add stop marker", index);
       this.stopMarker.push(
         new Marker({
-          color: index == 0 ? "#FFCCE6" : "#AB212A",
+          color:
+            index == 0
+              ? "#21AB2A"
+              : index == stops.length - 1
+                ? "#AB212A"
+                : "#212AAB",
           draggable: true,
-          scale: index == 0 ? 0.7 : 1.0,
+          scale: index == 0 ? 0.8 : index == stops.length - 1 ? 1.0 : 0.9,
         }).setLngLat(stop),
       );
       index++;
@@ -144,17 +136,14 @@ export function useStops(map: Map | null) {
       return;
     }
     const stops = new Stops(map.getMapLibre(), {
-      onAdd: (index, stop) => {
-        dispatch(stopAdded({ index, lng: stop.lng, lat: stop.lat }));
+      onAdd: (stop) => {
+        dispatch(stopAdded({ lng: stop.lng, lat: stop.lat }));
       },
       onRemove: (index) => {
         dispatch(stopRemoved(index));
       },
       onChange: (index, stop) => {
         dispatch(stopChanged({ index, lng: stop.lng, lat: stop.lat }));
-      },
-      onReset: () => {
-        dispatch(stopsResetted());
       },
     });
     setStops(stops);
@@ -173,7 +162,7 @@ export function useStops(map: Map | null) {
   // Updated displayed stops.
   useEffect(() => {
     if (stops) {
-      stops.updateStops(mapState.stops);
+      stops.updateStops(mapState.stops.filter((stop) => !stop.inactive));
     }
   }, [stops, mapState.stops]);
 }

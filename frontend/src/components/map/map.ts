@@ -7,7 +7,6 @@ import maplibregl, {
   NavigationControl,
   StyleSpecification,
 } from "maplibre-gl";
-import type { GeoJSON } from "geojson";
 import { Protocol } from "pmtiles";
 import chroma from "chroma-js";
 
@@ -21,6 +20,7 @@ import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import { useLocationMarker } from "./locationMarker";
 import { useWayDisplay } from "./wayDisplay";
 import GeoLocate from "./geoLocate";
+import { useRouteDisplay } from "./routeDisplay";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -135,14 +135,6 @@ export class Map {
       //   },
       // });
 
-      this.map.addSource("route", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
       this.map.addSource("segments-parsed", {
         type: "geojson",
         data: {
@@ -166,21 +158,6 @@ export class Map {
       //     "line-width": 10,
       //   },
       // });
-
-      this.map.addLayer({
-        id: "route",
-        type: "line",
-        source: "route",
-        layout: {
-          "line-join": "round",
-        },
-        paint: {
-          "line-color": "#0000FF",
-          "line-opacity": 0.5,
-          "line-width": 5,
-          "line-dasharray": [3, 1],
-        },
-      });
 
       // this.map.addLayer(
       //   {
@@ -240,15 +217,6 @@ export class Map {
       // console.log(ratings);
       // });
 
-      this.map.on("mouseenter", "route", () => {
-        this.map.getCanvas().style.cursor = "copy";
-      });
-
-      // Change it back to a pointer when it leaves.
-      this.map.on("mouseleave", "route", () => {
-        this.map.getCanvas().style.cursor = "";
-      });
-
       const updateCenter = () => {
         onCenterChange(this.map.getCenter(), this.map.getZoom());
       };
@@ -278,23 +246,6 @@ export class Map {
     const source = this.map.getSource("existing-ways");
     if (source instanceof GeoJSONSource) {
       source.setData(data.geometry);
-    }
-  }
-
-  /**
-   * Displays the given route.
-   *
-   * @param route - The route to display. Remove any displayed route if null.
-   */
-  displayRoute(route: GeoJSON | null): void {
-    const source = this.map.getSource("route");
-    if (source instanceof GeoJSONSource) {
-      source.setData(
-        route || {
-          type: "FeatureCollection",
-          features: [],
-        },
-      );
     }
   }
 
@@ -380,12 +331,12 @@ export function useMap(
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const [map, setMap] = useState<Map | null>(null);
+  const { route, selectedWay } = options;
 
   useStops(map);
   useLocationMarker(map);
   useWayDisplay(map);
-
-  const { route, selectedWay } = options;
+  useRouteDisplay(map, route);
 
   // Initialize the map.
   useEffect(() => {
@@ -409,13 +360,6 @@ export function useMap(
       };
     }
   }, [dispatch, container]);
-
-  // Display route.
-  useEffect(() => {
-    if (map) {
-      map.displayRoute(route);
-    }
-  }, [map, route, mapState.stops]);
 
   // Display selected rating.
   useEffect(() => {

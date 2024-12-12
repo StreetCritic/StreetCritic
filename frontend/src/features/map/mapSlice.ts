@@ -1,8 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
-import { closedRouting, switchedToBrowsing } from "./appSlice";
+import {
+  closedRouting,
+  switchedToBrowsing,
+  switchedToRouting,
+} from "./appSlice";
 import config from "@/config";
+
+let nextStopId = 0;
+
+function newStopId() {
+  return nextStopId++;
+}
 
 export type MapState = {
   // Map center.
@@ -10,7 +20,7 @@ export type MapState = {
   center: { lng: number; lat: number; zoom: number; updateView: boolean };
 
   // Stops on the map.
-  stops: { lng: number; lat: number }[];
+  stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
   // Queried location
   locationQuery: string | null;
@@ -56,21 +66,62 @@ export const mapSlice = createSlice({
     // Stop has been added.
     stopAdded: (
       state,
-      action: PayloadAction<{ index: number; lng: number; lat: number }>,
+      action: PayloadAction<{
+        index?: number;
+        lng: number;
+        lat: number;
+        inactive?: boolean;
+      }>,
     ) => {
-      state.stops.splice(action.payload.index, 0, {
-        lng: action.payload.lng,
-        lat: action.payload.lat,
-      });
+      const inactive = action.payload.inactive || false;
+      const firstInactive = state.stops.findIndex((stop) => stop.inactive);
+      if (!inactive && firstInactive >= 0) {
+        state.stops.splice(firstInactive, 1, {
+          lng: action.payload.lng,
+          lat: action.payload.lat,
+          inactive,
+          id: newStopId(),
+        });
+      } else {
+        state.stops.splice(action.payload.index || state.stops.length, 0, {
+          lng: action.payload.lng,
+          lat: action.payload.lat,
+          inactive,
+          id: newStopId(),
+        });
+      }
     },
 
     // Stop has been changed.
     stopChanged: (
       state,
-      action: PayloadAction<{ index: number; lng: number; lat: number }>,
+      action: PayloadAction<{
+        index: number;
+        lng: number;
+        lat: number;
+        inactive?: boolean;
+      }>,
     ) => {
       state.stops[action.payload.index].lng = action.payload.lng;
       state.stops[action.payload.index].lat = action.payload.lat;
+      if (action.payload.inactive !== undefined) {
+        state.stops[action.payload.index].inactive = action.payload.inactive;
+      }
+    },
+
+    // Stop has been reordered.
+    stopReordered: (
+      state,
+      action: PayloadAction<{ from: number; to: number }>,
+    ) => {
+      const old = state.stops[action.payload.from];
+      state.stops.splice(action.payload.from, 1);
+      state.stops.splice(action.payload.to, 0, old);
+    },
+
+    // Stops have been reversed.
+    stopsReversed: (state) => {
+      state.stops.reverse();
     },
 
     // Stop has been removed.
@@ -80,7 +131,10 @@ export const mapSlice = createSlice({
 
     // All stops have been removed.
     stopsResetted: (state) => {
-      state.stops.length = 0;
+      state.stops = [
+        { lng: 0, lat: 0, inactive: true, id: newStopId() },
+        { lng: 0, lat: 0, inactive: true, id: newStopId() },
+      ];
     },
 
     // User queried a location.
@@ -121,6 +175,12 @@ export const mapSlice = createSlice({
     builder.addCase(switchedToBrowsing, (state, _action) => {
       state.stops.length = 0;
     });
+    builder.addCase(switchedToRouting, (state, _action) => {
+      state.stops = [
+        { lng: 0, lat: 0, inactive: true, id: newStopId() },
+        { lng: 0, lat: 0, inactive: true, id: newStopId() },
+      ];
+    });
     builder.addCase(closedRouting, (state, _action) => {
       state.stops.length = 0;
     });
@@ -131,7 +191,9 @@ export const {
   centerUpdated,
   stopAdded,
   stopRemoved,
+  stopReordered,
   stopChanged,
+  stopsReversed,
   stopsResetted,
   queriedLocation,
   selectedLocation,
