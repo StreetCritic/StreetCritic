@@ -1,6 +1,8 @@
+import { selectMapState } from "@/features/map/mapSlice";
 import type { GeoJSON } from "geojson";
 import { GeoJSONSource, Map as LibreMap } from "maplibre-gl";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Map } from "./map";
 
 type Props = {
@@ -70,15 +72,16 @@ export default class RouteDisplay {
 /**
  * Hook to initialise the route display functionality.
  */
-export function useRouteDisplay(map: Map | null, route: GeoJSON | null) {
+export function useRouteDisplay(map: Map | null) {
+  const mapState = useSelector(selectMapState);
   const [routeDisplay, setRouteDisplay] = useState<RouteDisplay | null>(null);
 
   // Display route.
   useEffect(() => {
     if (map && routeDisplay) {
-      routeDisplay.displayRoute(route);
+      routeDisplay.displayRoute(mapState.routeWay);
     }
-  }, [map, route, routeDisplay]);
+  }, [map, mapState.routeWay, routeDisplay]);
 
   // Initialize RouteDisplay.
   useEffect(() => {

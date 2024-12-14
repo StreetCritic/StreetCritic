@@ -27,8 +27,6 @@ export default function WayPoints() {
 
   const dispatch = useDispatch();
 
-  console.log("mapState", mapState.stops);
-
   const items = mapState.stops.map((item, index) => (
     <Draggable key={item.id} index={index} draggableId={String(item.id)}>
       {(provided, snapshot) => (

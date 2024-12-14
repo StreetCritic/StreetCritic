@@ -315,7 +315,6 @@ export class Map {
 }
 
 export type MapOptions = {
-  route: GeoJSON.GeoJSON | null;
   selectedWay: number | null;
 };
 
@@ -331,12 +330,12 @@ export function useMap(
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const [map, setMap] = useState<Map | null>(null);
-  const { route, selectedWay } = options;
+  const { selectedWay } = options;
 
   useStops(map);
   useLocationMarker(map);
   useWayDisplay(map);
-  useRouteDisplay(map, route);
+  useRouteDisplay(map);
 
   // Initialize the map.
   useEffect(() => {

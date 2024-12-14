@@ -1,20 +1,21 @@
-import { Route } from "ibre";
 import { useMemo } from "react";
 import { useLocalize } from "@/hooks";
 import { Accordion, Title, Text, Alert } from "@/components";
-import { useDispatch } from "react-redux";
-import { switchedToBrowsing } from "@/features/map/appSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { closedWayAdding } from "@/features/map/appSlice";
 import { Box, Button, Flex } from "@mantine/core";
 import { Info } from "@phosphor-icons/react";
+import WayPoints from "../routing-sidebar/WayPoints";
+import { selectMapState } from "@/features/map/mapSlice";
 
 type Props = {
-  segments: Route | null;
   onAddClick: () => void;
 };
 
-export default function WayAddingSidebar({ segments, onAddClick }: Props) {
+export default function WayAddingSidebar({ onAddClick }: Props) {
   const __ = useLocalize();
   const dispatch = useDispatch();
+  const mapState = useSelector(selectMapState);
 
   const infoItems = useMemo(() => {
     return [
@@ -78,11 +79,14 @@ export default function WayAddingSidebar({ segments, onAddClick }: Props) {
       </Text>
       <Text>{__("add-way-intro")}</Text>
       <Alert type="under-construction">{__("add-way-info")}</Alert>
+      <Box my="xl">
+        <WayPoints />
+      </Box>
       <Flex gap="md" align="center" justify="space-between">
-        {segments && (
+        {mapState.routeSegments && (
           <Button onClick={() => onAddClick()}>{__("continue")}</Button>
         )}
-        <Button color="red" onClick={() => dispatch(switchedToBrowsing())}>
+        <Button color="red" onClick={() => dispatch(closedWayAdding())}>
           {__("abort")}
         </Button>
       </Flex>

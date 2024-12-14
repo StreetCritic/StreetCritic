@@ -24,10 +24,10 @@ import { Group } from "@mantine/core";
 import {
   AppMode,
   selectAppState,
-  switchedToBrowsing,
   switchedToRouting,
   switchedToWayAdding,
   closedRouting,
+  closedWayAdding,
 } from "@/features/map/appSlice";
 import { selectMapState } from "@/features/map/mapSlice";
 
@@ -43,7 +43,7 @@ export default function MapApp({ selectedWay }: Props) {
   const mapState = useSelector(selectMapState);
   const [loginModal, requireAuthentication] = useLoginGate();
   const navigateMap = useNavigateMap();
-  const [way, segments] = useWay();
+  useWay();
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
 
   const onWaySelect = useCallback(
@@ -55,14 +55,13 @@ export default function MapApp({ selectedWay }: Props) {
 
   return (
     <div className={styles.root}>
-      <Map route={way} selectedWay={selectedWay} />
+      <Map selectedWay={selectedWay} />
       {loginModal}
-      {segments && wayCreateFormOpen && (
+      {mapState.routeSegments && wayCreateFormOpen && (
         <WayCreateForm
-          route={segments}
           onCreated={(id: number) => {
             setWayCreateFormOpen(false);
-            dispatch(switchedToBrowsing());
+            dispatch(closedWayAdding());
             onWaySelect(id);
           }}
           onDiscard={() => setWayCreateFormOpen(false)}
@@ -81,11 +80,8 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       {appState.mode === AppMode.WayAdding && (
-        <Sidebar onClose={() => dispatch(switchedToBrowsing())}>
-          <WayAddingSidebar
-            segments={segments}
-            onAddClick={() => setWayCreateFormOpen(true)}
-          />
+        <Sidebar onClose={() => dispatch(closedWayAdding())}>
+          <WayAddingSidebar onAddClick={() => setWayCreateFormOpen(true)} />
         </Sidebar>
       )}
 

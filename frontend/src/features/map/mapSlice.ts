@@ -3,16 +3,42 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import {
   closedRouting,
-  switchedToBrowsing,
+  closedWayAdding,
   switchedToRouting,
+  switchedToWayAdding,
 } from "./appSlice";
+import { receivedDirections } from "@/features/map/directionsSlice";
+
 import config from "@/config";
 
+// Free unique id for the next stop.
 let nextStopId = 0;
 
+// Returns a new unique stop id.
 function newStopId() {
   return nextStopId++;
 }
+
+// Returns a list of two new inactive stops with new ids.
+function newInitialStops() {
+  return [
+    { lng: 0, lat: 0, inactive: true, id: newStopId() },
+    { lng: 0, lat: 0, inactive: true, id: newStopId() },
+  ];
+}
+
+// Reset routing stops and way.
+function resetRouting(state: MapState) {
+  state.stops = newInitialStops();
+  state.routeWay = null;
+  state.routeSegments = null;
+}
+
+export type RouteSegment = {
+  id: string;
+  start: number;
+  stop: number;
+};
 
 export type MapState = {
   // Map center.
@@ -27,6 +53,12 @@ export type MapState = {
 
   // A displayed location marker.
   locationMarker: { lng: number; lat: number } | null;
+
+  // The calculated way of a routing.
+  routeWay: GeoJSON.GeoJSON | null;
+
+  // The calculated segments of a route.
+  routeSegments: RouteSegment[] | null;
 };
 
 const initialState: MapState = {
@@ -34,6 +66,8 @@ const initialState: MapState = {
   stops: [],
   locationQuery: null,
   locationMarker: null,
+  routeWay: null,
+  routeSegments: null,
 };
 
 export const mapSlice = createSlice({
@@ -131,15 +165,29 @@ export const mapSlice = createSlice({
 
     // All stops have been removed.
     stopsResetted: (state) => {
-      state.stops = [
-        { lng: 0, lat: 0, inactive: true, id: newStopId() },
-        { lng: 0, lat: 0, inactive: true, id: newStopId() },
-      ];
+      resetRouting(state);
     },
 
     // User queried a location.
     queriedLocation: (state, action: PayloadAction<string>) => {
       state.locationQuery = action.payload;
+    },
+
+    // A route was calculated.
+    routeCalculated: (state, action: PayloadAction<GeoJSON.GeoJSON>) => {
+      state.routeWay = action.payload;
+    },
+
+    // Segments of a route have been calculated.
+    routeSegmentsCalculated: (
+      state,
+      action: PayloadAction<{
+        segments: RouteSegment[];
+        route: GeoJSON.GeoJSON;
+      }>,
+    ) => {
+      state.routeSegments = action.payload.segments;
+      state.routeWay = action.payload.route;
     },
 
     // User selected a location.
@@ -172,32 +220,37 @@ export const mapSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(switchedToBrowsing, (state, _action) => {
-      state.stops.length = 0;
-    });
     builder.addCase(switchedToRouting, (state, _action) => {
-      state.stops = [
-        { lng: 0, lat: 0, inactive: true, id: newStopId() },
-        { lng: 0, lat: 0, inactive: true, id: newStopId() },
-      ];
+      resetRouting(state);
+    });
+    builder.addCase(switchedToWayAdding, (state, _action) => {
+      resetRouting(state);
     });
     builder.addCase(closedRouting, (state, _action) => {
-      state.stops.length = 0;
+      resetRouting(state);
+    });
+    builder.addCase(closedWayAdding, (state, _action) => {
+      resetRouting(state);
+    });
+    builder.addCase(receivedDirections, (state, action) => {
+      state.routeWay = action.payload.feature?.geometry;
     });
   },
 });
 
 export const {
   centerUpdated,
+  changedLocationMarker,
+  queriedLocation,
+  routeCalculated,
+  routeSegmentsCalculated,
+  selectedLocation,
   stopAdded,
+  stopChanged,
   stopRemoved,
   stopReordered,
-  stopChanged,
-  stopsReversed,
   stopsResetted,
-  queriedLocation,
-  selectedLocation,
-  changedLocationMarker,
+  stopsReversed,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
 export default mapSlice.reducer;

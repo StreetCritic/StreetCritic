@@ -65,8 +65,13 @@ export const appSlice = createSlice({
       state.authState = AuthenticationState.Authenticated;
     },
 
-    // User cloned routing mode.
+    // User closed routing mode.
     closedRouting: (state) => {
+      state.mode = AppMode.Browsing;
+    },
+
+    // User closed way adding mode.
+    closedWayAdding: (state) => {
       state.mode = AppMode.Browsing;
     },
   },
@@ -78,6 +83,7 @@ export const {
   switchedToRouting,
   userAuthenticated,
   closedRouting,
+  closedWayAdding,
 } = appSlice.actions;
 export const selectAppState = (state: RootState) => state.app;
 export default appSlice.reducer;

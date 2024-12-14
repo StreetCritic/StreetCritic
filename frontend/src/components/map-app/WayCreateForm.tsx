@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Route } from "ibre";
 import { Button, Text, TextInput, Group, Stepper, Modal } from "@mantine/core";
 
 import config from "@/config";
 import { useLocalize, useUser } from "@/hooks";
+import { useSelector } from "react-redux";
+import { selectMapState } from "@/features/map/mapSlice";
+import { selectAppState } from "@/features/map/appSlice";
 
 type Props = {
-  // The route to be rated;
-  route: Route;
   // Called when the new way has been added.
   onCreated: (wayId: number) => void;
   // Called when the new way is discarded.
@@ -22,30 +22,26 @@ enum Steps {
 /**
  * Form for way adding.
  */
-export default function WayCreateForm({ route, onCreated, onDiscard }: Props) {
+export default function WayCreateForm({ onCreated, onDiscard }: Props) {
   const __ = useLocalize();
   const user = useUser();
   const [title, setTitle] = useState("");
+  const mapState = useSelector(selectMapState);
+  const appState = useSelector(selectAppState);
 
   const [step, setStep] = useState(Steps.Title);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
 
   const onSubmit = () => {
     (async () => {
-      /* if (!route || !appState.user) {
-       *   return;
-       * } */
+      if (!mapState.routeSegments || !appState.user) {
+        return;
+      }
       const body = {
         title,
         segments: [] as { id: string; start: number; stop: number }[],
       };
-      for (const segment of route.get_segments()) {
-        body.segments.push({
-          id: segment.get_segment().get_id(),
-          start: segment.get_start(),
-          stop: segment.get_stop(),
-        });
-      }
+      body.segments = mapState.routeSegments;
       const token = (await user.getAccessToken()) || "";
       const response = await fetch(`${config.apiURL}/ways`, {
         method: "POST",

@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { Route } from "ibre";
 import { useSegmentsRoute } from "./useSegmentsRoute";
 import { useDirections } from "./useDirections";
 import { useSelector } from "react-redux";
@@ -16,28 +15,15 @@ export type Stop = {
   lat: number;
 };
 
-type Rets = [GeoJSON.GeoJSON, Route | null];
-
-export function useWay(): Rets {
+export function useWay() {
   const allStops = useSelector(selectMapState).stops;
   const mode = useSelector(selectAppState).mode;
   const stops = useMemo(
     () => allStops.filter((stop) => !stop.inactive),
     [allStops],
   );
-
-  const route = useSegmentsRoute(mode === AppMode.WayAdding ? stops : []);
-  const directionsRoute = useDirections(mode === AppMode.Routing ? stops : []);
-
-  const way = useMemo(() => {
-    return mode === AppMode.Routing
-      ? directionsRoute?.feature?.geometry
-      : mode === AppMode.WayAdding
-        ? route && JSON.parse(route.get_segments_as_geojson())
-        : null;
-  }, [mode, route, directionsRoute]);
-
-  return [way, route];
+  useSegmentsRoute(mode === AppMode.WayAdding ? stops : []);
+  useDirections(mode === AppMode.Routing ? stops : []);
 }
 
 export default useWay;

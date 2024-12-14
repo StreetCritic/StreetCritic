@@ -8,7 +8,6 @@ import { useMap } from "./map";
 import styles from "./Map.module.css";
 
 type Props = {
-  route: GeoJSON.GeoJSON | null;
   selectedWay: number | null;
 };
 
