@@ -1,7 +1,6 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, time::Instant};
 
 use anyhow;
-use benchmark_rs::stopwatch::StopWatch;
 
 use osm_io::osm::model::{element::Element, tag::Tag, way::Way};
 use osm_io::osm::pbf;
@@ -11,19 +10,18 @@ use osm_io::osm::pbf::file_info::FileInfo;
 use crate::db::ways::get_rated_ways;
 
 /// Load the ratings from the database and updates the ways in the PBF.
+/// in_path: Path to the original PBF.
+/// out_path: Path to the updated PBF.
+/// db: DB connection string.
 pub fn merge_ratings_into_osm_planet(
-    /// Path to the original PBF.
     in_path: &PathBuf,
-    /// Path to the updated PBF.
     out_path: &PathBuf,
-    /// DB connection string.
     db: &String,
 ) -> Result<(), anyhow::Error> {
     let rated_ways = get_rated_ways(db)?;
 
     log::info!("Started pbf io pipeline");
-    let mut stopwatch = StopWatch::new();
-    stopwatch.start();
+
     let reader = pbf::reader::Reader::new(&in_path)?;
     let mut file_info = FileInfo::default();
     file_info.with_writingprogram_str("streetcritic-rating");
@@ -32,6 +30,9 @@ pub fn merge_ratings_into_osm_planet(
 
     writer.write_header()?;
 
+    let mut count_elements = 0;
+    let time_pipeline_start = Instant::now();
+    let mut last_log = Instant::now();
     for element in reader.elements()? {
         match &element {
             Element::Way { way } => {
@@ -68,10 +69,18 @@ pub fn merge_ratings_into_osm_planet(
             _ => {}
         }
         writer.write_element(element)?;
+        count_elements += 1;
+        if last_log.elapsed().as_secs() >= 10 {
+            log::info!("Read {} elements", count_elements);
+            last_log = Instant::now();
+        }
     }
 
     writer.close()?;
 
-    log::info!("Finished pbf io pipeline, time: {}", stopwatch);
+    log::info!(
+        "Finished pbf io pipeline, time: {:?}",
+        time_pipeline_start.elapsed().as_secs()
+    );
     Ok(())
 }

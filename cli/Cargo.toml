@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.91"
-benchmark-rs = "0.1.1"
 clap = { version = "4.5.20", features = ["derive"] }
 log = "0.4.22"
 osm-io = "0.1.4"
