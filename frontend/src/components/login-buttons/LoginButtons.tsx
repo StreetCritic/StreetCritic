@@ -6,10 +6,10 @@ export default function LoginButtons() {
   const user = useUser();
   return (
     <>
+      <Button onClick={() => user.register()}>{__("sign-up")}</Button>
       <Button variant="default" onClick={() => user.signIn()}>
         {__("log-in")}
       </Button>
-      <Button onClick={() => user.register()}>{__("sign-up")}</Button>
     </>
   );
 }
