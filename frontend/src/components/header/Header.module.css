@@ -4,10 +4,10 @@
   background: transparent;
   width: 100%;
   z-index: 1;
-  padding-left: var(--mantine-spacing-md);
-  padding-right: var(--mantine-spacing-md);
-  padding-top: var(--mantine-spacing-md);
-  padding-bottom: var(--mantine-spacing-sm);
+  padding-left: var(--controls-spacing);
+  padding-right: var(--controls-spacing);
+  padding-top: var(--controls-spacing);
+  padding-bottom: var(--controls-spacing);
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 

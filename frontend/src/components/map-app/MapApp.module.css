@@ -6,7 +6,7 @@
 .controls,
 .legend {
   position: absolute;
-  left: var(--mantine-spacing-md);
+  left: var(--controls-spacing);
   display: flex;
   flex-direction: column;
   gap: var(--mantine-spacing-xs);
@@ -14,7 +14,7 @@
 }
 
 .controls {
-  top: var(--mantine-spacing-md);
+  top: var(--controls-spacing);
   pointer-events: none;
 }
 
@@ -23,5 +23,5 @@
 }
 
 .legend {
-  bottom: var(--mantine-spacing-md);
+  bottom: 50;
 }
