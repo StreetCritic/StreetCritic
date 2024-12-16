@@ -29,7 +29,10 @@ import {
   closedRouting,
   closedWayAdding,
 } from "@/features/map/appSlice";
-import { selectMapState } from "@/features/map/mapSlice";
+import {
+  clearedQueriedLocation,
+  selectMapState,
+} from "@/features/map/mapSlice";
 
 import styles from "./MapApp.module.css";
 
@@ -74,7 +77,7 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       {!selectedWay && mapState.locationQuery && (
-        <Sidebar>
+        <Sidebar onClose={() => dispatch(clearedQueriedLocation())}>
           <LocationQuery query={mapState.locationQuery} />
         </Sidebar>
       )}

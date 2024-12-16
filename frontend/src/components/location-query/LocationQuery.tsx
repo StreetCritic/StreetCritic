@@ -1,4 +1,5 @@
-import { P } from "../typography";
+import { Text } from "../typography";
+import { Loader } from "@/components";
 import { useDispatch } from "react-redux";
 import { selectedLocation } from "@/features/map/mapSlice";
 import { MapPin } from "@phosphor-icons/react";
@@ -17,15 +18,19 @@ export default function LocationQuery({ query }: Props) {
 
   const { locations } = useLocationSearch({ query });
 
-  if (!locations) {
-    return <p>---</p>;
+  if (locations === null) {
+    return <Loader />;
+  }
+
+  if (locations.length === 0) {
+    return <Text>Nothing found</Text>;
   }
 
   return (
     <div>
       {locations.map((location: Location) => (
         <div key={location.osm_id}>
-          <P>
+          <Text>
             <MapPin size={16} />
             &nbsp;
             <a
@@ -41,7 +46,7 @@ export default function LocationQuery({ query }: Props) {
             >
               {location.display_name}
             </a>
-          </P>
+          </Text>
         </div>
       ))}
     </div>

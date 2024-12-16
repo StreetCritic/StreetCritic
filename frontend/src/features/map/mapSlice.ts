@@ -173,6 +173,11 @@ export const mapSlice = createSlice({
       state.locationQuery = action.payload;
     },
 
+    // User cleared the queried a location.
+    clearedQueriedLocation: (state) => {
+      state.locationQuery = null;
+    },
+
     // A route was calculated.
     routeCalculated: (state, action: PayloadAction<GeoJSON.GeoJSON>) => {
       state.routeWay = action.payload;
@@ -195,7 +200,7 @@ export const mapSlice = createSlice({
       state,
       action: PayloadAction<{ lng: number; lat: number }>,
     ) => {
-      state.locationQuery = "";
+      state.locationQuery = null;
       state.locationMarker = {
         lng: action.payload.lng,
         lat: action.payload.lat,
@@ -241,6 +246,7 @@ export const mapSlice = createSlice({
 export const {
   centerUpdated,
   changedLocationMarker,
+  clearedQueriedLocation,
   queriedLocation,
   routeCalculated,
   routeSegmentsCalculated,

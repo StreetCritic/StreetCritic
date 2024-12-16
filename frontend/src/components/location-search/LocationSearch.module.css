@@ -3,3 +3,14 @@
   border-radius: 4px;
   overflow: hidden;
 }
+
+.root button {
+  background: none;
+  border: none;
+  color: var(--mantine-color-gray-6);
+  padding-top: 3px;
+}
+
+.root button:hover {
+  color: var(--mantine-color-gray-8);
+}

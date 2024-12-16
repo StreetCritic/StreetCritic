@@ -8,7 +8,11 @@ import styles from "./LocationSearch.module.css";
 export default function LocationSearch() {
   const dispatch = useDispatch();
   const [query, setQuery] = useState("");
-  const icon = <MagnifyingGlass size={28} weight="bold" />;
+  const icon = (
+    <button type="submit">
+      <MagnifyingGlass size={28} weight="bold" />
+    </button>
+  );
   return (
     <Box className={styles.root}>
       <form
@@ -20,7 +24,7 @@ export default function LocationSearch() {
       >
         <TextInput
           w={query.length > 0 ? 300 : 120}
-          rightSectionPointerEvents="none"
+          rightSectionPointerEvents="all"
           rightSection={icon}
           placeholder="Search..."
           onChange={(e) => setQuery(e.currentTarget.value)}
