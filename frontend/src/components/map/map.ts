@@ -6,6 +6,7 @@ import maplibregl, {
   GeoJSONSource,
   NavigationControl,
   StyleSpecification,
+  ScaleControl,
 } from "maplibre-gl";
 import { Protocol } from "pmtiles";
 import chroma from "chroma-js";
@@ -65,6 +66,15 @@ export class Map {
           '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap Mitwirkende</a> <a href = "https://www.maptiler.com/copyright/" target="_blank" >&copy; MapTiler</a>',
       },
     });
+
+    const scale = new ScaleControl({
+      maxWidth: 80,
+      unit: "imperial",
+    });
+    this.map.addControl(scale);
+
+    scale.setUnit("metric");
+
     // maplibregl.addProtocol("pmtiles", protocol.tile);
     // this.map.on('mousemove', (e) => {
     //   const debugDiv = document.getElementById("debug-coords");
