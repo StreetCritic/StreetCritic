@@ -1245,6 +1245,7 @@ dependencies = [
  "anyhow",
  "clap",
  "log",
+ "num_cpus",
  "osm-io",
  "postgres",
  "regex",

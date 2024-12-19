@@ -35,6 +35,7 @@ SELECT
 
 -- Fill the segment_sources table from Overture Maps data for segments that are
 -- part of existing StreetCritic ways.
+DELETE FROM db.segment_sources;
 INSERT INTO db.segment_sources
 SELECT
   id,

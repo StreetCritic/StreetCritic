@@ -3,7 +3,7 @@ use postgres::{Client, NoTls};
 use regex::Regex;
 use std::collections::HashMap;
 
-pub fn get_rated_ways(db: &String) -> Result<HashMap<i64, f32>, anyhow::Error> {
+pub fn get_rated_ways(db: &str) -> Result<HashMap<i64, f32>, anyhow::Error> {
     let mut client = Client::connect(db, NoTls)?;
     let mut ratings = HashMap::new();
     let way_regex = Regex::new(

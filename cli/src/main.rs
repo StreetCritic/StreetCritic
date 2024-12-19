@@ -1,8 +1,10 @@
+pub mod analysis;
 pub mod commands;
 pub mod db;
+pub mod osm;
 
-use anyhow;
 use clap::{Parser, Subcommand};
+use log::LevelFilter;
 use simple_logger::SimpleLogger;
 use std::path::PathBuf;
 
@@ -44,6 +46,7 @@ enum Commands {
 fn main() -> Result<(), anyhow::Error> {
     let cli = Cli::parse();
     SimpleLogger::new().init()?;
+    log::set_max_level(LevelFilter::Info);
     match &cli.command {
         Some(Commands::MergeRatingsIntoOSMPlanet { input, output, db }) => {
             commands::merge_ratings_into_osm_planet(input, output, db)
