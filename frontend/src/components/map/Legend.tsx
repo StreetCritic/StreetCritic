@@ -1,12 +1,12 @@
 import { SmileySad, Smiley } from "@phosphor-icons/react";
-import chroma from "chroma-js";
+import { ratingScale } from "./colors";
 import styles from "./Legend.module.css";
 
 /**
  * Displays the map legends.
  */
 export default function Legend() {
-  const scale = chroma.scale("Spectral");
+  const scale = ratingScale();
   let inner = "";
   for (let i = 0; i <= 1.0; i = i + 0.1) {
     inner += "," + scale(i).hex();

@@ -22,6 +22,7 @@ import { useLocationMarker } from "./locationMarker";
 import { useWayDisplay } from "./wayDisplay";
 import GeoLocate from "./geoLocate";
 import { useRouteDisplay } from "./routeDisplay";
+import { useIndicatorLayer } from "./indicatorLayer";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -38,7 +39,6 @@ export type GetAccessTokenFn = () => Promise<string | null>;
 export class Map {
   // The MapLibre instance.
   private map: LibreMap;
-  private ratingColorScale: chroma.Scale;
 
   /**
    * Initializes the map.
@@ -189,12 +189,6 @@ export class Map {
       //   "highway-name-path",
       // );
 
-      const colors = [];
-      for (let i = 0; i <= 10; i++) {
-        colors.push(i);
-        colors.push(this.ratingColorScale(i / 10).hex());
-      }
-
       this.map.addLayer({
         id: "rated-segments",
         type: "line",
@@ -208,7 +202,7 @@ export class Map {
             "interpolate",
             ["linear"],
             ["to-number", ["get", "_rating"]],
-            ...colors,
+            ...ratingColors(),
           ],
           "line-opacity": 1,
           "line-width": 4,
@@ -346,6 +340,7 @@ export function useMap(
   useLocationMarker(map);
   useWayDisplay(map);
   useRouteDisplay(map);
+  useIndicatorLayer(map);
 
   // Initialize the map.
   useEffect(() => {

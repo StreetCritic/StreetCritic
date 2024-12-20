@@ -22,6 +22,11 @@
   pointer-events: auto;
 }
 
+.styleControls {
+  left: auto;
+  right: var(--controls-spacing);
+}
+
 .legend {
   bottom: 50;
 }

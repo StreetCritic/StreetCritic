@@ -59,6 +59,8 @@ export type MapState = {
 
   // The calculated segments of a route.
   routeSegments: RouteSegment[] | null;
+
+  ratingLayerActive: boolean;
 };
 
 const initialState: MapState = {
@@ -68,6 +70,7 @@ const initialState: MapState = {
   locationMarker: null,
   routeWay: null,
   routeSegments: null,
+  ratingLayerActive: false,
 };
 
 export const mapSlice = createSlice({
@@ -168,6 +171,11 @@ export const mapSlice = createSlice({
       resetRouting(state);
     },
 
+    // Rating layer has been toggled.
+    toggledRatingLayer: (state) => {
+      state.ratingLayerActive = !state.ratingLayerActive;
+    },
+
     // User queried a location.
     queriedLocation: (state, action: PayloadAction<string>) => {
       state.locationQuery = action.payload;
@@ -257,6 +265,7 @@ export const {
   stopReordered,
   stopsResetted,
   stopsReversed,
+  toggledRatingLayer,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
 export default mapSlice.reducer;

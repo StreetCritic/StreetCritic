@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
 
-import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
+import { MapPinPlus, TrafficSign, Stack } from "@phosphor-icons/react";
 
 import LocationQuery from "../location-query";
 import LocationSearch from "../location-search";
@@ -32,7 +32,10 @@ import {
 import {
   clearedQueriedLocation,
   selectMapState,
+  toggledRatingLayer,
 } from "@/features/map/mapSlice";
+
+import classNames from "clsx";
 
 import styles from "./MapApp.module.css";
 
@@ -115,6 +118,15 @@ export default function MapApp({ selectedWay }: Props) {
             />
           </Group>
         )}
+      </div>
+
+      <div className={classNames(styles.controls, styles.styleControls)}>
+        <ActionIcon
+          label="Show/hide bikeability layer"
+          color="gray.7"
+          icon={<Stack size={32} weight="fill" />}
+          onClick={() => dispatch(toggledRatingLayer())}
+        />
       </div>
 
       <div className={styles.legend}>
