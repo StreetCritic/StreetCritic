@@ -1,51 +1,28 @@
-use crate::osm::filter::{match_tags, Filter, FilterExpr};
+use crate::osm::get_tag;
 use osm_io::osm::model::way::Way;
 
 /// Calculates the surface factor for the given way.
 pub fn calculate(way: &Way) -> f32 {
-    if
-        match_tags(way.tags(), &vec![
-            FilterExpr::Filter(Filter{
-                tag: Some("surface".into()),
-                tag_regexp: None,
-                value: None,
-                value_regexp: Some(
-                "^(gravel|concrete:lanes|concrete:plates|paving_stones|compacted|fine_gravel)$".into()),
-            }),
-        ])
-     {
-        0.7
-    } else if
-        match_tags(way.tags(), &vec![
-            FilterExpr::Filter(Filter{
-                tag: Some("surface".into()),
-                value: Some(Some("sett".into())),
-                tag_regexp: None,
-                value_regexp: None,
-            }),
-        ])
-     {
-        0.5
-    } else if
-        match_tags(way.tags(), &vec![
-            FilterExpr::Filter(Filter{
-                tag: Some("surface".into()),
-                value_regexp: Some("cobblestone$".into()),
-                tag_regexp: None,
-                value: None,
-            }),
-
-            FilterExpr::Filter(Filter{
-                tag: Some("surface".into()),
-                tag_regexp: None,
-                value: None,
-                value_regexp: Some(
-                "^(metal|wood|unpaved|gravel|pebblestone|ground|earth|dirt|grass|grass_paver|mud|sand|woodchips)$".into()),
-            }),
-        ])
-     {
-        0.25
-    } else {
-        1.0
+    let surface = get_tag(way, "surface");
+    match surface {
+        Some(surface) => match surface.as_str() {
+            "asphalt" | "chipseal" | "concrete" => 1.0,
+            "concrete:plates" | "paving_stones" | "clay" | "tartan" | "compacted"
+            | "fine_gravel" | "bricks" | "metal_grid" => 0.7,
+            "concrete:lanes" => 0.65,
+            "paving_stones:lanes" => 0.6,
+            "sett" | "paved" => 0.5,
+            "metal" | "wood" | "rubber" | "salt" | "acrylic" | "carpet" | "plastic" => 0.3,
+            "artificial_turf" | "gravel" | "snow" | "shells" | "tiles" | "cobblestone"
+            | "unhewn_cobblestone" | "unpaved" | "ground" | "earth" | "dirt" | "grass_paver"
+            | "woodchips" => 0.25,
+            "grass" | "mud" | "ice" | "sand" => 0.15,
+            "stepping_stones" | "rock" | "pebblestone" => 0.1,
+            _ => {
+                log::warn!("Unknown way surface \"{}\"", surface);
+                0.5
+            }
+        },
+        None => 0.5,
     }
 }
