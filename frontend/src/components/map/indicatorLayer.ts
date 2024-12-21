@@ -38,7 +38,7 @@ export default class IndicatorLayer {
         maxzoom: 22,
         paint: {
           "line-opacity": 1,
-          "line-width": 2,
+          "line-width": ["*", ["to-number", ["get", "bikeability"]], 10],
           "line-color": [
             "interpolate",
             ["linear"],
