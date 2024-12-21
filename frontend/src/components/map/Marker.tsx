@@ -16,7 +16,7 @@ export default function Marker({ onClick }: Props) {
         weight="fill"
       />
       <svg display="block" height="36.9px" width="24.3px" viewBox="0 0 27 41">
-        <g fill-rule="nonzero">
+        <g fillRule="nonzero">
           <g transform="translate(3.0, 29.0)" fill="#000000">
             <ellipse
               opacity="0.04"
