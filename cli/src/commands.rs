@@ -26,8 +26,11 @@ pub fn merge_ratings_into_osm_planet(
     let reader = pbf::reader::Reader::new(in_path)?;
     let mut file_info = FileInfo::default();
     file_info.with_writingprogram_str("streetcritic-rating");
-    let mut writer =
-        pbf::writer::Writer::from_file_info(out_path.to_path_buf(), file_info, CompressionType::Zlib)?;
+    let mut writer = pbf::writer::Writer::from_file_info(
+        out_path.to_path_buf(),
+        file_info,
+        CompressionType::Zlib,
+    )?;
 
     writer.write_header()?;
 
