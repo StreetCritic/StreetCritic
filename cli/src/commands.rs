@@ -34,7 +34,7 @@ pub fn merge_ratings_into_osm_planet(
 
     writer.write_header()?;
 
-    let mut count_elements = 0;
+    let mut count_elements : u64 = 0;
     let time_pipeline_start = Instant::now();
     let mut last_log = Instant::now();
 
