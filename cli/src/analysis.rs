@@ -1,1 +1,1 @@
-pub mod bikeability;
+pub mod indicators;

@@ -14,16 +14,31 @@ pub fn calculate(way: &Way) -> f32 {
 
     match get_tag(way, "highway") {
         Some(value) => match value.as_str() {
-            "path" => {
+            "path" | "pedestrian" | "footway" | "cycleway" | "steps" => {
                 return 1.0;
             }
-            "living_street" => {
+            "living_street" | "crossing" => {
                 return 0.7;
+            }
+            "service" | "track" => {
+                return 0.6;
             }
             "residential" => {
                 return 0.5;
             }
-            _ => {}
+            "tertiary" | "unclassified" => {
+                return 0.2;
+            }
+            "secondary" => {
+                return 0.1;
+            }
+            "primary" | "trunk" | "motorway" | "motorway_link" => {
+                return 0.0;
+            }
+            _ => {
+                log::warn!("Unknown value for tag highway: {}", value);
+                return 0.0;
+            }
         },
         None => {}
     }

@@ -1,19 +1,4 @@
-pub mod motorized_traffic;
-pub mod priority;
-pub mod speed_limit;
-pub mod surface;
 // pub mod way;
-
-use osm_io::osm::model::way::Way;
-
-/// Calculates the bikeability for the given way.
-pub fn calculate(way: &Way) -> f32 {
-    (1.0 * priority::calculate(way)
-        + 1.0 * surface::calculate(way)
-        + 1.0 * speed_limit::calculate(way)
-        + 1.0 * motorized_traffic::calculate(way))
-        / 4.0
-}
 
 // import type {
 //   IndicatorCalculationInterface,

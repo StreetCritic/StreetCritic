@@ -7,7 +7,7 @@ use osm_io::osm::pbf;
 use osm_io::osm::pbf::compression_type::CompressionType;
 use osm_io::osm::pbf::file_info::FileInfo;
 
-use crate::analysis::bikeability;
+use crate::analysis::indicators;
 use crate::db::ways::get_rated_ways;
 
 /// Load the ratings from the database and updates the ways in the PBF.
@@ -53,13 +53,14 @@ pub fn merge_ratings_into_osm_planet(
                     rated_ways.get(&way.id()).unwrap().to_string(),
                 ));
             }
-            let bikeability = bikeability::calculate(way).to_string();
-            log::trace!("Bikeability: {}", bikeability);
-            tags.push(Tag::new(
-                "streetcritic:indicator:bikeability".into(),
-                bikeability,
-            ));
-
+            let indicators = indicators::calculate(way);
+            for (key, value) in indicators {
+                log::trace!("indicator {}: {}", key, value);
+                tags.push(Tag::new(
+                    format!("streetcritic:indicator:{}", key).into(),
+                    value.to_string(),
+                ));
+            }
             writer.write_element(Element::Way {
                 way: Way::new(
                     way.id(),
