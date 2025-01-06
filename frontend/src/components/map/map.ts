@@ -8,8 +8,8 @@ import maplibregl, {
   StyleSpecification,
   ScaleControl,
 } from "maplibre-gl";
-import { Protocol } from "pmtiles";
-import chroma from "chroma-js";
+
+import { ratingColors } from "./colors";
 
 import config from "@/config";
 import style from "./style.json";
@@ -54,8 +54,6 @@ export class Map {
     container: HTMLElement,
     onLoad: (map: Map) => void,
   ) {
-    new Protocol();
-    this.ratingColorScale = chroma.scale("Spectral");
     this.map = new LibreMap({
       container,
       center: config.defaultMapCenter,
@@ -75,7 +73,6 @@ export class Map {
 
     scale.setUnit("metric");
 
-    // maplibregl.addProtocol("pmtiles", protocol.tile);
     // this.map.on('mousemove', (e) => {
     //   const debugDiv = document.getElementById("debug-coords");
     //   debugDiv.textContent = `${e.lngLat.lng.toFixed(5)} ${e.lngLat.lat.toFixed(5)}`;
@@ -104,11 +101,6 @@ export class Map {
       this.map.on("dragend", () => {
         this.map.getCanvas().style.cursor = "";
       });
-
-      // this.map.addSource("transportation", {
-      //   type: "vector",
-      //   url: "pmtiles:///transportation.pmtiles",
-      // });
 
       // this.map.addSource("transportation", {
       //   type: "vector",
@@ -269,11 +261,8 @@ export class Map {
 
   /**
    * Cleans up the map.
-   *
-   * Removes the PMTiles protocol from MapLibre GL.
    */
   destruct() {
-    maplibregl.removeProtocol("pmtiles");
     this.map.remove();
   }
 
