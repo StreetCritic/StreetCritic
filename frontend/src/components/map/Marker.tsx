@@ -8,7 +8,14 @@ type Props = {
 export default function Marker({ onClick }: Props) {
   // Based on MapLibreGL marker.
   return (
-    <div className={styles.root} aria-label="Map marker" onClick={onClick}>
+    <div
+      className={styles.root}
+      aria-label="Map marker"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+    >
       <HeartHalf
         className={styles.icon}
         color="#e01b24"

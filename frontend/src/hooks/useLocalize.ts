@@ -59,6 +59,10 @@ way-rating-tag-clean = Clean
 way-rating-tag-little_motorized_traffic = Little motorized traffic
 way-rating-tag-good_infrastructure = Good infrastructure
 
+way-points-from = From:
+way-points-via = Via:
+way-points-to = To:
+
 `);
 
 export default function useLocalize() {

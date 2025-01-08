@@ -6,7 +6,7 @@ import {
   stopRemoved,
 } from "@/features/map/mapSlice";
 import { Stop } from "@/hooks";
-import { LngLat, Map as LibreMap, Marker } from "maplibre-gl";
+import { Map as LibreMap, Marker } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Map } from "./map";
@@ -56,16 +56,6 @@ export default class Stops {
     //     setStops(extended);
     //   };
     // }, [route, setStops]);
-
-    this.map.on("click", (e) => {
-      if (!this.disabled && !e.defaultPrevented) {
-        this.handlePosition(e.lngLat);
-      }
-    });
-  }
-
-  private handlePosition(coord: LngLat) {
-    this.options.onAdd(coord);
   }
 
   /**

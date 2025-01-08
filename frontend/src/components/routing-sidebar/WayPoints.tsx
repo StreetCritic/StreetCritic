@@ -6,6 +6,7 @@ import {
   Trash,
   DotsSixVertical,
   Plus,
+  Gps,
 } from "@phosphor-icons/react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,16 +17,18 @@ import {
   stopRemoved,
   stopsResetted,
   stopsReversed,
+  enabledCurrentPositionAsStart,
 } from "@/features/map/mapSlice";
-import { ActionIcon, Stack, Group, Tooltip } from "@mantine/core";
+import { ActionIcon, Stack, Group, Tooltip, Flex } from "@mantine/core";
 
 import cx from "clsx";
 import classes from "./WayPoints.module.css";
+import { useLocalize } from "@/hooks";
 
 export default function WayPoints() {
   const mapState = useSelector(selectMapState);
-
   const dispatch = useDispatch();
+  const __ = useLocalize();
 
   const items = mapState.stops.map((item, index) => (
     <Draggable key={item.id} index={index} draggableId={String(item.id)}>
@@ -40,13 +43,32 @@ export default function WayPoints() {
           <div {...provided.dragHandleProps} className={classes.dragHandle}>
             <DotsSixVertical size={32} />
           </div>
-          <Group wrap="nowrap">
+          <Flex wrap="nowrap" align="flex-end" gap="xs">
             <WayPoint
               stop={item}
+              label={
+                index == 0
+                  ? __("way-points-from")
+                  : index == mapState.stops.length - 1
+                    ? __("way-points-to")
+                    : __("way-points-via")
+              }
               setStop={({ lng, lat }) =>
                 dispatch(stopChanged({ index, lng, lat, inactive: false }))
               }
             />
+            {index == 0 && (
+              <ActionIcon
+                variant="default"
+                disabled={mapState.currentPositionAsStart}
+                aria-label="Reset"
+                onClick={() => dispatch(enabledCurrentPositionAsStart())}
+              >
+                <Tooltip label="Use current position as start">
+                  <Gps size={24} />
+                </Tooltip>
+              </ActionIcon>
+            )}
             <ActionIcon
               disabled={mapState.stops.length <= 2}
               variant="default"
@@ -57,7 +79,7 @@ export default function WayPoints() {
                 <Trash size={24} />
               </Tooltip>
             </ActionIcon>
-          </Group>
+          </Flex>
         </div>
       )}
     </Draggable>

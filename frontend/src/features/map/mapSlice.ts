@@ -61,6 +61,16 @@ export type MapState = {
   routeSegments: RouteSegment[] | null;
 
   ratingLayerActive: boolean;
+
+  // Use current position as start for routing.
+  currentPositionAsStart: boolean;
+
+  // Position of context menu (or null if not visible).
+  contextMenuPosition: null | {
+    point: { x: number; y: number };
+    lngLat: { lng: number; lat: number };
+    canvasSize: { width: number; height: number };
+  };
 };
 
 const initialState: MapState = {
@@ -71,12 +81,19 @@ const initialState: MapState = {
   routeWay: null,
   routeSegments: null,
   ratingLayerActive: false,
+  currentPositionAsStart: true,
+  contextMenuPosition: null,
 };
 
 export const mapSlice = createSlice({
   name: "map",
   initialState,
   reducers: {
+    // Context menu has been canceled.
+    canceledContextMenu: (state) => {
+      state.contextMenuPosition = null;
+    },
+
     // Updates the map center.
     // Only updates map view if updateView is true.
     centerUpdated: (
@@ -98,6 +115,48 @@ export const mapSlice = createSlice({
         state.center.zoom = action.payload.zoom;
       }
       state.center.updateView = action.payload.updateView;
+    },
+
+    // Option to use current position as start was enabled.
+    enabledCurrentPositionAsStart: (state) => {
+      state.currentPositionAsStart = true;
+    },
+
+    // Current position has been located.
+    locatedPosition: (
+      state,
+      action: PayloadAction<{ lng: number; lat: number }>,
+    ) => {
+      if (state.currentPositionAsStart) {
+        state.stops[0].lng = action.payload.lng;
+        state.stops[0].lat = action.payload.lat;
+        state.stops[0].inactive = false;
+      }
+    },
+
+    // Context menu has been requested.
+    requestedContextMenu: (
+      state,
+      action: PayloadAction<{
+        point: { x: number; y: number };
+        lngLat: { lng: number; lat: number };
+        canvasSize: { width: number; height: number };
+      }>,
+    ) => {
+      state.contextMenuPosition = {
+        point: {
+          x: action.payload.point.x,
+          y: action.payload.point.y,
+        },
+        lngLat: {
+          lng: action.payload.lngLat.lng,
+          lat: action.payload.lngLat.lat,
+        },
+        canvasSize: {
+          width: action.payload.canvasSize.width,
+          height: action.payload.canvasSize.height,
+        },
+      };
     },
 
     // Stop has been added.
@@ -139,6 +198,9 @@ export const mapSlice = createSlice({
         inactive?: boolean;
       }>,
     ) => {
+      if (action.payload.index == 0) {
+        state.currentPositionAsStart = false;
+      }
       state.stops[action.payload.index].lng = action.payload.lng;
       state.stops[action.payload.index].lat = action.payload.lat;
       if (action.payload.inactive !== undefined) {
@@ -169,6 +231,7 @@ export const mapSlice = createSlice({
     // All stops have been removed.
     stopsResetted: (state) => {
       resetRouting(state);
+      state.currentPositionAsStart = true;
     },
 
     // Rating layer has been toggled.
@@ -252,10 +315,14 @@ export const mapSlice = createSlice({
 });
 
 export const {
+  canceledContextMenu,
   centerUpdated,
   changedLocationMarker,
   clearedQueriedLocation,
+  enabledCurrentPositionAsStart,
+  locatedPosition,
   queriedLocation,
+  requestedContextMenu,
   routeCalculated,
   routeSegmentsCalculated,
   selectedLocation,

@@ -6,14 +6,16 @@ import { useState } from "react";
 type Props = {
   stop: { lng: number; lat: number; inactive: boolean };
   setStop: ({ lng, lat }: { lng: number; lat: number }) => void;
+  // Label shown above the location text input.
+  label: string;
 };
 
-export default function WayPoint({ stop, setStop }: Props) {
+export default function WayPoint({ stop, setStop, label }: Props) {
   const [value, setValue] = useState("");
   const [query, setQuery] = useState("");
-  const [label, setLabel] = useState("");
+  const [locationName, setLocationName] = useState("");
   const placeholder =
-    label ||
+    locationName ||
     (stop.inactive
       ? "Search location..."
       : `${Math.round(stop.lng * 10000) / 10000}, ${Math.round(stop.lat * 10000) / 10000}`);
@@ -23,10 +25,9 @@ export default function WayPoint({ stop, setStop }: Props) {
       <LocationResults
         query={query}
         setLocation={({ lng, lat, label }) => {
-          console.log(lng, lat, label);
           setStop({ lng, lat });
           setValue("");
-          setLabel(label);
+          setLocationName(label);
         }}
         locationResults={locationResults}
       >
@@ -38,6 +39,7 @@ export default function WayPoint({ stop, setStop }: Props) {
           }}
         >
           <TextInput
+            label={label}
             value={value}
             onChange={(e) => setValue(e.currentTarget.value)}
             placeholder={placeholder}

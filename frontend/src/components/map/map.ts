@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import maplibregl, {
+import {
   Map as LibreMap,
   LngLat,
   type LngLatLike,
@@ -8,8 +8,6 @@ import maplibregl, {
   StyleSpecification,
   ScaleControl,
 } from "maplibre-gl";
-
-import { ratingColors } from "./colors";
 
 import config from "@/config";
 import style from "./style.json";
@@ -20,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import { useLocationMarker } from "./locationMarker";
 import { useWayDisplay } from "./wayDisplay";
-import GeoLocate from "./geoLocate";
+import useGeoLocate from "./geoLocate";
 import { useRouteDisplay } from "./routeDisplay";
 import { useIndicatorLayer } from "./indicatorLayer";
 
@@ -330,6 +328,7 @@ export function useMap(
   useWayDisplay(map);
   useRouteDisplay(map);
   useIndicatorLayer(map);
+  useGeoLocate(map);
 
   // Initialize the map.
   useEffect(() => {
@@ -346,7 +345,6 @@ export function useMap(
         );
       };
       const theMap = new Map(onCenterChange, container.current, setMap);
-      new GeoLocate(theMap.getMapLibre());
       console.log("map created");
       return () => {
         theMap.destruct();
@@ -369,4 +367,6 @@ export function useMap(
       dispatch(centerUpdated({ ...mapState.center, updateView: false }));
     }
   }, [map, mapState.center, mapState.center.updateView, dispatch]);
+
+  return map;
 }

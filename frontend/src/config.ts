@@ -21,6 +21,8 @@ type Config = {
   // URL to the rated segments tiles
   ratedSegmentsURL: string;
   defaultMapCenter: MapState["center"];
+  // Development mode.
+  development: boolean;
 };
 
 const config: Config = {
@@ -38,6 +40,7 @@ const config: Config = {
     lat: 50.110573,
     updateView: false,
   },
+  development: (process.env.DEVELOPMENT as string).toLowerCase() == "true",
 };
 
 export default config;
