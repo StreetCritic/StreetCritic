@@ -25,6 +25,9 @@
 .styleControls {
   left: auto;
   right: var(--controls-spacing);
+  @media (max-width: $mantine-breakpoint-md) {
+    top: 70px;
+  }
 }
 
 .legend {
