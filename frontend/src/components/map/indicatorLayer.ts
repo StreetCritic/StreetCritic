@@ -16,22 +16,14 @@ export default class IndicatorLayer {
   map: LibreMap;
   constructor({ map }: Props) {
     this.map = map;
-
-    this.map.addSource("bikeability", {
-      type: "vector",
-      minzoom: 12,
-      maxzoom: 14,
-      tiles: ["http://localhost:3000/bikeability/{z}/{x}/{y}"],
-    });
-
     this.map.addLayer(
       {
         id: "bikeability",
         type: "line",
-        source: "bikeability",
+        source: "openmaptiles",
         "source-layer": "transportation",
         layout: {
-          "visibility": "none",
+          visibility: "none",
           "line-join": "round",
           "line-cap": "round",
         },
