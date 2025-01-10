@@ -43,7 +43,13 @@ export type RouteSegment = {
 export type MapState = {
   // Map center.
   // If updateView is true, updates the map view once and sets this too false.
-  center: { lng: number; lat: number; zoom: number; updateView: boolean };
+  center: {
+    lng: number;
+    lat: number;
+    zoom: number;
+    updateView: boolean;
+    flyTo: boolean;
+  };
 
   // Stops on the map.
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
@@ -103,6 +109,7 @@ export const mapSlice = createSlice({
         lat?: number;
         zoom?: number;
         updateView: boolean;
+        flyTo?: boolean;
       }>,
     ) => {
       if (action.payload.lng) {
@@ -113,6 +120,9 @@ export const mapSlice = createSlice({
       }
       if (action.payload.zoom) {
         state.center.zoom = action.payload.zoom;
+      }
+      if (action.payload.flyTo) {
+        state.center.flyTo = action.payload.flyTo;
       }
       state.center.updateView = action.payload.updateView;
     },
@@ -281,6 +291,7 @@ export const mapSlice = createSlice({
         lat: action.payload.lat,
         updateView: true,
         zoom: 15,
+        flyTo: true,
       };
     },
 
