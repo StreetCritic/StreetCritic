@@ -39,6 +39,7 @@ const config: Config = {
     lng: 8.684966,
     lat: 50.110573,
     updateView: false,
+    flyTo: false,
   },
   development: (process.env.DEVELOPMENT as string).toLowerCase() == "true",
 };
