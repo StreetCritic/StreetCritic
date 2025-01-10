@@ -30,11 +30,19 @@ export default class IndicatorLayer {
         maxzoom: 22,
         paint: {
           "line-opacity": 1,
-          "line-width": ["*", ["to-number", ["get", "streetcritic:indicator:bikeability"]], 10],
+          "line-width": [
+            "*",
+            ["to-number", ["get", "streetcritic:indicator:bikeability"]],
+            10,
+          ],
           "line-color": [
             "interpolate",
             ["linear"],
-            ["*", ["to-number", ["get", "streetcritic:indicator:bikeability"]], 10],
+            [
+              "*",
+              ["to-number", ["get", "streetcritic:indicator:bikeability"]],
+              10,
+            ],
             ...ratingColors(),
           ],
         },
