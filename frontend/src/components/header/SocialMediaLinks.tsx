@@ -1,12 +1,5 @@
 import { Group } from "@mantine/core";
-import {
-  GithubLogo,
-  InstagramLogo,
-  LinkedinLogo,
-  MastodonLogo,
-  ThreadsLogo,
-  XLogo,
-} from "@phosphor-icons/react";
+import { GithubLogo, InstagramLogo, MastodonLogo } from "@phosphor-icons/react";
 
 import classes from "./SocialMediaLinks.module.css";
 
