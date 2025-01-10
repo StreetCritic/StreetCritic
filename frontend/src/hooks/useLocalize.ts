@@ -32,7 +32,6 @@ add-way-info = Currently, there is a limit in the length of the way. You will no
 
 routing-title = Routing
 routing-intro = Click on the map to add waypoints or search for locations below.
-routing-experimental = Routing is still in the experimental phase. New features will be added, and any issues will be addressed over time.
 routing-calculated-route = Calculated route:
 
 reviews = Reviews

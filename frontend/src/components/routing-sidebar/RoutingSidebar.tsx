@@ -1,5 +1,5 @@
 import { useLocalize } from "@/hooks";
-import { Title, Text, Alert } from "@/components";
+import { Title, Text } from "@/components";
 import { TrafficSign } from "@phosphor-icons/react";
 import { Group } from "@mantine/core";
 import Directions from "./Directions";
@@ -17,7 +17,6 @@ export default function RoutingSidebar() {
       </Title>
       <Text>{__("routing-intro")}</Text>
       <WayPoints />
-      <Alert type="experimental">{__("routing-experimental")}</Alert>
       <Directions />
     </div>
   );
