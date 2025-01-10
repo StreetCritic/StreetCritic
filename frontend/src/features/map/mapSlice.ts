@@ -71,6 +71,12 @@ export type MapState = {
   // Use current position as start for routing.
   currentPositionAsStart: boolean;
 
+  // Last located position.
+  lastLocatedPosition: {
+    lng: number;
+    lat: number;
+  } | null;
+
   // Position of context menu (or null if not visible).
   contextMenuPosition: null | {
     point: { x: number; y: number };
@@ -89,6 +95,7 @@ const initialState: MapState = {
   ratingLayerActive: false,
   currentPositionAsStart: true,
   contextMenuPosition: null,
+  lastLocatedPosition: null,
 };
 
 export const mapSlice = createSlice({
@@ -130,6 +137,11 @@ export const mapSlice = createSlice({
     // Option to use current position as start was enabled.
     enabledCurrentPositionAsStart: (state) => {
       state.currentPositionAsStart = true;
+      if (state.lastLocatedPosition) {
+        state.stops[0].lng = state.lastLocatedPosition.lng;
+        state.stops[0].lat = state.lastLocatedPosition.lat;
+        state.stops[0].inactive = false;
+      }
     },
 
     // Current position has been located.
@@ -137,6 +149,10 @@ export const mapSlice = createSlice({
       state,
       action: PayloadAction<{ lng: number; lat: number }>,
     ) => {
+      state.lastLocatedPosition = {
+        lng: action.payload.lng,
+        lat: action.payload.lat,
+      };
       if (state.currentPositionAsStart) {
         state.stops[0].lng = action.payload.lng;
         state.stops[0].lat = action.payload.lat;

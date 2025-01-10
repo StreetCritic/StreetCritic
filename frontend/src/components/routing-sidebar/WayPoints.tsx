@@ -45,6 +45,7 @@ export default function WayPoints() {
           </div>
           <Flex wrap="nowrap" align="flex-end" gap="xs">
             <WayPoint
+              isLocatedPosition={index == 0 && mapState.currentPositionAsStart}
               stop={item}
               label={
                 index == 0
@@ -64,7 +65,7 @@ export default function WayPoints() {
                 aria-label="Reset"
                 onClick={() => dispatch(enabledCurrentPositionAsStart())}
               >
-                <Tooltip label="Use current position as start">
+                <Tooltip label="Use my position as start">
                   <Gps size={24} />
                 </Tooltip>
               </ActionIcon>
