@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useLocalize } from "@/hooks";
-import { Accordion, Title, Text, Alert } from "@/components";
+import { Accordion, Title, Text, Alert, SidebarContent } from "@/components";
 import { useDispatch, useSelector } from "react-redux";
 import { closedWayAdding } from "@/features/map/appSlice";
 import { Box, Button, Flex } from "@mantine/core";
@@ -71,17 +71,21 @@ export default function WayAddingSidebar({ onAddClick }: Props) {
   }, []);
 
   return (
-    <div>
-      <Title order={2}>{__("add-way-title")}</Title>
-      <Text>
-        In the following steps, you may add a new bicycle way to StreetCritic
-        that can be rated by you or other users.
-      </Text>
-      <Text>{__("add-way-intro")}</Text>
-      <Alert type="under-construction">{__("add-way-info")}</Alert>
-      <Box my="xl">
-        <WayPoints />
-      </Box>
+    <Box p="sm">
+      <SidebarContent hideWhenFolded>
+        <Title order={2}>{__("add-way-title")}</Title>
+        <Text>
+          In the following steps, you may add a new bicycle way to StreetCritic
+          that can be rated by you or other users.
+        </Text>
+        <Text>{__("add-way-intro")}</Text>
+        <Alert type="under-construction">{__("add-way-info")}</Alert>
+      </SidebarContent>
+      <SidebarContent hideWhenFolded>
+        <Box my="xl">
+          <WayPoints />
+        </Box>
+      </SidebarContent>
       <Flex gap="md" align="center" justify="space-between">
         {mapState.routeSegments && (
           <Button onClick={() => onAddClick()}>{__("continue")}</Button>
@@ -90,9 +94,11 @@ export default function WayAddingSidebar({ onAddClick }: Props) {
           {__("abort")}
         </Button>
       </Flex>
-      <Box mt="xl">
-        <Accordion items={infoItems} />
-      </Box>
-    </div>
+      <SidebarContent hideWhenFolded>
+        <Box mt="xl">
+          <Accordion items={infoItems} />
+        </Box>
+      </SidebarContent>
+    </Box>
   );
 }

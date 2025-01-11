@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Box } from "@mantine/core";
+
 import WayInfo from "@/components/way-info";
 import Loader from "@/components/loader";
 import config from "@/config";
@@ -45,6 +47,12 @@ export default function WaySidebar({ wayId }: Props) {
   }
 
   return (
-    <WayInfo way={wayData} ratings={ratingsData} onRefresh={() => loadData()} />
+    <Box p="sm">
+      <WayInfo
+        way={wayData}
+        ratings={ratingsData}
+        onRefresh={() => loadData()}
+      />
+    </Box>
   );
 }

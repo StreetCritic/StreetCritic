@@ -9,5 +9,7 @@ export { default as LoginButtons } from "./login-buttons";
 export { default as LoginModal } from "./login-modal";
 export { default as ProfileControl } from "./profile-control";
 export { default as RoutingSidebar } from "./routing-sidebar";
+export { default as Sidebar } from "./sidebar";
+export * from "./sidebar";
 export { default as WayAddingSidebar } from "./way-adding-sidebar";
 export { default as WaySidebar } from "./way-sidebar";

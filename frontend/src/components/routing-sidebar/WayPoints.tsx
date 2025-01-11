@@ -43,7 +43,7 @@ export default function WayPoints() {
           <div {...provided.dragHandleProps} className={classes.dragHandle}>
             <DotsSixVertical size={32} />
           </div>
-          <Flex wrap="nowrap" align="flex-end" gap="xs">
+          <Flex wrap="nowrap" w="100%" align="flex-end" gap="xs">
             <WayPoint
               isLocatedPosition={index == 0 && mapState.currentPositionAsStart}
               stop={item}
@@ -87,7 +87,7 @@ export default function WayPoints() {
   ));
 
   return (
-    <Stack>
+    <Stack className={classes.root}>
       <DragDropContext
         onDragEnd={({ destination, source }) =>
           dispatch(

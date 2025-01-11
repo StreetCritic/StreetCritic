@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { SidebarContent } from "@/components";
 import { Title, P } from "@/components/typography";
 import { Group, Rating, Badge } from "@mantine/core";
 import Button from "@/components/button";
@@ -52,50 +53,53 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
     <>
       {/* {data.datetime} */}
       {/* Created on 2024/3/12 */}
-      Bicycle way
+      <SidebarContent hideWhenFolded>Bicycle way</SidebarContent>
       {loginModal}
       <Title size="h3">{way.title}</Title>
-      {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
-      {ratings.map((rating) => (
-        <>
-          <Rating
-            my="lg"
-            fractions={2}
-            defaultValue={rating.general_rating / 2}
-            readOnly
-            emptySymbol={<Heart size={32} color="#FA5252" />}
-            fullSymbol={<Heart size={32} weight="fill" color="#FA5252" />}
-          />
-          <Group my="lg">{rating.tags.map(tagToPill)}</Group>
-          <P>
-            {rating.comment}
-            {/* … <a href="#">Read more</a> */}
-          </P>
-          {/*
+
+      <SidebarContent hideWhenFolded>
+        {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
+        {ratings.map((rating) => (
+          <>
+            <Rating
+              my="lg"
+              fractions={2}
+              defaultValue={rating.general_rating / 2}
+              readOnly
+              emptySymbol={<Heart size={32} color="#FA5252" />}
+              fullSymbol={<Heart size={32} weight="fill" color="#FA5252" />}
+            />
+            <Group my="lg">{rating.tags.map(tagToPill)}</Group>
+            <P>
+              {rating.comment}
+              {/* … <a href="#">Read more</a> */}
+            </P>
+            {/*
           Was this review helpful?
           <Group>
             <ThumbsUp /> 12
             <ThumbsDown /> 3
           </Group>
           */}
-        </>
-      ))}
-      <br />
-      <br />
-      <Button
-        label="Rate this way"
-        icon={<Sparkle size={32} />}
-        onClick={() => requireAuthentication(() => setRatingFormOpen(true))}
-      />
-      {ratingFormOpen && (
-        <RatingForm
-          way_id={way.id}
-          onClose={() => {
-            setRatingFormOpen(false);
-            onRefresh();
-          }}
+          </>
+        ))}
+        <br />
+        <br />
+        <Button
+          label="Rate this way"
+          icon={<Sparkle size={32} />}
+          onClick={() => requireAuthentication(() => setRatingFormOpen(true))}
         />
-      )}
+        {ratingFormOpen && (
+          <RatingForm
+            way_id={way.id}
+            onClose={() => {
+              setRatingFormOpen(false);
+              onRefresh();
+            }}
+          />
+        )}
+      </SidebarContent>
     </>
   );
 }

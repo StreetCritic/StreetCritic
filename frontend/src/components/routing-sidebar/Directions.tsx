@@ -1,5 +1,4 @@
 import { useLocalize } from "@/hooks";
-import { Title } from "@/components";
 import { Card, Group } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { selectDirectionsState } from "@/features/map/directionsSlice";
@@ -19,7 +18,6 @@ export default function Directions() {
 
   return (
     <Card shadow="xs">
-      <Title order={3}>{__("routing-calculated-route")}</Title>
       <Group>
         <Group>
           <Ruler size={20} />

@@ -30,10 +30,6 @@ add-way-title = Add a new bicycle way
 add-way-intro = Select a start and a stop of the new way for bicyclist by clicking on the map.
 add-way-info = Currently, there is a limit in the length of the way. You will notice that. Also, there are some usability problems which have high priority and will be solved shortly.
 
-routing-title = Routing
-routing-intro = Click on the map to add waypoints or search for locations below.
-routing-calculated-route = Calculated route:
-
 reviews = Reviews
 reviews-empty = No reviews yet. Be the first to add one!
 

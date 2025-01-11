@@ -8,11 +8,11 @@ import { MapPinPlus, TrafficSign, Stack } from "@phosphor-icons/react";
 
 import LocationQuery from "../location-query";
 import LocationSearch from "../location-search";
-import Sidebar from "./Sidebar";
 import WayCreateForm from "./WayCreateForm";
 import {
   ActionIcon,
   RoutingSidebar,
+  Sidebar,
   WaySidebar,
   WayAddingSidebar,
   ProfileControl,
@@ -129,9 +129,11 @@ export default function MapApp({ selectedWay }: Props) {
         />
       </div>
 
-      <div className={styles.legend}>
-        <Legend />
-      </div>
+      {appState.mode === AppMode.Browsing && (
+        <div className={styles.legend}>
+          <Legend />
+        </div>
+      )}
     </div>
   );
 }

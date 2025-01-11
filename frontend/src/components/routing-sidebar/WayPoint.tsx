@@ -2,6 +2,7 @@ import { TextInput } from "@mantine/core";
 import LocationResults from "./LocationResults";
 import useLocationResults from "./useLocationResults";
 import { useState } from "react";
+import styles from "./WayPoint.module.css";
 
 type Props = {
   stop: { lng: number; lat: number; inactive: boolean };
@@ -40,6 +41,7 @@ export default function WayPoint({
         locationResults={locationResults}
       >
         <form
+          className={styles.form}
           onSubmit={(e) => {
             e.preventDefault();
             locationResults.toggleDropdown();
@@ -49,6 +51,7 @@ export default function WayPoint({
           <TextInput
             label={label}
             value={value}
+            width="100%"
             onChange={(e) => setValue(e.currentTarget.value)}
             placeholder={placeholder}
           />
