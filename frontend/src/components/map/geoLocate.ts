@@ -1,7 +1,8 @@
-import { locatedPosition } from "@/features/map/mapSlice";
+import { selectAppState, AppMode } from "@/features/map/appSlice";
+import { locatedPosition, selectMapState } from "@/features/map/mapSlice";
 import { GeolocateControl } from "maplibre-gl";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Map } from "./map";
 
 /**
@@ -37,4 +38,16 @@ export default function useGeoLocate(map: Map | null) {
       }
     };
   }, [map, dispatch, geoLocateControl]);
+
+  const mapState = useSelector(selectMapState);
+  const appState = useSelector(selectAppState);
+  useEffect(() => {
+    if (
+      geoLocateControl &&
+      mapState.currentPositionAsStart &&
+      appState.mode == AppMode.Routing
+    ) {
+      geoLocateControl.trigger();
+    }
+  }, [mapState.currentPositionAsStart, appState.mode, geoLocateControl]);
 }
