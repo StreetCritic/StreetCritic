@@ -2,12 +2,14 @@ import config from "@/config";
 import { useNavigateMap, useUser } from "@/hooks";
 import { FeatureCollection, MultiLineString } from "geojson";
 import { GeoJSONSource, Map as LibreMap, Marker } from "maplibre-gl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { GetAccessTokenFn, Map } from "./map";
 import MarkerElement from "./Marker";
 
 import { Way as APIWay } from "@/api-bindings/Way";
 import { createRoot } from "react-dom/client";
+import { useSelector } from "react-redux";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 
 type WaySelectHandler = (way: number) => void;
 
@@ -109,17 +111,23 @@ export default class WayDisplay {
   }
 
   /**
-   * Removes the location marker.
+   * Cleans up.
    */
-  remove(): void {}
+  remove(): void {
+    this.map.removeLayer("existing-ways");
+    this.map.removeSource("existing-ways");
+    for (const marker of Object.values(this.wayMarker)) {
+      marker.remove();
+    }
+  }
 }
 
 /**
  * Hook to initialise the way display functionality.
  */
 export function useWayDisplay(map: Map | null) {
-  const [wayDisplay, setWayDisplay] = useState<WayDisplay | null>(null);
   const onWaySelectRef = useRef<WaySelectHandler>((_: number) => {});
+  const appState = useSelector(selectAppState);
   const navigateMap = useNavigateMap();
   const user = useUser();
   const getAccessToken = useCallback(async () => {
@@ -133,21 +141,18 @@ export function useWayDisplay(map: Map | null) {
   }, [navigateMap]);
 
   useEffect(() => {
-    if (!map) {
+    if (!map || appState.mode !== AppMode.Browsing) {
       return;
     }
-    if (wayDisplay) {
-      console.warn("wayDisplay already created");
-      return;
-    }
-    setWayDisplay(
-      new WayDisplay({
-        map: map.getMapLibre(),
-        onWaySelect: (way: number) => {
-          onWaySelectRef.current(way);
-        },
-        getAccessToken,
-      }),
-    );
-  }, [map, getAccessToken, onWaySelectRef, wayDisplay]);
+    const wayDisplay = new WayDisplay({
+      map: map.getMapLibre(),
+      onWaySelect: (way: number) => {
+        onWaySelectRef.current(way);
+      },
+      getAccessToken,
+    });
+    return () => {
+      wayDisplay.remove();
+    };
+  }, [map, getAccessToken, onWaySelectRef, appState.mode]);
 }
