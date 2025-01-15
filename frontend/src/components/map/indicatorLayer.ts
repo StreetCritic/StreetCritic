@@ -16,45 +16,61 @@ export default class IndicatorLayer {
   map: LibreMap;
   constructor({ map }: Props) {
     this.map = map;
-    this.map.addLayer(
-      {
-        id: "bikeability",
-        type: "line",
-        source: "openmaptiles",
-        "source-layer": "transportation",
-        layout: {
-          visibility: "none",
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        maxzoom: 22,
-        paint: {
-          "line-opacity": 1,
-          "line-width": [
+    const lineColor = [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      13,
+      "#fff",
+      14,
+      [
+        "case",
+        ["has", "streetcritic:indicator:bikeability"],
+        [
+          "interpolate",
+          ["linear"],
+          [
             "*",
             ["to-number", ["get", "streetcritic:indicator:bikeability"]],
             10,
           ],
-          "line-color": [
-            "interpolate",
-            ["linear"],
-            [
-              "*",
-              ["to-number", ["get", "streetcritic:indicator:bikeability"]],
-              10,
-            ],
-            ...ratingColors(),
-          ],
-        },
-      },
-      "highway-name-path",
+          ...ratingColors(),
+        ],
+        "#fff",
+      ],
+    ];
+    this.map.setPaintProperty("highway-minor", "line-color", lineColor);
+    this.map.setPaintProperty(
+      "highway-secondary-tertiary",
+      "line-color",
+      lineColor,
     );
+    this.map.setPaintProperty("bridge-path", "line-color", lineColor);
+    this.map.setPaintProperty("bridge-primary", "line-color", lineColor);
+    this.map.setPaintProperty("bridge-minor", "line-color", lineColor);
+    this.map.setPaintProperty("bridge-trunk-primary", "line-color", lineColor);
+
+    this.map.setPaintProperty(
+      "bridge-secondary-tertiary",
+      "line-color",
+      lineColor,
+    );
+
+    this.map.setPaintProperty(
+      "bridge-secondary-tertiary",
+      "line-color",
+      lineColor,
+    );
+    this.map.setPaintProperty("highway-primary", "line-color", lineColor);
+    this.map.setPaintProperty("highway-trunk", "line-color", lineColor);
+    this.map.setPaintProperty("highway-path", "line-color", lineColor);
   }
 
   /**
    * Set visible state of the layer.
    */
   set_visible(visible: boolean) {
+    return;
     this.map.setLayoutProperty(
       "bikeability",
       "visibility",

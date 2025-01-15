@@ -36,7 +36,7 @@ export default class RouteDisplay {
       paint: {
         "line-color": "#0000FF",
         "line-opacity": 0.5,
-        "line-width": 5,
+        "line-width": 2,
         "line-dasharray": [3, 1],
       },
     });
