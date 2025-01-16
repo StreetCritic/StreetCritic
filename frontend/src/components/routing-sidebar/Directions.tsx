@@ -1,8 +1,10 @@
 import { useLocalize } from "@/hooks";
-import { Card, Group } from "@mantine/core";
+import { Box, Button, Card, Group } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { selectDirectionsState } from "@/features/map/directionsSlice";
-import { Ruler, Timer } from "@phosphor-icons/react";
+import { Export, Ruler, Timer } from "@phosphor-icons/react";
+import { downloadGPX } from "@/features/directions/valhalla";
+import { showNotification } from "@/notifications";
 
 export default function Directions() {
   const __ = useLocalize();
@@ -16,18 +18,48 @@ export default function Directions() {
   const hours = Math.floor(minutes / 60);
   const restMinutes = Math.round(minutes % 60);
 
+  const exportGPX = () => {
+    (async () => {
+      if (!directionsState.directions ||
+        !(downloadGPX(directionsState.directions))
+          /* mapState.stops.map((stop) => new LngLat(stop.lng, stop.lat)),
+* {
+*   shortest: directionsState.useShortest,
+* }, */
+          /* )) */
+      ) {
+        showNotification({
+          title: "Could not export route",
+          message:
+            "The route could not be exported. If this problem persists, please contact us.",
+          type: "error",
+        });
+      }
+    })();
+  };
+
   return (
-    <Card shadow="xs">
-      <Group>
+    <Box>
+      <Card shadow="xs">
         <Group>
-          <Ruler size={20} />
-          {Math.round(directionsState.directions.distance * 10) / 10} km
+          <Group>
+            <Ruler size={20} />
+            {Math.round(directionsState.directions.distance * 10) / 10} km
+          </Group>
+          <Group>
+            <Timer size={20} />
+            {hours && `${hours} h`} {restMinutes || "0"} min
+          </Group>
         </Group>
-        <Group>
-          <Timer size={20} />
-          {hours && `${hours} h`} {restMinutes || "0"} min
-        </Group>
-      </Group>
-    </Card>
+      </Card>
+      <Button
+        size="xs"
+        leftSection={<Export size={18} />}
+        mt="sm"
+        onClick={exportGPX}
+      >
+        Export track (GPX)
+      </Button>
+    </Box>
   );
 }

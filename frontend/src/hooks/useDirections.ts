@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { Valhalla } from "@routingjs/valhalla";
-import type { Feature } from "geojson";
+import type { Feature, LineString } from "geojson";
 import type { Stop } from "./useWay";
 import config from "@/config";
-import { useDispatch } from "react-redux";
-import { receivedDirections } from "@/features/map/directionsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  receivedDirections,
+  selectDirectionsState,
+} from "@/features/map/directionsSlice";
 
 /**
  * React hook to calculate the route.
@@ -13,6 +16,7 @@ import { receivedDirections } from "@/features/map/directionsSlice";
  */
 export function useDirections(stops: Stop[]) {
   const dispatch = useDispatch();
+  const directionsState = useSelector(selectDirectionsState);
   useEffect(() => {
     if (stops.length === 0) {
       return;
@@ -26,18 +30,23 @@ export function useDirections(stops: Stop[]) {
           ? await v.directions(
               stops.map((stop) => [stop.lat, stop.lng]),
               "bicycle",
+              {
+                preference: directionsState.useShortest
+                  ? "shortest"
+                  : undefined,
+              },
             )
           : null;
       if (directions) {
         const direction = directions.directions[0];
         dispatch(
           receivedDirections({
-            feature: direction.feature as Feature,
+            feature: direction.feature as Feature<LineString>,
             distance: direction.feature.properties.distance || 0,
             duration: direction.feature.properties.duration || 0,
           }),
         );
       }
     })();
-  }, [stops, dispatch]);
+  }, [stops, dispatch, directionsState.useShortest]);
 }

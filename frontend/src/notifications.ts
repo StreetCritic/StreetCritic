@@ -3,11 +3,14 @@ import { notifications } from "@mantine/notifications";
 type Props = {
   title: string;
   message: string;
-  type: "warning";
+  type: "warning" | "error";
 };
 
 const cfg = {
   warning: {
+    color: "red",
+  },
+  error: {
     color: "red",
   },
 };
