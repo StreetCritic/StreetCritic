@@ -2751,8 +2751,9 @@
       },
       "paint": {
         "text-color": "hsl(30, 23%, 62%)",
-        "text-halo-color": "#f8f4f0",
-        "text-halo-width": 0.5
+        "text-halo-blur": 0.5,
+        "text-halo-width": 1.5,
+        "text-halo-color": "rgba(255,255,255,0.7)"
       }
     },
     {
@@ -2782,7 +2783,8 @@
       "paint": {
         "text-color": "#765",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1
+        "text-halo-width": 1.5,
+        "text-halo-color": "rgba(255,255,255,0.7)"
       }
     },
     {
@@ -2808,7 +2810,8 @@
       "paint": {
         "text-color": "#765",
         "text-halo-blur": 0.5,
-        "text-halo-width": 1
+        "text-halo-width": 1.5,
+        "text-halo-color": "rgba(255,255,255,0.7)"
       }
     },
     {

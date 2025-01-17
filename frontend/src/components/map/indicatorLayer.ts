@@ -20,12 +20,23 @@ export default class IndicatorLayer {
       "interpolate",
       ["linear"],
       ["zoom"],
-      13,
+      12,
       "#fff",
-      14,
+      13,
       [
         "case",
-        ["has", "streetcritic:indicator:bikeability"],
+        [
+          "all",
+          ["has", "streetcritic:indicator:bikeability"],
+          ["!=", ["get", "class"], "trunk"],
+          ["!=", ["get", "bicycle"], "no"],
+          ["!=", ["get", "bicycle"], "use_sidepath"],
+          [
+            "any",
+            ["==", ["get", "bicycle"], "yes"],
+            ["!=", ["get", "subclass"], "footway"],
+          ],
+        ],
         [
           "interpolate",
           ["linear"],
