@@ -46,21 +46,25 @@ export const appSlice = createSlice({
   reducers: {
     // User switched to way adding mode.
     switchedToWayAdding: (state) => {
+      dispatchEvent(new Event("switched-to-way-adding"));
       state.mode = AppMode.WayAdding;
     },
 
     // User switched to browsing mode.
     switchedToBrowsing: (state) => {
+      dispatchEvent(new Event("switched-to-browsing"));
       state.mode = AppMode.Browsing;
     },
 
     // User switched to routing mode.
     switchedToRouting: (state) => {
+      dispatchEvent(new Event("switched-to-routing"));
       state.mode = AppMode.Routing;
     },
 
     // User was authenticated.
     userAuthenticated: (state, action: PayloadAction<User>) => {
+      dispatchEvent(new Event("user-authenticated"));
       state.user = action.payload;
       state.authState = AuthenticationState.Authenticated;
     },

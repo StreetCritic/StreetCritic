@@ -8,6 +8,7 @@ import {
   switchedToWayAdding,
 } from "./appSlice";
 import { receivedDirections } from "@/features/map/directionsSlice";
+import { dispatchEvent, Event } from "@/events";
 
 import config from "@/config";
 
@@ -195,6 +196,7 @@ export const mapSlice = createSlice({
         inactive?: boolean;
       }>,
     ) => {
+      dispatchEvent(new Event("stop-added"));
       const inactive = action.payload.inactive || false;
       const firstInactive = state.stops.findIndex((stop) => stop.inactive);
       if (!inactive && firstInactive >= 0) {
@@ -224,6 +226,7 @@ export const mapSlice = createSlice({
         inactive?: boolean;
       }>,
     ) => {
+      dispatchEvent(new Event("stop-changed"));
       if (action.payload.index == 0) {
         state.currentPositionAsStart = false;
       }
@@ -267,6 +270,7 @@ export const mapSlice = createSlice({
 
     // User queried a location.
     queriedLocation: (state, action: PayloadAction<string>) => {
+      dispatchEvent(new Event("queried-location"));
       state.locationQuery = action.payload;
     },
 
@@ -277,6 +281,7 @@ export const mapSlice = createSlice({
 
     // A route was calculated.
     routeCalculated: (state, action: PayloadAction<GeoJSON.GeoJSON>) => {
+      dispatchEvent(new Event("route-calculated"));
       state.routeWay = action.payload;
     },
 
@@ -297,6 +302,7 @@ export const mapSlice = createSlice({
       state,
       action: PayloadAction<{ lng: number; lat: number }>,
     ) => {
+      dispatchEvent(new Event("selected-location"));
       state.locationQuery = null;
       state.locationMarker = {
         lng: action.payload.lng,
