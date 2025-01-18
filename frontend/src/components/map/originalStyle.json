@@ -1,0 +1,22 @@
+{
+  "layers": [
+    {
+      "id": "housenumber",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "housenumber",
+      "minzoom": 17,
+      "layout": {
+        "text-field": "{housenumber}",
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 10
+      },
+      "paint": {
+        "text-color": "#999",
+        "text-halo-blur": 0.4,
+        "text-halo-color": "#FFF",
+        "text-halo-width": 1
+      }
+    }
+  ]
+}

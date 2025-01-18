@@ -7,10 +7,12 @@ import {
   NavigationControl,
   StyleSpecification,
   ScaleControl,
+  AddLayerObject,
 } from "maplibre-gl";
 
 import config from "@/config";
 import style from "./style.json";
+import originalStyle from "./originalStyle.json";
 
 import { init_hooks } from "ibre";
 import { useStops } from "./stops";
@@ -90,6 +92,10 @@ export class Map {
     // });
 
     this.map.once("load", () => {
+      for (const layer of originalStyle.layers) {
+        this.map.addLayer(layer as AddLayerObject);
+      }
+
       this.map.addControl(new NavigationControl(), "bottom-right");
 
       this.map.on("dragstart", () => {
