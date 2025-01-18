@@ -57,7 +57,6 @@ export default class IndicatorLayer {
       lineColor,
     );
     this.map.setPaintProperty("bridge-path", "line-color", lineColor);
-    this.map.setPaintProperty("bridge-primary", "line-color", lineColor);
     this.map.setPaintProperty("bridge-minor", "line-color", lineColor);
     this.map.setPaintProperty("bridge-trunk-primary", "line-color", lineColor);
 
