@@ -28,13 +28,46 @@ export default class IndicatorLayer {
         [
           "all",
           ["has", "streetcritic:indicator:bikeability"],
-          ["!=", ["get", "class"], "trunk"],
-          ["!=", ["get", "bicycle"], "no"],
-          ["!=", ["get", "bicycle"], "use_sidepath"],
+          [
+            "!",
+            ["in", ["get", "access"], ["literal", ["customers", "private"]]],
+          ],
+          [
+            "!",
+            ["in", ["get", "bicycle"], ["literal", ["no", "use_sidepath"]]],
+          ],
+          ["!", ["in", ["get", "class"], ["literal", ["trunk"]]]],
+          [
+            "!",
+            [
+              "in",
+              ["get", "service"],
+              [
+                "literal",
+                [
+                  "driveway",
+                  "parking_aisle",
+                  "drive-through",
+                  "emergency_access",
+                ],
+              ],
+            ],
+          ],
           [
             "any",
             ["==", ["get", "bicycle"], "yes"],
-            ["!=", ["get", "subclass"], "footway"],
+            [
+              "all",
+              ["!=", ["get", "foot"], "yes"],
+              [
+                "!",
+                [
+                  "in",
+                  ["get", "subclass"],
+                  ["literal", ["footway", "pedestrian"]],
+                ],
+              ],
+            ],
           ],
         ],
         [
