@@ -5,15 +5,15 @@ import chroma from "chroma-js";
  */
 export function ratingScale() {
   return chroma.scale([
-    "fff7ec",
-    "fee8c8",
-    "fdd49e",
-    "fdbb84",
-    "fc8d59",
-    "ef6548",
-    "d7301f",
-    "b30000",
-    "7f0000",
+    "fff5eb",
+    "fee6ce",
+    "fdd0a2",
+    "fdae6b",
+    "fd8d3c",
+    "f16913",
+    "d94801",
+    "a63603",
+    "7f2704",
   ]);
 }
 

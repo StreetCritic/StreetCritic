@@ -1,14 +1,13 @@
 .root {
-  background: #fff5;
+  background: #fff;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 0 0 2px #0000001a;
   padding: 0px 8px;
-
+  font-weight: 600;
   line-height: 25px;
-  color: var(--mantine-color-gray-8);
+  color: var(--mantine-color-gray-7);
   font-size: 12px;
-
   span,
   i {
     float: left;
