@@ -8,6 +8,7 @@ import {
   switchedToWayAdding,
 } from "./appSlice";
 import { receivedDirections } from "@/features/map/directionsSlice";
+import { selectedLocation, Location } from "@/features/map/locationSlice";
 import { dispatchEvent, Event } from "@/events";
 
 import config from "@/config";
@@ -58,9 +59,6 @@ export type MapState = {
   // Queried location
   locationQuery: string | null;
 
-  // A displayed location marker.
-  locationMarker: { lng: number; lat: number } | null;
-
   // The calculated way of a routing.
   routeWay: GeoJSON.GeoJSON | null;
 
@@ -90,7 +88,6 @@ const initialState: MapState = {
   center: config.defaultMapCenter,
   stops: [],
   locationQuery: null,
-  locationMarker: null,
   routeWay: null,
   routeSegments: null,
   ratingLayerActive: false,
@@ -296,42 +293,24 @@ export const mapSlice = createSlice({
       state.routeSegments = action.payload.segments;
       state.routeWay = action.payload.route;
     },
-
-    // User selected a location.
-    selectedLocation: (
-      state,
-      action: PayloadAction<{ lng: number; lat: number }>,
-    ) => {
-      dispatchEvent(new Event("selected-location"));
-      state.locationQuery = null;
-      state.locationMarker = {
-        lng: action.payload.lng,
-        lat: action.payload.lat,
-      };
-      state.center = {
-        lng: action.payload.lng,
-        lat: action.payload.lat,
-        updateView: true,
-        zoom: 15,
-        flyTo: true,
-      };
-    },
-
-    // User changed the location marker.
-    changedLocationMarker: (
-      state,
-      action: PayloadAction<{ lng: number; lat: number }>,
-    ) => {
-      state.locationMarker = {
-        lng: action.payload.lng,
-        lat: action.payload.lat,
-      };
-    },
   },
   extraReducers: (builder) => {
-    builder.addCase(switchedToRouting, (state, _action) => {
-      resetRouting(state);
-    });
+    builder.addCase(
+      switchedToRouting,
+      (
+        state,
+        action: PayloadAction<
+          { target?: { lng: number; lat: number } } | undefined
+        >,
+      ) => {
+        resetRouting(state);
+        if (action.payload && action.payload.target) {
+          state.stops[1].lng = action.payload.target.lng;
+          state.stops[1].lat = action.payload.target.lat;
+          state.stops[1].inactive = false;
+        }
+      },
+    );
     builder.addCase(switchedToWayAdding, (state, _action) => {
       resetRouting(state);
     });
@@ -344,13 +323,27 @@ export const mapSlice = createSlice({
     builder.addCase(receivedDirections, (state, action) => {
       state.routeWay = action.payload.feature?.geometry;
     });
+
+    builder.addCase(
+      selectedLocation,
+      (state, action: PayloadAction<Location>) => {
+        dispatchEvent(new Event("selected-location"));
+        state.locationQuery = null;
+        state.center = {
+          lng: action.payload.center.lng,
+          lat: action.payload.center.lat,
+          updateView: true,
+          zoom: 15,
+          flyTo: true,
+        };
+      },
+    );
   },
 });
 
 export const {
   canceledContextMenu,
   centerUpdated,
-  changedLocationMarker,
   clearedQueriedLocation,
   enabledCurrentPositionAsStart,
   locatedPosition,
@@ -358,7 +351,6 @@ export const {
   requestedContextMenu,
   routeCalculated,
   routeSegmentsCalculated,
-  selectedLocation,
   stopAdded,
   stopChanged,
   stopRemoved,

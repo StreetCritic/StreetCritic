@@ -1,3 +1,4 @@
+import { selectLocationState } from "@/features/map/locationSlice";
 import { selectMapState } from "@/features/map/mapSlice";
 import { useSelector } from "react-redux";
 
@@ -6,12 +7,13 @@ import { useSelector } from "react-redux";
  */
 export default function useMapSearchParams(): Record<string, string> {
   const mapState = useSelector(selectMapState);
+  const locationState = useSelector(selectLocationState);
   const params: Record<string, string> = {
     c: `${mapState.center.lng},${mapState.center.lat}`,
     z: `${mapState.center.zoom}`,
   };
-  if (mapState.locationMarker) {
-    params.lm = `${mapState.locationMarker.lng},${mapState.locationMarker.lat}`;
+  if (locationState.location) {
+    params.lm = `${locationState.location.center.lng},${locationState.location.center.lat}`;
   }
   return params;
 }

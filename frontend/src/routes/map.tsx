@@ -5,13 +5,10 @@ import styles from "./map.module.css";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  centerUpdated,
-  changedLocationMarker,
-  selectMapState,
-} from "@/features/map/mapSlice";
+import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
 import useMapSearchParams from "@/hooks/useMapSearchParams";
 import useMeta from "@/hooks/useMeta";
+import { selectedLocation } from "@/features/map/locationSlice";
 
 export default function Map() {
   useMeta({ title: "" });
@@ -59,9 +56,12 @@ export default function Map() {
     }
     if (locationMarker) {
       dispatch(
-        changedLocationMarker({
-          lng: locationMarker[0],
-          lat: locationMarker[1],
+        selectedLocation({
+          center: {
+            lng: locationMarker[0],
+            lat: locationMarker[1],
+          },
+          label: null,
         }),
       );
     }

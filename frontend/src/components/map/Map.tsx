@@ -18,9 +18,7 @@ export default function Map(mapOptions: Props): React.JSX.Element {
   const map = useMap(container, {
     ...mapOptions,
   });
-
   const onClick = useContextMenu(map);
-
   return (
     <div className={styles.root}>
       <div className={styles.map} ref={container} />

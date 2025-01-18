@@ -1,7 +1,7 @@
 import { Text } from "../typography";
 import { Loader } from "@/components";
 import { useDispatch } from "react-redux";
-import { selectedLocation } from "@/features/map/mapSlice";
+import { selectedLocation } from "@/features/map/locationSlice";
 import { MapPin } from "@phosphor-icons/react";
 import {
   default as useLocationSearch,
@@ -38,8 +38,11 @@ export default function LocationQuery({ query }: Props) {
               onClick={() =>
                 dispatch(
                   selectedLocation({
-                    lng: parseFloat(location.lon),
-                    lat: parseFloat(location.lat),
+                    center: {
+                      lng: parseFloat(location.lon),
+                      lat: parseFloat(location.lat),
+                    },
+                    label: location.display_name,
                   }),
                 )
               }

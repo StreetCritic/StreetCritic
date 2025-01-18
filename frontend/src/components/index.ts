@@ -5,6 +5,7 @@ export { default as Alert } from "./alert";
 export { default as ContactForm } from "./contact-form";
 export { default as Container } from "./container";
 export { default as Loader } from "./loader";
+export { default as LocationSidebar } from "./location-sidebar";
 export { default as LoginButtons } from "./login-buttons";
 export { default as LoginModal } from "./login-modal";
 export { default as ProfileControl } from "./profile-control";

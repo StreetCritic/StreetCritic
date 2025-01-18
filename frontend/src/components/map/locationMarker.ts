@@ -1,4 +1,4 @@
-import { selectMapState } from "@/features/map/mapSlice";
+import { selectLocationState } from "@/features/map/locationSlice";
 import { LngLatLike, Map as LibreMap, Marker } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -37,7 +37,7 @@ export function useLocationMarker(map: Map | null) {
   const [locationMarker, setLocationMarker] = useState<LocationMarker | null>(
     null,
   );
-  const mapState = useSelector(selectMapState);
+  const locationState = useSelector(selectLocationState);
 
   useEffect(() => {
     if (!map) {
@@ -51,10 +51,10 @@ export function useLocationMarker(map: Map | null) {
     if (!locationMarker) {
       return;
     }
-    if (mapState.locationMarker) {
-      locationMarker.show(mapState.locationMarker);
+    if (locationState.location) {
+      locationMarker.show(locationState.location.center);
     } else {
       locationMarker.remove();
     }
-  }, [locationMarker, mapState.locationMarker]);
+  }, [locationMarker, locationState.location]);
 }

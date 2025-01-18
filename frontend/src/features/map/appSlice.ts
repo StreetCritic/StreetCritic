@@ -56,8 +56,13 @@ export const appSlice = createSlice({
       state.mode = AppMode.Browsing;
     },
 
-    // User switched to routing mode.
-    switchedToRouting: (state) => {
+    // User switched to routing mode, possibly with target location.
+    switchedToRouting: (
+      state,
+      _action: PayloadAction<
+        { target?: { lng: number; lat: number } } | undefined
+      >,
+    ) => {
       dispatchEvent(new Event("switched-to-routing"));
       state.mode = AppMode.Routing;
     },

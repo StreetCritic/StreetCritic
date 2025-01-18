@@ -11,6 +11,7 @@ import LocationSearch from "../location-search";
 import WayCreateForm from "./WayCreateForm";
 import {
   ActionIcon,
+  LocationSidebar,
   RoutingSidebar,
   Sidebar,
   WaySidebar,
@@ -32,12 +33,13 @@ import {
 import {
   clearedQueriedLocation,
   selectMapState,
-  toggledRatingLayer,
 } from "@/features/map/mapSlice";
 
-import classNames from "clsx";
-
 import styles from "./MapApp.module.css";
+import {
+  clearedLocation,
+  selectLocationState,
+} from "@/features/map/locationSlice";
 
 type Props = {
   selectedWay: number | null;
@@ -47,6 +49,7 @@ export default function MapApp({ selectedWay }: Props) {
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
+  const locationState = useSelector(selectLocationState);
   const [loginModal, requireAuthentication] = useLoginGate();
   const navigateMap = useNavigateMap();
   useWay();
@@ -94,6 +97,12 @@ export default function MapApp({ selectedWay }: Props) {
       {appState.mode === AppMode.Routing && (
         <Sidebar onClose={() => dispatch(closedRouting())}>
           <RoutingSidebar />
+        </Sidebar>
+      )}
+
+      {appState.mode === AppMode.Browsing && locationState.location && (
+        <Sidebar onClose={() => dispatch(clearedLocation())}>
+          <LocationSidebar />
         </Sidebar>
       )}
 
