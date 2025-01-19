@@ -1,5 +1,5 @@
 import { selectLocationState } from "@/features/map/locationSlice";
-import { LngLatLike, Map as LibreMap, Marker } from "maplibre-gl";
+import { Marker } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Map } from "./map";
@@ -7,54 +7,34 @@ import { Map } from "./map";
 /**
  * Displays the location marker if set.
  */
-export default class LocationMarker {
-  map: LibreMap;
-  private marker: Marker | null = null;
-
-  constructor(map: LibreMap) {
-    this.map = map;
-    this.marker = null;
-  }
-
-  /**
-   * Shows the location marker at the given coordinates.
-   */
-  show(coords: LngLatLike): void {
-    this.marker = new Marker().setLngLat(coords);
-    this.marker.addTo(this.map);
-  }
-
-  /**
-   * Removes the location marker.
-   */
-  remove(): void {
-    this.marker?.remove();
-    this.marker = null;
-  }
-}
-
 export function useLocationMarker(map: Map | null) {
-  const [locationMarker, setLocationMarker] = useState<LocationMarker | null>(
-    null,
-  );
+  const [marker, setMarker] = useState<Marker | null>(null);
   const locationState = useSelector(selectLocationState);
+  // const dispatch = useDispatch();
 
+  // Initializes marker.
   useEffect(() => {
     if (!map) {
       return;
     }
-    setLocationMarker(new LocationMarker(map.getMapLibre()));
+    const marker = new Marker();
+    setMarker(marker);
+    return () => {
+      marker.remove();
+    };
   }, [map]);
 
   // Show/hide location marker.
   useEffect(() => {
-    if (!locationMarker) {
+    if (!marker || !map) {
       return;
     }
     if (locationState.location) {
-      locationMarker.show(locationState.location.center);
+      marker.setLngLat(locationState.location.center);
+      marker.addTo(map.getMapLibre());
+      // newMarker.on('click', (e) => { e.stopPropagation(); dispatch(clearedLocation()); });
     } else {
-      locationMarker.remove();
+      marker.remove();
     }
-  }, [locationMarker, locationState.location]);
+  }, [map, marker, locationState.location]);
 }
