@@ -1,5 +1,7 @@
+import { dispatchEvent, Event } from "@/events";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
+import { LngLat } from "./types";
 
 export enum AppMode {
   Browsing,
@@ -45,7 +47,10 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     // User switched to way adding mode.
-    switchedToWayAdding: (state) => {
+    switchedToWayAdding: (
+      state,
+      _action: PayloadAction<{ stops?: LngLat[] } | undefined>,
+    ) => {
       dispatchEvent(new Event("switched-to-way-adding"));
       state.mode = AppMode.WayAdding;
     },

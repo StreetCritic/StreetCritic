@@ -57,11 +57,13 @@ export default function Map() {
     if (locationMarker) {
       dispatch(
         selectedLocation({
-          center: {
-            lng: locationMarker[0],
-            lat: locationMarker[1],
+          location: {
+            center: {
+              lng: locationMarker[0],
+              lat: locationMarker[1],
+            },
+            label: null,
           },
-          label: null,
         }),
       );
     }

@@ -20,13 +20,14 @@ export default function Directions() {
 
   const exportGPX = () => {
     (async () => {
-      if (!directionsState.directions ||
-        !(downloadGPX(directionsState.directions))
-          /* mapState.stops.map((stop) => new LngLat(stop.lng, stop.lat)),
-* {
-*   shortest: directionsState.useShortest,
-* }, */
-          /* )) */
+      if (
+        !directionsState.directions ||
+        !downloadGPX(directionsState.directions)
+        /* mapState.stops.map((stop) => new LngLat(stop.lng, stop.lat)),
+         * {
+         *   shortest: directionsState.useShortest,
+         * }, */
+        /* )) */
       ) {
         showNotification({
           title: "Could not export route",

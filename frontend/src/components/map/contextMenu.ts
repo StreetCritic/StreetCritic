@@ -1,10 +1,11 @@
 import {
   canceledContextMenu,
   requestedContextMenu,
+  selectMapState,
 } from "@/features/map/mapSlice";
 import { MapMouseEvent } from "maplibre-gl";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Map } from "./map";
 
 /**
@@ -13,29 +14,21 @@ import { Map } from "./map";
  * @returns Handler that must be called when a context menu item is clicked.
  */
 export default function useContextMenu(map: Map | null): () => void {
-  const [ignoreNext, setIgnoreNext] = useState(false);
-  const onClickRef = useRef(() => {});
   const dispatch = useDispatch();
-
+  const mapState = useSelector(selectMapState);
   useEffect(() => {
     if (!map) {
       return;
     }
-    const move = () => {
+    const cancel = () => {
       dispatch(canceledContextMenu());
     };
 
-    const moveend = () => {
-      setIgnoreNext(false);
-    };
-
     const click = (e: MapMouseEvent) => {
-      if (ignoreNext) {
+      if (mapState.contextMenuPosition) {
         dispatch(canceledContextMenu());
-        setIgnoreNext(false);
         return;
       }
-      setIgnoreNext(true);
       const canvas = map.getMapLibre().getCanvas();
       dispatch(
         requestedContextMenu({
@@ -46,21 +39,20 @@ export default function useContextMenu(map: Map | null): () => void {
       );
     };
 
-    onClickRef.current = () => {
-      dispatch(canceledContextMenu());
-      setIgnoreNext(false);
-    };
-
-    map.getMapLibre().on("dragstart", move);
-    map.getMapLibre().on("dragend", moveend);
-    map.getMapLibre().on("click", click);
+    map.getMapLibre().on("click", cancel);
+    map.getMapLibre().on("dragstart", cancel);
+    map.getMapLibre().on("contextmenu", click);
 
     return () => {
-      map.getMapLibre().off("dragstart", move);
-      map.getMapLibre().off("dragend", moveend);
-      map.getMapLibre().off("click", click);
+      map.getMapLibre().off("click", cancel);
+      map.getMapLibre().off("dragstart", cancel);
+      map.getMapLibre().off("contextmenu", click);
     };
-  }, [map, dispatch, ignoreNext]);
+  }, [map, dispatch, mapState.contextMenuPosition]);
 
-  return onClickRef.current;
+  const onClick = () => {
+    dispatch(canceledContextMenu());
+  };
+
+  return onClick;
 }

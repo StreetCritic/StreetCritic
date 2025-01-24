@@ -5,7 +5,7 @@ import {
   stopChanged,
   stopRemoved,
 } from "@/features/map/mapSlice";
-import { Stop } from "@/hooks";
+import { LngLat as Stop } from "@/features/map";
 import { Map as LibreMap, Marker } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

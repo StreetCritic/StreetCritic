@@ -8,7 +8,7 @@ import {
   switchedToWayAdding,
 } from "./appSlice";
 import { receivedDirections } from "@/features/map/directionsSlice";
-import { selectedLocation, Location } from "@/features/map/locationSlice";
+import { selectedLocation } from "@/features/map/locationSlice";
 import { dispatchEvent, Event } from "@/events";
 
 import config from "@/config";
@@ -295,24 +295,22 @@ export const mapSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(
-      switchedToRouting,
-      (
-        state,
-        action: PayloadAction<
-          { target?: { lng: number; lat: number } } | undefined
-        >,
-      ) => {
-        resetRouting(state);
-        if (action.payload && action.payload.target) {
-          state.stops[1].lng = action.payload.target.lng;
-          state.stops[1].lat = action.payload.target.lat;
-          state.stops[1].inactive = false;
-        }
-      },
-    );
-    builder.addCase(switchedToWayAdding, (state, _action) => {
+    builder.addCase(switchedToRouting, (state, action) => {
       resetRouting(state);
+      if (action.payload && action.payload.target) {
+        state.stops[1].lng = action.payload.target.lng;
+        state.stops[1].lat = action.payload.target.lat;
+        state.stops[1].inactive = false;
+      }
+    });
+    builder.addCase(switchedToWayAdding, (state, action) => {
+      resetRouting(state);
+      if (action.payload?.stops && action.payload.stops.length > 1) {
+        state.stops = [];
+        for (const coord of action.payload.stops) {
+          state.stops.push({ inactive: false, id: newStopId(), ...coord });
+        }
+      }
     });
     builder.addCase(closedRouting, (state, _action) => {
       resetRouting(state);
@@ -324,20 +322,17 @@ export const mapSlice = createSlice({
       state.routeWay = action.payload.feature?.geometry;
     });
 
-    builder.addCase(
-      selectedLocation,
-      (state, action: PayloadAction<Location>) => {
-        dispatchEvent(new Event("selected-location"));
-        state.locationQuery = null;
-        state.center = {
-          lng: action.payload.center.lng,
-          lat: action.payload.center.lat,
-          updateView: true,
-          zoom: 15,
-          flyTo: true,
-        };
-      },
-    );
+    builder.addCase(selectedLocation, (state, action) => {
+      dispatchEvent(new Event("selected-location"));
+      state.locationQuery = null;
+      state.center = {
+        lng: action.payload.location.center.lng,
+        lat: action.payload.location.center.lat,
+        updateView: true,
+        zoom: 15,
+        flyTo: true,
+      };
+    });
   },
 });
 

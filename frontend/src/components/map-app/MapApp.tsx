@@ -4,16 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
 
-import { MapPinPlus, TrafficSign, Stack } from "@phosphor-icons/react";
+import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
 
 import LocationQuery from "../location-query";
 import LocationSearch from "../location-search";
 import WayCreateForm from "./WayCreateForm";
 import {
   ActionIcon,
-  LocationSidebar,
+  LocationSideBox,
   RoutingSidebar,
   Sidebar,
+  SideBox,
   WaySidebar,
   WayAddingSidebar,
   ProfileControl,
@@ -101,9 +102,9 @@ export default function MapApp({ selectedWay }: Props) {
       )}
 
       {appState.mode === AppMode.Browsing && locationState.location && (
-        <Sidebar onClose={() => dispatch(clearedLocation())}>
-          <LocationSidebar />
-        </Sidebar>
+        <SideBox onClose={() => dispatch(clearedLocation())}>
+          <LocationSideBox />
+        </SideBox>
       )}
 
       <div className={styles.controls}>

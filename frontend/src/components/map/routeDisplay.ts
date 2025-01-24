@@ -40,15 +40,6 @@ export default class RouteDisplay {
         "line-dasharray": [3, 1],
       },
     });
-
-    // this.map.on("mouseenter", "route", () => {
-    //   this.map.getCanvas().style.cursor = "copy";
-    // });
-
-    // // Change it back to a pointer when it leaves.
-    // this.map.on("mouseleave", "route", () => {
-    //   this.map.getCanvas().style.cursor = "";
-    // });
   }
 
   /**

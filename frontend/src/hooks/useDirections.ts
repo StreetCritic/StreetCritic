@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Valhalla } from "@routingjs/valhalla";
 import type { Feature, LineString } from "geojson";
-import type { Stop } from "./useWay";
+import type { LngLat as Stop } from "@/features/map";
 import config from "@/config";
 import { useDispatch, useSelector } from "react-redux";
 import {

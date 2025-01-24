@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
+import { Geometry } from "geojson";
 
 export type Location = {
   center: {
@@ -10,12 +11,21 @@ export type Location = {
   label: string | null;
 };
 
+export type SelectedWay = {
+  geometry: Geometry;
+  indicators?: {
+    bikeability: number;
+  } | null;
+};
+
 export type LocationState = {
   location: Location | null;
+  selectedWay: SelectedWay | null;
 };
 
 const initialState: LocationState = {
   location: null,
+  selectedWay: null,
 };
 
 export const locationSlice = createSlice({
@@ -23,14 +33,19 @@ export const locationSlice = createSlice({
   initialState,
   reducers: {
     // Location has been set.
-    selectedLocation: (state, action: PayloadAction<Location>) => {
+    selectedLocation: (
+      state,
+      action: PayloadAction<{ location: Location; selectedWay?: SelectedWay }>,
+    ) => {
       state.location = {
-        center: action.payload.center,
-        label: action.payload.label,
+        center: action.payload.location.center,
+        label: action.payload.location.label,
       };
+      state.selectedWay = action.payload.selectedWay || null;
     },
     clearedLocation: (state) => {
       state.location = null;
+      state.selectedWay = null;
     },
   },
 });

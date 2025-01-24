@@ -7,7 +7,7 @@ type RoutingOptions = {
   shortest: boolean;
 };
 
-export function downloadGPX(directions: Directions) : boolean {
+export function downloadGPX(directions: Directions): boolean {
   const gpx = `<?xml version="1.0" encoding="UTF-8"?>
 <gpx
  xmlns="http://www.topografix.com/GPX/1/1"

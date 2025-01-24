@@ -38,11 +38,13 @@ export default function LocationQuery({ query }: Props) {
               onClick={() =>
                 dispatch(
                   selectedLocation({
-                    center: {
-                      lng: parseFloat(location.lon),
-                      lat: parseFloat(location.lat),
+                    location: {
+                      center: {
+                        lng: parseFloat(location.lon),
+                        lat: parseFloat(location.lat),
+                      },
+                      label: location.display_name,
                     },
-                    label: location.display_name,
                   }),
                 )
               }

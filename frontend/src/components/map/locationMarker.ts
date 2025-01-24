@@ -1,3 +1,4 @@
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 import { selectLocationState } from "@/features/map/locationSlice";
 import { Marker } from "maplibre-gl";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import { Map } from "./map";
 export function useLocationMarker(map: Map | null) {
   const [marker, setMarker] = useState<Marker | null>(null);
   const locationState = useSelector(selectLocationState);
+  const appState = useSelector(selectAppState);
   // const dispatch = useDispatch();
 
   // Initializes marker.
@@ -29,12 +31,12 @@ export function useLocationMarker(map: Map | null) {
     if (!marker || !map) {
       return;
     }
-    if (locationState.location) {
+    if (locationState.location && appState.mode === AppMode.Browsing) {
       marker.setLngLat(locationState.location.center);
       marker.addTo(map.getMapLibre());
       // newMarker.on('click', (e) => { e.stopPropagation(); dispatch(clearedLocation()); });
     } else {
       marker.remove();
     }
-  }, [map, marker, locationState.location]);
+  }, [map, marker, locationState.location, appState.mode]);
 }

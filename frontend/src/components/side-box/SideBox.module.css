@@ -1,0 +1,21 @@
+.root {
+  position: absolute;
+  z-index: 100;
+  bottom: 0;
+  height: auto;
+  width: 100%;
+  /* @media (max-width: $mantine-breakpoint-md) { */
+  /*   max-height: calc(100% - 40px); */
+  /* } */
+  @media (min-width: 40em) {
+    left: calc(50% - 20em);
+    width: 40em;
+  }
+}
+
+.close {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  z-index: 1000;
+}

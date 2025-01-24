@@ -6,6 +6,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useMap } from "./map";
 import ContextMenu from "./ContextMenu";
 import useContextMenu from "./contextMenu";
+import useLocationHighlight from "./locationHighlight";
+import useLocationSelector from "./locationSelector";
 
 import styles from "./Map.module.css";
 
@@ -19,6 +21,8 @@ export default function Map(mapOptions: Props): React.JSX.Element {
     ...mapOptions,
   });
   const onClick = useContextMenu(map);
+  useLocationHighlight(map);
+  useLocationSelector(map);
   return (
     <div className={styles.root}>
       <div className={styles.map} ref={container} />

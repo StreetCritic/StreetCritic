@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { MVTRouter, Point as WASMPoint } from "ibre";
 
-import type { Stop } from "./useWay";
+import type { LngLat as Stop } from "@/features/map";
 import config from "@/config";
 import { useDispatch } from "react-redux";
 import { routeSegmentsCalculated } from "@/features/map/mapSlice";

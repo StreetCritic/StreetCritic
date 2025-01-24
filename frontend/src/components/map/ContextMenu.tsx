@@ -29,7 +29,7 @@ export default function ContextMenu({ onClick }: Props) {
   );
 
   if (!mapState.contextMenuPosition || !showStopEdit) {
-    return;
+    return null;
   }
 
   const lng = mapState.contextMenuPosition.lngLat.lng;
