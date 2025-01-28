@@ -42,6 +42,15 @@ export type RouteSegment = {
   stop: number;
 };
 
+/**
+ * Preference for different rating dimensions.
+ */
+export type StreetPreferences = {
+  safety: number;
+  comfort: number;
+  beauty: number;
+};
+
 export type MapState = {
   // Map center.
   // If updateView is true, updates the map view once and sets this too false.
@@ -82,6 +91,9 @@ export type MapState = {
     lngLat: { lng: number; lat: number };
     canvasSize: { width: number; height: number };
   };
+
+  // Users preferences for different rating dimensions.
+  streetPreferences: StreetPreferences;
 };
 
 const initialState: MapState = {
@@ -94,6 +106,7 @@ const initialState: MapState = {
   currentPositionAsStart: true,
   contextMenuPosition: null,
   lastLocatedPosition: null,
+  streetPreferences: { safety: 50, comfort: 50, beauty: 50 },
 };
 
 export const mapSlice = createSlice({
@@ -260,6 +273,22 @@ export const mapSlice = createSlice({
       state.currentPositionAsStart = true;
     },
 
+    // Users street preference has been changed.
+    streetPreferenceChanged: (
+      state,
+      action: PayloadAction<{ id: keyof StreetPreferences; value: number }>,
+    ) => {
+      state.streetPreferences[action.payload.id] = action.payload.value;
+
+      // const id = action.payload.id;
+      // const oldValue = state.preferences[id];
+      // const diff = (action.payload.value - oldValue) / 2;
+      // for (const key of Object.keys(state.preferences)) {
+      //   state.preferences[key as keyof StreetPreferences] = key === id ? action.payload.value :
+      //     state.preferences[key as keyof StreetPreferences] - diff;
+      // }
+    },
+
     // Rating layer has been toggled.
     toggledRatingLayer: (state) => {
       state.ratingLayerActive = !state.ratingLayerActive;
@@ -352,6 +381,7 @@ export const {
   stopReordered,
   stopsResetted,
   stopsReversed,
+  streetPreferenceChanged,
   toggledRatingLayer,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
