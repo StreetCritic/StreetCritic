@@ -49,10 +49,13 @@ export default function useLocationSelector(map: Map | null) {
           selectedWay = {
             geometry: feature.geometry,
           };
-          if ("streetcritic:indicator:bikeability" in feature.properties) {
+          if ("streetcritic:indicator:bike_comfort" in feature.properties) {
             selectedWay.indicators = {
-              bikeability:
-                feature.properties["streetcritic:indicator:bikeability"],
+              bikeComfort:
+                feature.properties["streetcritic:indicator:bike_comfort"],
+              bikeSafety:
+                feature.properties["streetcritic:indicator:bike_safety"],
+              beauty: feature.properties["streetcritic:indicator:beauty"],
             };
           }
         }

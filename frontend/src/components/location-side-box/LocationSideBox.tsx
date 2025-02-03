@@ -1,6 +1,6 @@
 import { useLocalize, useLoginGate } from "@/hooks";
 import { Coordinates, Indicator, Title } from "@/components";
-import { Box, Button, Group } from "@mantine/core";
+import { Box, Button, Group, Stack } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLocationState } from "@/features/map/locationSlice";
 import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
@@ -57,11 +57,20 @@ export default function LocationSidebar() {
         </Title>
       )}
       {locationState.selectedWay?.indicators && (
-        <Indicator
-          my="sm"
-          label="Bikeability"
-          value={locationState.selectedWay.indicators.bikeability}
-        />
+        <Stack my="sm" gap={0}>
+          <Indicator
+            label="Comfort"
+            value={locationState.selectedWay.indicators.bikeComfort}
+          />
+          <Indicator
+            label="Safety"
+            value={locationState.selectedWay.indicators.bikeSafety}
+          />
+          <Indicator
+            label="Beauty"
+            value={locationState.selectedWay.indicators.beauty}
+          />
+        </Stack>
       )}
       {locationState.location && (
         <Group>

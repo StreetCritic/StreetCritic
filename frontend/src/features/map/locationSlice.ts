@@ -14,7 +14,9 @@ export type Location = {
 export type SelectedWay = {
   geometry: Geometry;
   indicators?: {
-    bikeability: number;
+    bikeComfort: number;
+    bikeSafety: number;
+    beauty: number;
   } | null;
 };
 
