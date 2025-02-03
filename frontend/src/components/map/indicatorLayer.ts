@@ -1,160 +1,121 @@
 import { Map as LibreMap } from "maplibre-gl";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Map } from "./map";
 import { ratingColors } from "./colors";
 import { useSelector } from "react-redux";
-import { selectMapState } from "@/features/map/mapSlice";
-
-type Props = {
-  map: LibreMap;
-};
+import { selectMapState, StreetPreferences } from "@/features/map/mapSlice";
 
 /**
- * Displays the (rated) ways.
+ * Updates way colors based on indicators and street preferences.
  */
-export default class IndicatorLayer {
-  map: LibreMap;
-  constructor({ map }: Props) {
-    this.map = map;
-    const lineColor = [
-      "interpolate",
-      ["linear"],
-      ["zoom"],
-      12,
-      "#fff",
-      13,
+function updateColors(map: LibreMap, streetPreferences: StreetPreferences) {
+  const maxPreference = Math.max(
+    streetPreferences.comfort,
+    streetPreferences.safety,
+    streetPreferences.beauty,
+  );
+  console.log("update colors", streetPreferences, maxPreference);
+  const lineColor = [
+    "interpolate",
+    ["linear"],
+    ["zoom"],
+    12,
+    "#fff",
+    13,
+    [
+      "case",
       [
-        "case",
+        "all",
+        ["has", "streetcritic:indicator:bike_comfort"],
+        ["!", ["in", ["get", "access"], ["literal", ["customers", "private"]]]],
+        ["!", ["in", ["get", "bicycle"], ["literal", ["no", "use_sidepath"]]]],
+        ["!", ["in", ["get", "class"], ["literal", ["trunk"]]]],
         [
-          "all",
-          ["has", "streetcritic:indicator:bikeability"],
+          "!",
           [
-            "!",
-            ["in", ["get", "access"], ["literal", ["customers", "private"]]],
-          ],
-          [
-            "!",
-            ["in", ["get", "bicycle"], ["literal", ["no", "use_sidepath"]]],
-          ],
-          ["!", ["in", ["get", "class"], ["literal", ["trunk"]]]],
-          [
-            "!",
+            "in",
+            ["get", "service"],
             [
-              "in",
-              ["get", "service"],
+              "literal",
               [
-                "literal",
-                [
-                  "driveway",
-                  "parking_aisle",
-                  "drive-through",
-                  "emergency_access",
-                ],
-              ],
-            ],
-          ],
-          [
-            "any",
-            ["==", ["get", "bicycle"], "yes"],
-            [
-              "all",
-              ["!=", ["get", "foot"], "yes"],
-              [
-                "!",
-                [
-                  "in",
-                  ["get", "subclass"],
-                  ["literal", ["footway", "pedestrian"]],
-                ],
+                "driveway",
+                "parking_aisle",
+                "drive-through",
+                "emergency_access",
               ],
             ],
           ],
         ],
         [
-          "interpolate",
-          ["linear"],
+          "any",
+          ["==", ["get", "bicycle"], "yes"],
           [
-            "*",
-            ["to-number", ["get", "streetcritic:indicator:bikeability"]],
-            10,
+            "all",
+            ["!=", ["get", "foot"], "yes"],
+            [
+              "!",
+              [
+                "in",
+                ["get", "subclass"],
+                ["literal", ["footway", "pedestrian"]],
+              ],
+            ],
           ],
-          ...ratingColors(),
         ],
-        "#fff",
       ],
-    ];
-    this.map.setPaintProperty("highway-minor", "line-color", lineColor);
-    this.map.setPaintProperty(
-      "highway-secondary-tertiary",
-      "line-color",
-      lineColor,
-    );
-    this.map.setPaintProperty("bridge-path", "line-color", lineColor);
-    this.map.setPaintProperty("bridge-minor", "line-color", lineColor);
-    this.map.setPaintProperty("bridge-trunk-primary", "line-color", lineColor);
-
-    this.map.setPaintProperty(
-      "bridge-secondary-tertiary",
-      "line-color",
-      lineColor,
-    );
-
-    this.map.setPaintProperty(
-      "bridge-secondary-tertiary",
-      "line-color",
-      lineColor,
-    );
-    this.map.setPaintProperty("highway-primary", "line-color", lineColor);
-    this.map.setPaintProperty("highway-trunk", "line-color", lineColor);
-    this.map.setPaintProperty("highway-path", "line-color", lineColor);
-  }
-
-  /**
-   * Set visible state of the layer.
-   */
-  set_visible(visible: boolean) {
-    return;
-    this.map.setLayoutProperty(
-      "bikeability",
-      "visibility",
-      visible ? "visible" : "none",
-    );
-  }
-
-  /**
-   * Removes the location marker.
-   */
-  remove(): void {}
+      [
+        "interpolate",
+        ["linear"],
+        [
+          "/",
+          [
+            "+",
+            [
+              "*",
+              ["to-number", ["get", "streetcritic:indicator:beauty"]],
+              streetPreferences.beauty * 10,
+            ],
+            [
+              "*",
+              ["to-number", ["get", "streetcritic:indicator:bike_comfort"]],
+              streetPreferences.comfort * 10,
+            ],
+            [
+              "*",
+              ["to-number", ["get", "streetcritic:indicator:bike_safety"]],
+              streetPreferences.safety * 10,
+            ],
+          ],
+          streetPreferences.beauty +
+            streetPreferences.comfort +
+            streetPreferences.safety,
+        ],
+        ...ratingColors(),
+      ],
+      "#fff",
+    ],
+  ];
+  map.setPaintProperty("highway-minor", "line-color", lineColor);
+  map.setPaintProperty("highway-secondary-tertiary", "line-color", lineColor);
+  map.setPaintProperty("bridge-path", "line-color", lineColor);
+  map.setPaintProperty("bridge-minor", "line-color", lineColor);
+  map.setPaintProperty("bridge-trunk-primary", "line-color", lineColor);
+  map.setPaintProperty("bridge-secondary-tertiary", "line-color", lineColor);
+  map.setPaintProperty("bridge-secondary-tertiary", "line-color", lineColor);
+  map.setPaintProperty("highway-primary", "line-color", lineColor);
+  map.setPaintProperty("highway-trunk", "line-color", lineColor);
+  map.setPaintProperty("highway-path", "line-color", lineColor);
 }
 
 /**
  * Hook to initialise the way display functionality.
  */
 export function useIndicatorLayer(map: Map | null) {
-  const [indicatorLayer, setIndicatorLayer] = useState<IndicatorLayer | null>(
-    null,
-  );
   const mapState = useSelector(selectMapState);
-
   useEffect(() => {
     if (!map) {
       return;
     }
-    if (indicatorLayer) {
-      console.warn("indicatorLayer already created");
-      return;
-    }
-    setIndicatorLayer(
-      new IndicatorLayer({
-        map: map.getMapLibre(),
-      }),
-    );
-  }, [map, indicatorLayer]);
-
-  useEffect(() => {
-    if (!indicatorLayer) {
-      return;
-    }
-    indicatorLayer.set_visible(mapState.ratingLayerActive);
-  }, [indicatorLayer, mapState.ratingLayerActive]);
+    updateColors(map.getMapLibre(), mapState.streetPreferences);
+  }, [map, mapState.streetPreferences]);
 }
