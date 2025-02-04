@@ -6,7 +6,7 @@ pub fn calculate(way: &Way) -> f32 {
     let surface = get_tag(way, "surface");
     match surface {
         Some(surface) => match surface.as_str() {
-            "asphalt" | "chipseal" | "concrete" | "cement" => 1.0,
+            "asphalt" | "concrete" | "cement" => 1.0,
             "concrete:plates" | "paving_stones" | "clay" | "tartan" | "compacted"
             | "fine_gravel" | "bricks" | "brick" | "metal_grid" | "chipseal" => 0.7,
             "concrete:lanes" => 0.65,

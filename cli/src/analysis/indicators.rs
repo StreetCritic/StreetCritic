@@ -18,11 +18,20 @@ pub fn calculate(way: &Way) -> HashMap<String, f32> {
         motorized_traffic::calculate(way),
     );
 
-    let bikeability = (2.0 * indicators.get("priority").unwrap()
+    let bike_comfort = (1.0 * indicators.get("priority").unwrap()
+        + 2.0 * indicators.get("surface").unwrap())
+        / 3.0;
+    indicators.insert("bike_comfort".into(), bike_comfort);
+
+    let bike_safety = (2.0 * indicators.get("priority").unwrap()
         + 1.0 * indicators.get("surface").unwrap()
-        + 1.0 * indicators.get("speed_limit").unwrap()
-        + 2.0 * indicators.get("motorized_traffic").unwrap())
-        / 6.0;
-    indicators.insert("bikeability".into(), bikeability);
+        + 3.0 * indicators.get("speed_limit").unwrap()
+        + 4.0 * indicators.get("motorized_traffic").unwrap())
+        / 10.0;
+    indicators.insert("bike_safety".into(), bike_safety);
+
+    let beauty = (3.0 * 0.5 + 1.0 * indicators.get("motorized_traffic").unwrap()) / 4.0;
+    indicators.insert("beauty".into(), beauty);
+
     indicators
 }
