@@ -185,37 +185,33 @@ export class Map {
       //   "highway-name-path",
       // );
 
-      this.map.addLayer({
-        id: "rated-segments",
-        type: "line",
-        source: {
-          type: "vector",
-          url: config.ratedSegmentsURL,
-        },
-        "source-layer": "function_query_rated_segments",
-        paint: {
-          "line-color": [
-            "interpolate",
-            ["linear"],
-            ["to-number", ["get", "_rating"]],
-            ...ratingColors(),
-          ],
-          "line-opacity": 1,
-          "line-width": 4,
-          // "line-dasharray": [6, 3],
-        },
-      });
+      // this.map.addLayer({
+      //   id: "rated-segments",
+      //   type: "line",
+      //   source: {
+      //     type: "vector",
+      //     url: config.ratedSegmentsURL,
+      //   },
+      //   "source-layer": "function_query_rated_segments",
+      //   paint: {
+      //     "line-color": [
+      //       "interpolate",
+      //       ["linear"],
+      //       ["to-number", ["get", "_rating"]],
+      //       ...ratingColors(),
+      //     ],
+      //     "line-opacity": 1,
+      //     "line-width": 4,
+      //   },
+      // });
 
-      // this.map.on("click", "rated-segments", (e) => {
-      // console.log("click on rated segment", e);
-      // console.log(e.lngLat);
-      // console.log(e.features);
-      // e.preventDefault();
-      // const ratings = this.map.queryRenderedFeatures(e.point, {
-      //   layers: ["rated-segments"],
-      // });
-      // console.log(ratings);
-      // });
+      this.map.on("click", (e) => {
+        e.preventDefault();
+        const ratings = this.map.queryRenderedFeatures(e.point, {
+          // layers: ["bikeability"],
+        });
+        console.log(ratings.map((x) => x.properties));
+      });
 
       const updateCenter = () => {
         onCenterChange(this.map.getCenter(), this.map.getZoom());
