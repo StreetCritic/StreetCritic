@@ -48,8 +48,12 @@ export default function useLocationHighlight(map: Map | null) {
     setInitialized(true);
 
     return () => {
-      mapLibre.removeLayer("location-highlight");
-      mapLibre.removeSource("location-highlight");
+      try {
+        mapLibre.removeLayer("location-highlight");
+        mapLibre.removeSource("location-highlight");
+      } catch (_) {
+        return;
+      }
     };
   }, [map]);
 
