@@ -130,15 +130,6 @@ export default function MapApp({ selectedWay }: Props) {
         )}
       </div>
 
-      <div className={classNames(styles.controls, styles.styleControls)}>
-        <ActionIcon
-          label="Show/hide bikeability layer"
-          color="gray.7"
-          icon={<Stack size={32} weight="fill" />}
-          onClick={() => dispatch(toggledRatingLayer())}
-        />
-      </div>
-
       {appState.mode === AppMode.Browsing && (
         <div className={styles.legend}>
           <Legend />
