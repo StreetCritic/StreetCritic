@@ -6,7 +6,6 @@ import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
 
 import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
 
-import LocationQuery from "../location-query";
 import LocationSearch from "../location-search";
 import WayCreateForm from "./WayCreateForm";
 import {
@@ -21,7 +20,7 @@ import {
 } from "@/components";
 import { default as Map, Legend } from "@/components/map";
 
-import { Group } from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 
 import {
   AppMode,
@@ -31,10 +30,7 @@ import {
   closedRouting,
   closedWayAdding,
 } from "@/features/map/appSlice";
-import {
-  clearedQueriedLocation,
-  selectMapState,
-} from "@/features/map/mapSlice";
+import { selectMapState } from "@/features/map/mapSlice";
 
 import styles from "./MapApp.module.css";
 import {
@@ -83,12 +79,6 @@ export default function MapApp({ selectedWay }: Props) {
         </Sidebar>
       )}
 
-      {!selectedWay && mapState.locationQuery && (
-        <Sidebar onClose={() => dispatch(clearedQueriedLocation())}>
-          <LocationQuery query={mapState.locationQuery} />
-        </Sidebar>
-      )}
-
       {appState.mode === AppMode.WayAdding && (
         <Sidebar onClose={() => dispatch(closedWayAdding())}>
           <WayAddingSidebar onAddClick={() => setWayCreateFormOpen(true)} />
@@ -109,7 +99,9 @@ export default function MapApp({ selectedWay }: Props) {
 
       <div className={styles.controls}>
         <ProfileControl />
-        <LocationSearch />
+        <Box className={styles.locationSearch} w={300}>
+          <LocationSearch />
+        </Box>
         {appState.mode === AppMode.Browsing && (
           <Group>
             <ActionIcon

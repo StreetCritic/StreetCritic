@@ -65,9 +65,6 @@ export type MapState = {
   // Stops on the map.
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
-  // Queried location
-  locationQuery: string | null;
-
   // The calculated way of a routing.
   routeWay: GeoJSON.GeoJSON | null;
 
@@ -99,7 +96,6 @@ export type MapState = {
 const initialState: MapState = {
   center: config.defaultMapCenter,
   stops: [],
-  locationQuery: null,
   routeWay: null,
   routeSegments: null,
   ratingLayerActive: false,
@@ -294,17 +290,6 @@ export const mapSlice = createSlice({
       state.ratingLayerActive = !state.ratingLayerActive;
     },
 
-    // User queried a location.
-    queriedLocation: (state, action: PayloadAction<string>) => {
-      dispatchEvent(new Event("queried-location"));
-      state.locationQuery = action.payload;
-    },
-
-    // User cleared the queried a location.
-    clearedQueriedLocation: (state) => {
-      state.locationQuery = null;
-    },
-
     // A route was calculated.
     routeCalculated: (state, action: PayloadAction<GeoJSON.GeoJSON>) => {
       dispatchEvent(new Event("route-calculated"));
@@ -353,7 +338,6 @@ export const mapSlice = createSlice({
 
     builder.addCase(selectedLocation, (state, action) => {
       dispatchEvent(new Event("selected-location"));
-      state.locationQuery = null;
       state.center = {
         lng: action.payload.location.center.lng,
         lat: action.payload.location.center.lat,
@@ -368,10 +352,8 @@ export const mapSlice = createSlice({
 export const {
   canceledContextMenu,
   centerUpdated,
-  clearedQueriedLocation,
   enabledCurrentPositionAsStart,
   locatedPosition,
-  queriedLocation,
   requestedContextMenu,
   routeCalculated,
   routeSegmentsCalculated,

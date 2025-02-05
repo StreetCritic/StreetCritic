@@ -1,8 +1,5 @@
-import { TextInput } from "@mantine/core";
-import LocationResults from "./LocationResults";
-import useLocationResults from "./useLocationResults";
 import { useState } from "react";
-import styles from "./WayPoint.module.css";
+import LocationSearch from "../location-search";
 
 type Props = {
   stop: { lng: number; lat: number; inactive: boolean };
@@ -19,8 +16,6 @@ export default function WayPoint({
   label,
   isLocatedPosition,
 }: Props) {
-  const [value, setValue] = useState("");
-  const [query, setQuery] = useState("");
   const [locationName, setLocationName] = useState("");
   const placeholder = isLocatedPosition
     ? "My position"
@@ -28,35 +23,16 @@ export default function WayPoint({
       (stop.inactive
         ? "Search location..."
         : `${Math.round(stop.lng * 10000) / 10000}, ${Math.round(stop.lat * 10000) / 10000}`);
-  const locationResults = useLocationResults();
   return (
     <>
-      <LocationResults
-        query={query}
+      <LocationSearch
+        placeholder={placeholder}
+        label={label}
         setLocation={({ lng, lat, label }) => {
           setStop({ lng, lat });
-          setValue("");
           setLocationName(label);
         }}
-        locationResults={locationResults}
-      >
-        <form
-          className={styles.form}
-          onSubmit={(e) => {
-            e.preventDefault();
-            locationResults.toggleDropdown();
-            setQuery(value);
-          }}
-        >
-          <TextInput
-            label={label}
-            value={value}
-            width="100%"
-            onChange={(e) => setValue(e.currentTarget.value)}
-            placeholder={placeholder}
-          />
-        </form>
-      </LocationResults>
+      />
     </>
   );
 }

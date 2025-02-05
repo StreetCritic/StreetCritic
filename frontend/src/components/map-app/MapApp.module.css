@@ -33,3 +33,8 @@
 .legend {
   bottom: 50;
 }
+
+.locationSearch {
+  box-shadow: 0 0 0 1px #0000001a;
+  border-radius: 4px;
+}

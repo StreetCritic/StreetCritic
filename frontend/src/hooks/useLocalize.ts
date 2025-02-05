@@ -1,6 +1,7 @@
 import { selectAppState } from "@/features/map/appSlice";
 import { useSelector } from "react-redux";
 import { FluentBundle, FluentResource } from "@fluent/bundle";
+import { useCallback } from "react";
 
 const resourceDe = new FluentResource(`
 -brand-name = Foo 3000
@@ -20,6 +21,11 @@ sign-up = Sign up
 log-in = Log in
 no = No
 yes = Yes
+
+search-label = Search in StreetCritic...
+
+search-fetch-error-title = Could not search location
+search-fetch-error-body = The search server is not reachable or there has been an other error. Please try again later.
 
 title = Title
 
@@ -62,17 +68,19 @@ way-points-to = To:
 
 export default function useLocalize() {
   const appState = useSelector(selectAppState);
-
-  return (id: string) => {
-    const bundle = new FluentBundle(appState.locale);
-    const _errors = bundle.addResource(
-      appState.locale == "de" ? resourceDe : resourceEn,
-    );
-    const welcome = bundle.getMessage(id);
-    let text = "";
-    if (welcome?.value) {
-      text = bundle.formatPattern(welcome.value, { name: "Anna" });
-    }
-    return text;
-  };
+  return useCallback(
+    (id: string) => {
+      const bundle = new FluentBundle(appState.locale);
+      const _errors = bundle.addResource(
+        appState.locale == "de" ? resourceDe : resourceEn,
+      );
+      const welcome = bundle.getMessage(id);
+      let text = "";
+      if (welcome?.value) {
+        text = bundle.formatPattern(welcome.value, { name: "Anna" });
+      }
+      return text;
+    },
+    [appState.locale],
+  );
 }
