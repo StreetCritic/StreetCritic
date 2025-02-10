@@ -380,43 +380,42 @@ export function useMap(
 
   // Update view to fit stops.
   useEffect(() => {
-    if (map) {
-      const stops = mapState.stops.filter((stop) => !stop.inactive);
-      if (stops.length == 0) {
-        return;
-      }
-      const bounds = map.getMapLibre().getBounds();
-      let updateNeeded = false;
-      for (const stop of stops) {
-        if (!bounds.contains(stop)) {
-          updateNeeded = true;
-        }
-        bounds.extend(stop);
-      }
-      if (!updateNeeded) {
-        return;
-      }
-      const newTransform = map
-        .getMapLibre()
-        .cameraForBounds(bounds, { padding: 100 });
-      if (
-        newTransform &&
-        newTransform.center &&
-        "lng" in newTransform.center &&
-        "lat" in newTransform.center
-      ) {
-        dispatch(
-          centerUpdated({
-            lng: newTransform.center.lng,
-            lat: newTransform.center.lat,
-            zoom: newTransform.zoom,
-            updateView: true,
-            flyTo: true,
-          }),
-        );
-      }
+    const stops = mapState.fitPositionsIntoMap;
+    if (!map || stops.length === 0) {
+      return;
     }
-  }, [map, mapState.stops, dispatch]);
+    const bounds = map.getMapLibre().getBounds();
+    let updateNeeded = false;
+    for (const stop of stops) {
+      if (!bounds.contains(stop)) {
+        updateNeeded = true;
+      }
+      bounds.extend(stop);
+    }
+    if (!updateNeeded) {
+      return;
+    }
+    const newTransform = map
+      .getMapLibre()
+      .cameraForBounds(bounds, { padding: 100 });
+    if (
+      newTransform &&
+      newTransform.center &&
+      "lng" in newTransform.center &&
+      "lat" in newTransform.center
+    ) {
+      dispatch(
+        centerUpdated({
+          lng: newTransform.center.lng,
+          lat: newTransform.center.lat,
+          zoom: newTransform.zoom,
+          updateView: true,
+          flyTo: true,
+          resetFitPositionsIntoMap: true,
+        }),
+      );
+    }
+  }, [map, mapState.stops, dispatch, mapState.fitPositionsIntoMap]);
 
   return map;
 }

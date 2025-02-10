@@ -10,6 +10,7 @@ import {
 import { receivedDirections } from "@/features/map/directionsSlice";
 import { selectedLocation } from "@/features/map/locationSlice";
 import { dispatchEvent, Event } from "@/events";
+import { LngLat } from "./types";
 
 import config from "@/config";
 
@@ -62,6 +63,11 @@ export type MapState = {
     flyTo: boolean;
   };
 
+  /**
+   * Any positions that have to be fit into the visible map.
+   */
+  fitPositionsIntoMap: LngLat[];
+
   // Stops on the map.
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
@@ -95,6 +101,7 @@ export type MapState = {
 
 const initialState: MapState = {
   center: config.defaultMapCenter,
+  fitPositionsIntoMap: [],
   stops: [],
   routeWay: null,
   routeSegments: null,
@@ -124,6 +131,10 @@ export const mapSlice = createSlice({
         zoom?: number;
         updateView: boolean;
         flyTo?: boolean;
+        /**
+         * Should mapState.fitPositionsIntoMap be reset?
+         */
+        resetFitPositionsIntoMap?: boolean;
       }>,
     ) => {
       if (action.payload.lng) {
@@ -139,6 +150,9 @@ export const mapSlice = createSlice({
         state.center.flyTo = action.payload.flyTo;
       }
       state.center.updateView = action.payload.updateView;
+      if (action.payload.resetFitPositionsIntoMap) {
+        state.fitPositionsIntoMap = [];
+      }
     },
 
     // Option to use current position as start was enabled.
@@ -230,6 +244,8 @@ export const mapSlice = createSlice({
         lng: number;
         lat: number;
         inactive?: boolean;
+        /** Should the stop be fit into the map? */
+        fitIntoMap?: boolean;
       }>,
     ) => {
       dispatchEvent(new Event("stop-changed"));
@@ -240,6 +256,11 @@ export const mapSlice = createSlice({
       state.stops[action.payload.index].lat = action.payload.lat;
       if (action.payload.inactive !== undefined) {
         state.stops[action.payload.index].inactive = action.payload.inactive;
+      }
+      if (action.payload.fitIntoMap) {
+        state.fitPositionsIntoMap = [
+          { lng: action.payload.lng, lat: action.payload.lat },
+        ];
       }
     },
 

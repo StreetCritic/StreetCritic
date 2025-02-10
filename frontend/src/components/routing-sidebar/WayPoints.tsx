@@ -55,7 +55,15 @@ export default function WayPoints() {
                     : __("way-points-via")
               }
               setStop={({ lng, lat }) =>
-                dispatch(stopChanged({ index, lng, lat, inactive: false }))
+                dispatch(
+                  stopChanged({
+                    index,
+                    lng,
+                    lat,
+                    inactive: false,
+                    fitIntoMap: true,
+                  }),
+                )
               }
             />
             {index == 0 && (
