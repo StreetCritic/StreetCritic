@@ -21,7 +21,7 @@ const initialState: DirectionsState = {
   directions: null,
 };
 
-export const mapSlice = createSlice({
+export const directionsSlice = createSlice({
   name: "directions",
   initialState,
   reducers: {
@@ -41,6 +41,6 @@ export const mapSlice = createSlice({
   },
 });
 
-export const { receivedDirections, toggledUseShortest } = mapSlice.actions;
+export const { receivedDirections, toggledUseShortest } = directionsSlice.actions;
 export const selectDirectionsState = (state: RootState) => state.directions;
-export default mapSlice.reducer;
+export default directionsSlice.reducer;
