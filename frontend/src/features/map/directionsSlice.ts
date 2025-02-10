@@ -41,6 +41,7 @@ export const directionsSlice = createSlice({
   },
 });
 
-export const { receivedDirections, toggledUseShortest } = directionsSlice.actions;
+export const { receivedDirections, toggledUseShortest } =
+  directionsSlice.actions;
 export const selectDirectionsState = (state: RootState) => state.directions;
 export default directionsSlice.reducer;
