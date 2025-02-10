@@ -14,6 +14,7 @@ type LocationPropertiesJSON = {
   country: string;
   city: string;
   countrycode: string;
+  housenumber: string;
   postcode: string;
   locality: string;
   type: string;
@@ -44,11 +45,14 @@ type LocationFeature = Feature<Point, LocationProperties>;
 
 /** Generate location label. */
 function getLocationLabel(item: LocationFeatureJSON) {
-  return `${item.properties.name || ""}${item.properties.name ? ", " : ""}${item.properties.locality || ""}${item.properties.locality ? ", " : ""}${item.properties.district || ""}${item.properties.district ? ", " : ""}${item.properties.street || ""}${item.properties.street ? ", " : ""}${item.properties.city || ""}${item.properties.city ? " " : ""} (${item.properties.country})`;
+  return `${item.properties.name || ""}${item.properties.name ? ", " : ""}${item.properties.locality || ""}${item.properties.locality ? ", " : ""}${item.properties.district || ""}${item.properties.district ? ", " : ""}${item.properties.street || ""}${item.properties.housenumber ? ` ${item.properties.housenumber}` : ""}${item.properties.street ? ", " : ""}${item.properties.city || ""}${item.properties.city ? " " : ""} (${item.properties.country})`;
 }
 
 type Props = {
+  /** The search query */
   query: string;
+  /** Should the search execute? */
+  update: boolean;
 };
 
 /**
@@ -56,6 +60,7 @@ type Props = {
  */
 export default function useLocationSearch({
   query,
+  update,
 }: Props): [LocationFeature[] | null, boolean] {
   const mapState = useSelector(selectMapState);
   const __ = useLocalize();
@@ -71,11 +76,14 @@ export default function useLocationSearch({
       return;
     }
     (async () => {
+      if (!update) {
+        return;
+      }
       abortController.current = new AbortController();
       setLoading(true);
       try {
         const response = await fetch(
-          `${config.locationSearchURL}?q=${encodeURIComponent(query)}&limit=5&lat=${mapState.center.lat}&lon=${mapState.center.lng}`,
+          `${config.locationSearchURL}/api?q=${encodeURIComponent(query)}&limit=5&lat=${mapState.center.lat}&lon=${mapState.center.lng}`,
           { signal: abortController.current.signal },
         );
         if (!response.ok) {
@@ -107,7 +115,7 @@ export default function useLocationSearch({
         abortController.current = undefined;
       }
     })();
-  }, [query, mapState.center.lng, mapState.center.lat, __]);
+  }, [query, mapState.center.lng, mapState.center.lat, __, update]);
 
   return [data, loading];
 }

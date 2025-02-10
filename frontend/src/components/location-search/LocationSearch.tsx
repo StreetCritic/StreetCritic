@@ -27,17 +27,17 @@ export default function LocationSearch({
   setLocation,
 }: Props) {
   const [query, setQuery] = useState("");
-  const [locations, loading] = useLocationSearch({ query });
   const dispatch = useDispatch();
   const __ = useLocalize();
-  const icon = (
-    <button type="submit">
-      <MagnifyingGlass size={28} weight="bold" />
-    </button>
-  );
+  const icon = <MagnifyingGlass size={28} weight="bold" />;
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
+  const [locations, loading] = useLocationSearch({
+    query,
+    update: combobox.targetRef.current === document.activeElement,
   });
 
   const options = locations?.map((item) => (
@@ -77,6 +77,7 @@ export default function LocationSearch({
               );
             }
             setQuery("");
+            combobox.targetRef.current?.blur();
             combobox.closeDropdown();
           }
         }}
@@ -93,8 +94,10 @@ export default function LocationSearch({
               combobox.resetSelectedOption();
               combobox.openDropdown();
             }}
+            onFocus={() => {
+              combobox.openDropdown();
+            }}
             onBlur={() => {
-              setQuery("");
               combobox.closeDropdown();
             }}
             rightSectionPointerEvents="all"
