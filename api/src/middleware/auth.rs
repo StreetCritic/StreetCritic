@@ -4,6 +4,7 @@ use axum::{
     middleware::Next,
     response::Response,
 };
+use tracing::trace;
 
 use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
@@ -50,6 +51,7 @@ fn get_token(headers: &HeaderMap) -> Option<&str> {
             if v.starts_with("Bearer ") {
                 Some(&v[7..])
             } else {
+                trace!{"Token does not start with \"Bearer\""}
                 None
             }
         })
@@ -65,6 +67,9 @@ fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
         Ok(token) => Some(User {
             id: token.claims.sub,
         }),
-        Err(_e) => None,
+        Err(e) => {
+            trace!{"Token could not be decoded: {:?}", e}
+            None
+        },
     }
 }
