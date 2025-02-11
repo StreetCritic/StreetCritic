@@ -32,6 +32,9 @@ title = Title
 authentication-required = Authentication required
 please-login-first = You have to login first or sign up for a StreetCritic account.
 
+generic-error-title = An error happened :(
+generic-error-body = Please try again later. If the problem persists, please contact us!
+
 add-way-title = Add a new bicycle way
 add-way-intro = Select a start and a stop of the new way for bicyclist by clicking on the map.
 add-way-info = Currently, there is a limit in the length of the way. You will notice that. Also, there are some usability problems which have high priority and will be solved shortly.

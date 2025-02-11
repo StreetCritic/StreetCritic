@@ -6,6 +6,7 @@ import { useLocalize, useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { selectMapState } from "@/features/map/mapSlice";
 import { selectAppState } from "@/features/map/appSlice";
+import { showNotification } from "@/notifications";
 
 type Props = {
   // Called when the new way has been added.
@@ -43,17 +44,28 @@ export default function WayCreateForm({ onCreated, onDiscard }: Props) {
       };
       body.segments = mapState.routeSegments;
       const token = (await user.getAccessToken()) || "";
-      const response = await fetch(`${config.apiURL}/ways`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      if (response.ok) {
-        const json = await response.json();
-        onCreated(json.id);
+      try {
+        const response = await fetch(`${config.apiURL}/ways`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        if (response.ok) {
+          const json = await response.json();
+          onCreated(json.id);
+        } else {
+          throw new Error("Response not ok");
+        }
+      } catch (e) {
+        console.log(e);
+        showNotification({
+          title: __("generic-error-title"),
+          message: __("generic-error-body"),
+          type: "error",
+        });
       }
     })();
   };

@@ -7,6 +7,7 @@ import RatingSlider from "./RatingSlider";
 import { default as Tag, State as TagState } from "./Tag";
 import config from "@/config";
 import { useLocalize, useUser } from "@/hooks";
+import { showNotification } from "@/notifications";
 
 type Props = {
   // The way to be rated.
@@ -98,16 +99,27 @@ export default function RatingForm({ way_id, onClose }: Props) {
         ),
       };
       const token = (await user.getAccessToken()) || "";
-      const response = await fetch(`${config.apiURL}/ratings`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      if (response.ok) {
-        onClose();
+      try {
+        const response = await fetch(`${config.apiURL}/ratings`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        if (response.ok) {
+          onClose();
+        } else {
+          throw new Error("Response not ok");
+        }
+      } catch (e) {
+        console.log(e);
+        showNotification({
+          title: __("generic-error-title"),
+          message: __("generic-error-body"),
+          type: "error",
+        });
       }
     })();
   };
