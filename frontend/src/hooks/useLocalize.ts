@@ -22,6 +22,9 @@ log-in = Log in
 no = No
 yes = Yes
 
+routing-error-title = Could not calculate route
+routing-error-body = The route could not be calculated. Please try again later.
+
 search-label = Search in StreetCritic...
 
 search-fetch-error-title = Could not search location
