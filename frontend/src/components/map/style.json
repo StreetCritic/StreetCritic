@@ -606,18 +606,47 @@
       }
     },
     {
-      "id": "tunnel-trunk-primary-casing",
+      "id": "tunnel-trunk",
       "type": "line",
-      "metadata": { "mapbox:group": "1444849354174.1904" },
       "source": "openmaptiles",
       "source-layer": "transportation",
       "filter": [
         "all",
         ["==", "brunnel", "tunnel"],
-        ["in", "class", "primary", "trunk"],
+        ["in", "class", "trunk"],
         ["!=", "ramp", 1]
       ],
       "layout": { "line-join": "round" },
+      "paint": {
+        "line-color": "#cfcdca",
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [14, 0.4],
+            [15, 0.75],
+            [20, 2]
+          ]
+        },
+        "line-dasharray": [2, 2]
+      }
+    },
+    {
+      "id": "tunnel-primary-casing",
+      "type": "line",
+      "metadata": {
+        "mapbox:group": "1444849354174.1904"
+      },
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": [
+        "all",
+        ["==", "brunnel", "tunnel"],
+        ["in", "class", "primary"],
+        ["!=", "ramp", 1]
+      ],
+      "layout": {
+        "line-join": "round"
+      },
       "paint": {
         "line-color": "#cfcdca",
         "line-width": {
@@ -757,7 +786,7 @@
       ],
       "layout": { "line-join": "round", "visibility": "visible" },
       "paint": {
-        "line-color": "rgba(244, 209, 158, 1)",
+        "line-color": "#ffffff",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -807,7 +836,7 @@
       ],
       "layout": { "line-join": "round" },
       "paint": {
-        "line-color": "#fff4c6",
+        "line-color": "#ffffff",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -854,7 +883,7 @@
       ],
       "layout": { "line-join": "round" },
       "paint": {
-        "line-color": "#fff4c6",
+        "line-color": "#fff",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -866,7 +895,7 @@
       }
     },
     {
-      "id": "tunnel-trunk-primary",
+      "id": "tunnel-primary",
       "type": "line",
       "metadata": { "mapbox:group": "1444849354174.1904" },
       "source": "openmaptiles",
@@ -874,12 +903,12 @@
       "filter": [
         "all",
         ["==", "brunnel", "tunnel"],
-        ["in", "class", "primary", "trunk"],
+        ["==", "class", "primary"],
         ["!=", "ramp", 1]
       ],
       "layout": { "line-join": "round" },
       "paint": {
-        "line-color": "#fff4c6",
+        "line-color": "#ffffff",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -1569,7 +1598,7 @@
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#fea",
+        "line-color": "#fff",
         "line-width": {
           "base": 1.2,
           "stops": [
@@ -2564,17 +2593,7 @@
       "filter": [
         "all",
         ["==", "oneway", 1],
-        [
-          "in",
-          "class",
-          "motorway",
-          "trunk",
-          "primary",
-          "secondary",
-          "tertiary",
-          "minor",
-          "service"
-        ]
+        ["in", "class", "primary", "secondary", "tertiary", "minor", "service"]
       ],
       "layout": {
         "icon-image": "oneway",
@@ -2601,17 +2620,7 @@
       "filter": [
         "all",
         ["==", "oneway", -1],
-        [
-          "in",
-          "class",
-          "motorway",
-          "trunk",
-          "primary",
-          "secondary",
-          "tertiary",
-          "minor",
-          "service"
-        ]
+        ["in", "class", "primary", "secondary", "tertiary", "minor", "service"]
       ],
       "layout": {
         "icon-image": "oneway",
@@ -2836,6 +2845,13 @@
         }
       },
       "paint": {
+        "text-opacity": [
+          "step",
+          ["zoom"],
+          ["match", ["get", "class"], "trunk", 0, 1],
+          20,
+          1
+        ],
         "text-color": "#765",
         "text-halo-blur": 0.5,
         "text-halo-width": 1.5,

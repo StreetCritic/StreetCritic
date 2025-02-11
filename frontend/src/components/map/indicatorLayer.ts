@@ -105,6 +105,8 @@ function updateColors(map: LibreMap, streetPreferences: StreetPreferences) {
   map.setPaintProperty("highway-primary", "line-color", lineColor);
   map.setPaintProperty("highway-trunk", "line-color", lineColor);
   map.setPaintProperty("highway-path", "line-color", lineColor);
+  map.setPaintProperty("highway-link", "line-color", lineColor);
+  map.setPaintProperty("tunnel-secondary-tertiary", "line-color", lineColor);
 }
 
 /**
