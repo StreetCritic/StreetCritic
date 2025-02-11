@@ -20,5 +20,6 @@ tokio = { version = "1.39.2", features = ["rt-multi-thread"] }
 tokio-postgres = { version = "0.7.11", features = ["with-time-0_3", "with-geo-types-0_7"] }
 toml = "0.8.19"
 tower-http = { version = "0.5.2", features = ["cors"] }
+tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 ts-rs = "10.1.0"
