@@ -20,7 +20,7 @@ pub struct User {
 struct Claims {
     sub: String,
     exp: usize,
-    name: String,
+    // name: String,
 }
 
 /// Authorization middleware. Checks for a valid JSON Web Token.
