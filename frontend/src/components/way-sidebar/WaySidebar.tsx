@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mantine/core";
+import { Way as APIWay } from "@/api-bindings/Way";
 
 import WayInfo from "@/components/way-info";
 import Loader from "@/components/loader";
@@ -11,7 +12,7 @@ type Props = {
 
 export default function WaySidebar({ wayId }: Props) {
   const [loading, setLoading] = useState(false);
-  const [wayData, setWayData] = useState(null);
+  const [wayData, setWayData] = useState<APIWay | null>(null);
   const [ratingsData, setRatingsData] = useState(null);
 
   const loadData = async () => {
@@ -19,7 +20,7 @@ export default function WaySidebar({ wayId }: Props) {
     setRatingsData(null);
     setLoading(true);
     const wayResponse = await fetch(`${config.apiURL}/ways/${wayId}`);
-    const way = await wayResponse.json();
+    const way: APIWay = await wayResponse.json();
     setWayData(way);
 
     // TODO use cache

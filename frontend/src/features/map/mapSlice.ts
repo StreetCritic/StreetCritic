@@ -2,8 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import {
+  closedQuickWayRating,
   closedRouting,
   closedWayAdding,
+  switchedToQuickWayRating,
   switchedToRouting,
   switchedToWayAdding,
 } from "./appSlice";
@@ -346,6 +348,18 @@ export const mapSlice = createSlice({
           state.stops.push({ inactive: false, id: newStopId(), ...coord });
         }
       }
+    });
+    builder.addCase(switchedToQuickWayRating, (state, action) => {
+      resetRouting(state);
+      if (action.payload?.stops && action.payload.stops.length > 1) {
+        state.stops = [];
+        for (const coord of action.payload.stops) {
+          state.stops.push({ inactive: false, id: newStopId(), ...coord });
+        }
+      }
+    });
+    builder.addCase(closedQuickWayRating, (state) => {
+      resetRouting(state);
     });
     builder.addCase(closedRouting, (state, _action) => {
       resetRouting(state);

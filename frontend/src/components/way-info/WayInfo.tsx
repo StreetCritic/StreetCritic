@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 
-import { SidebarContent } from "@/components";
-import { Title, P } from "@/components/typography";
+import { Button, RatingForm, SidebarContent } from "@/components";
+import { Text, Title, P } from "@/components/typography";
 import { Group, Rating, Badge } from "@mantine/core";
-import Button from "@/components/button";
+import { Way as APIWay } from "@/api-bindings/Way";
+
 import {
   Heart,
   ThumbsUp,
@@ -13,13 +14,10 @@ import {
   ThumbsDown,
 } from "@phosphor-icons/react/dist/ssr";
 
-import RatingForm from "@/components/rating-form";
 import { useLocalize, useLoginGate } from "@/hooks";
 
 type Props = {
-  // TODO
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  way: any;
+  way: APIWay;
   // TODO
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ratings: any[];
@@ -53,9 +51,11 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
     <>
       {/* {data.datetime} */}
       {/* Created on 2024/3/12 */}
-      <SidebarContent hideWhenFolded>Bicycle way</SidebarContent>
+      <SidebarContent hideWhenFolded>
+        <Text>Bicycle way</Text>
+      </SidebarContent>
       {loginModal}
-      <Title size="h3">{way.title}</Title>
+      {way.title && <Title size="h3">{way.title}</Title>}
 
       <SidebarContent hideWhenFolded>
         {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
@@ -92,7 +92,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
         />
         {ratingFormOpen && (
           <RatingForm
-            way_id={way.id}
+            wayId={way.id}
             onClose={() => {
               setRatingFormOpen(false);
               onRefresh();

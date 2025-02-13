@@ -4,10 +4,12 @@ use axum::{
     http::StatusCode,
     Extension, Json,
 };
-use ts_rs::TS;
-use serde::{Deserialize, Serialize};
 use geojson::de::deserialize_geometry;
 use geojson::ser::serialize_geometry;
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
+
+pub mod db;
 
 #[derive(TS)]
 #[ts(export)]
@@ -17,7 +19,7 @@ pub struct Way {
     user_id: String,
     #[ts(as = "Vec<u8>")]
     datetime: time::PrimitiveDateTime,
-    title: String,
+    title: Option<String>,
     // comment: String,
     // mode: String,
     #[serde(
@@ -75,7 +77,6 @@ pub async fn get_way(
     };
     Ok(Json(way))
 }
-
 
 /// Parameters for /ways endpoint.
 #[derive(Deserialize)]
@@ -149,45 +150,20 @@ pub async fn get_ways(
     Ok(geojson::ser::to_feature_collection_string(&ways).unwrap())
 }
 
+/// Create a new way.
 pub async fn create_way(
     Extension(user): Extension<User>,
     State(pool): State<ConnectionPool>,
     Json(payload): Json<CreateWay>,
 ) -> Result<Json<CreateWayResponse>, (StatusCode, String)> {
-    let mut conn = pool.get().await.map_err(internal_error)?;
-
-    let transaction = conn.transaction().await.map_err(internal_error)?;
-
-    let row = transaction
-        .query_one(
-            "INSERT INTO way (user_id, datetime, title) VALUES($1, NOW(), $2) RETURNING id",
-            &[&user.id, &payload.title],
-        )
-        .await
-        .map_err(internal_error)?;
-
-    let way_id: i32 = row.get("id");
-
-    {
-        let statement = transaction
-            .prepare(
-                "INSERT INTO way_segment (way_id, segment_id, start, stop) VALUES($1, $2 , $3, $4)",
-            )
-            .await
-            .map_err(internal_error)?;
-
-        for segment in &payload.segments {
-            transaction
-                .execute(
-                    &statement,
-                    &[&way_id, &segment.id, &segment.start, &segment.stop],
-                )
-                .await
-                .map_err(internal_error)?;
-        }
-    }
-
-    transaction.commit().await.map_err(internal_error)?;
+    let way_id = db::create_way(
+        pool,
+        &payload.segments,
+        Some(payload.title),
+        user.id.as_str(),
+    )
+    .await
+    .map_err(internal_error)?;
     Ok(Json(CreateWayResponse { id: way_id }))
 }
 

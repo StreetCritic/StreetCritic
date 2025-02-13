@@ -10,7 +10,7 @@ sign-up = Registrieren
 `);
 
 const resourceEn = new FluentResource(`
-abort = Abort
+cancel = Cancel
 dismiss = Dismiss
 discard = Discard
 previous = Previous
@@ -65,6 +65,9 @@ way-rating-tag-quiet = Quiet
 way-rating-tag-clean = Clean
 way-rating-tag-little_motorized_traffic = Little motorized traffic
 way-rating-tag-good_infrastructure = Good infrastructure
+
+way-rating-success-title = Rating submitted
+way-rating-success-body = Your rating has been successfully submitted.
 
 way-points-from = From:
 way-points-via = Via:

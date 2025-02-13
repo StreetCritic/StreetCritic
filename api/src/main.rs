@@ -13,6 +13,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use tower_http::cors::CorsLayer;
 
 pub mod config;
+pub mod db;
+pub mod error;
 pub mod middleware;
 pub mod rating;
 pub mod way;

@@ -12,7 +12,9 @@ export function useWay() {
     () => allStops.filter((stop) => !stop.inactive),
     [allStops],
   );
-  useSegmentsRoute(mode === AppMode.WayAdding ? stops : []);
+  useSegmentsRoute(
+    [AppMode.WayAdding, AppMode.QuickWayRating].includes(mode) ? stops : [],
+  );
   useDirections(mode === AppMode.Routing ? stops : []);
 }
 

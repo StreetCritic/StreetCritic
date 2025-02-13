@@ -51,7 +51,7 @@ fn get_token(headers: &HeaderMap) -> Option<&str> {
             if v.starts_with("Bearer ") {
                 Some(&v[7..])
             } else {
-                trace!{"Token does not start with \"Bearer\""}
+                trace! {"Token does not start with \"Bearer\""}
                 None
             }
         })
@@ -68,8 +68,8 @@ fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
             id: token.claims.sub,
         }),
         Err(e) => {
-            trace!{"Token could not be decoded: {:?}", e}
+            trace! {"Token could not be decoded: {:?}", e}
             None
-        },
+        }
     }
 }
