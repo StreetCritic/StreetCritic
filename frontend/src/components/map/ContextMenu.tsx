@@ -24,9 +24,11 @@ export default function ContextMenu({ onClick }: Props) {
   const mapState = useSelector(selectMapState);
   const appState = useSelector(selectAppState);
   const dispatch = useDispatch();
-  const showStopEdit = [AppMode.Routing, AppMode.WayAdding].includes(
-    appState.mode,
-  );
+  const showStopEdit = [
+    AppMode.Routing,
+    AppMode.WayAdding,
+    AppMode.QuickWayRating,
+  ].includes(appState.mode);
 
   if (!mapState.contextMenuPosition || !showStopEdit) {
     return null;

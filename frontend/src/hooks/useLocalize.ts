@@ -10,7 +10,7 @@ sign-up = Registrieren
 `);
 
 const resourceEn = new FluentResource(`
-abort = Abort
+cancel = Cancel
 dismiss = Dismiss
 discard = Discard
 previous = Previous

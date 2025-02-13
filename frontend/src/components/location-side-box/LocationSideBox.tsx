@@ -1,12 +1,18 @@
 import { useLocalize, useLoginGate } from "@/hooks";
 import { Coordinates, Indicator, Title } from "@/components";
-import { Box, Button, Group, Stack } from "@mantine/core";
+import { Box, Button, Group } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLocationState } from "@/features/map/locationSlice";
-import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
 import {
+  Armchair,
+  Eye,
+  Shield,
+  Sparkle,
+  TrafficSign,
+} from "@phosphor-icons/react";
+import {
+  switchedToQuickWayRating,
   switchedToRouting,
-  switchedToWayAdding,
 } from "@/features/map/appSlice";
 import { Geometry } from "geojson";
 import type { LngLat } from "@/features/map";
@@ -57,20 +63,23 @@ export default function LocationSidebar() {
         </Title>
       )}
       {locationState.selectedWay?.indicators && (
-        <Stack my="sm" gap={0}>
+        <Group my="sm" gap="md">
           <Indicator
-            label="Comfort"
-            value={locationState.selectedWay.indicators.bikeComfort}
-          />
-          <Indicator
+            icon={<Shield size={24} />}
             label="Safety"
             value={locationState.selectedWay.indicators.bikeSafety}
           />
           <Indicator
+            icon={<Eye size={24} />}
             label="Beauty"
             value={locationState.selectedWay.indicators.beauty}
           />
-        </Stack>
+          <Indicator
+            label="Comfort"
+            icon={<Armchair size={24} />}
+            value={locationState.selectedWay.indicators.bikeComfort}
+          />
+        </Group>
       )}
       {locationState.location && (
         <Group>
@@ -78,11 +87,11 @@ export default function LocationSidebar() {
             locationState.selectedWay.indicators && (
               <Button
                 color="blue"
-                leftSection={<MapPinPlus size={24} weight="fill" />}
+                leftSection={<Sparkle size={24} />}
                 onClick={() =>
                   requireAuthentication(() =>
                     dispatch(
-                      switchedToWayAdding(
+                      switchedToQuickWayRating(
                         (locationState.selectedWay && {
                           stops: stopsFromGeo(
                             locationState.selectedWay.geometry,
@@ -94,7 +103,7 @@ export default function LocationSidebar() {
                   )
                 }
               >
-                Add rating
+                Add you Opinion
               </Button>
             )}
           <Button

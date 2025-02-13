@@ -5,15 +5,20 @@ import { H3, P } from "@/components";
 
 import RatingSlider from "./RatingSlider";
 import { default as Tag, State as TagState } from "./Tag";
-import config from "@/config";
 import { useLocalize, useUser } from "@/hooks";
 import { showNotification } from "@/notifications";
+import { submitRating } from "@/features/ratings/submit";
+import { Ratings } from "@/features/ratings";
+import { useSelector } from "react-redux";
+import { selectMapState } from "@/features/map/mapSlice";
 
 type Props = {
-  // The way to be rated.
-  way_id: number;
-  // Called when the form is closed.
+  /** If the rating is for an existing way, this is the way's id. */
+  wayId?: number;
+  /** Called when the form is closed or the rating submitted. */
   onClose: () => void;
+  /** Called when the user requests a submit */
+  /* onSubmit: (props: Omit<Parameters<typeof submitRating>[0], "wayId">) => void; */
 };
 
 enum Steps {
@@ -24,16 +29,10 @@ enum Steps {
   Submit,
 }
 
-type Ratings = {
-  general: number;
-  safety: number;
-  comfort: number;
-  beauty: number;
-};
-
-export default function RatingForm({ way_id, onClose }: Props) {
-  const __ = useLocalize();
+export default function RatingForm({ wayId, onClose }: Props) {
   const user = useUser();
+  const mapState = useSelector(selectMapState);
+  const __ = useLocalize();
   const [rating, setRating] = useState<Ratings>({
     general: 50,
     safety: 50,
@@ -82,50 +81,28 @@ export default function RatingForm({ way_id, onClose }: Props) {
     return [];
   };
 
-  const onSubmit = () => {
-    (async () => {
-      /* if (!way_id || !auth?.user) {
-       *   return;
-       * } */
-      const body = {
-        way_id,
-        comment,
-        tags: Object.entries(tags).flatMap(toTagString),
-        ...Object.fromEntries(
-          Object.entries(rating).map(([k, v]) => [
-            `${k}_rating`,
-            Math.round(v / 10),
-          ]),
-        ),
-      };
-      const token = (await user.getAccessToken()) || "";
-      try {
-        const response = await fetch(`${config.apiURL}/ratings`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
-        if (response.ok) {
-          onClose();
-        } else {
-          throw new Error("Response not ok");
-        }
-      } catch (e) {
-        console.log(e);
-        showNotification({
-          title: __("generic-error-title"),
-          message: __("generic-error-body"),
-          type: "error",
-        });
-      }
-    })();
-  };
-
   const updateRating = (key: string) => (v: number) =>
     setRating((oldState: Ratings) => ({ ...oldState, [key]: v }));
+
+  const onSubmit = async () => {
+    const token = (await user.getAccessToken()) || "";
+    const segments = mapState.routeSegments || undefined;
+
+    try {
+      await submitRating(
+        { comment, tags: Object.entries(tags).flatMap(toTagString), rating },
+        { wayId: wayId, token, segments },
+      );
+    } catch (e) {
+      console.log(e);
+      showNotification({
+        title: __("generic-error-title"),
+        message: __("generic-error-body"),
+        type: "error",
+      });
+      onClose();
+    }
+  };
 
   return (
     <>
@@ -182,7 +159,8 @@ export default function RatingForm({ way_id, onClose }: Props) {
 
           <Stepper.Step label="Tags">
             <Text my="xl">
-              What is notably good, what is notably bad about the way?
+              What is <strong>notably</strong> good, what is{" "}
+              <strong>notably</strong> bad about the way?
             </Text>
             <Text fw="700">Comfort</Text>
             <Group mt="md">

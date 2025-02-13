@@ -2,9 +2,16 @@
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useLoginGate, useNavigateMap, useWay } from "@/hooks";
+import {
+  /* useLoginGate, */
+  useNavigateMap,
+  useWay,
+} from "@/hooks";
 
-import { MapPinPlus, TrafficSign } from "@phosphor-icons/react";
+import {
+  /* MapPinPlus, */
+  TrafficSign,
+} from "@phosphor-icons/react";
 
 import LocationSearch from "../location-search";
 import WayCreateForm from "./WayCreateForm";
@@ -26,7 +33,7 @@ import {
   AppMode,
   selectAppState,
   switchedToRouting,
-  switchedToWayAdding,
+  /* switchedToWayAdding, */
   closedRouting,
   closedWayAdding,
 } from "@/features/map/appSlice";
@@ -37,6 +44,7 @@ import {
   clearedLocation,
   selectLocationState,
 } from "@/features/map/locationSlice";
+import QuickWayRating from "../quick-way-rating";
 
 type Props = {
   selectedWay: number | null;
@@ -47,7 +55,7 @@ export default function MapApp({ selectedWay }: Props) {
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
   const locationState = useSelector(selectLocationState);
-  const [loginModal, requireAuthentication] = useLoginGate();
+  /* const [loginModal, requireAuthentication] = useLoginGate(); */
   const navigateMap = useNavigateMap();
   useWay();
   const [wayCreateFormOpen, setWayCreateFormOpen] = useState(false);
@@ -62,7 +70,7 @@ export default function MapApp({ selectedWay }: Props) {
   return (
     <div className={styles.root}>
       <Map selectedWay={selectedWay} />
-      {loginModal}
+      {/* {loginModal} */}
       {mapState.routeSegments && wayCreateFormOpen && (
         <WayCreateForm
           onCreated={(id: number) => {
@@ -97,6 +105,8 @@ export default function MapApp({ selectedWay }: Props) {
         </SideBox>
       )}
 
+      {appState.mode === AppMode.QuickWayRating && <QuickWayRating />}
+
       <div className={styles.controls}>
         <ProfileControl />
         <Box className={styles.locationSearch} w={300}>
@@ -104,14 +114,14 @@ export default function MapApp({ selectedWay }: Props) {
         </Box>
         {appState.mode === AppMode.Browsing && (
           <Group>
-            <ActionIcon
+            {/* <ActionIcon
               label="Add way"
               color="blue"
               icon={<MapPinPlus size={32} weight="fill" />}
               onClick={() =>
                 requireAuthentication(() => dispatch(switchedToWayAdding()))
               }
-            />
+            /> */}
             <ActionIcon
               label="Start routing"
               color="gray.7"

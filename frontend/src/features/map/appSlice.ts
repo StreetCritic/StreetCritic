@@ -7,6 +7,7 @@ export enum AppMode {
   Browsing,
   Routing,
   WayAdding,
+  QuickWayRating,
 }
 
 export type User = {
@@ -61,6 +62,15 @@ export const appSlice = createSlice({
       state.mode = AppMode.Browsing;
     },
 
+    /** User switched to quick way rating mode. */
+    switchedToQuickWayRating: (
+      state,
+      _action: PayloadAction<{ stops?: LngLat[] } | undefined>,
+    ) => {
+      dispatchEvent(new Event("switched-to-quick-way-rating"));
+      state.mode = AppMode.QuickWayRating;
+    },
+
     // User switched to routing mode, possibly with target location.
     switchedToRouting: (
       state,
@@ -84,6 +94,11 @@ export const appSlice = createSlice({
       state.mode = AppMode.Browsing;
     },
 
+    // User closed quick way rating mode.
+    closedQuickWayRating: (state) => {
+      state.mode = AppMode.Browsing;
+    },
+
     // User closed way adding mode.
     closedWayAdding: (state) => {
       state.mode = AppMode.Browsing;
@@ -92,8 +107,10 @@ export const appSlice = createSlice({
 });
 
 export const {
+  closedQuickWayRating,
   switchedToBrowsing,
   switchedToWayAdding,
+  switchedToQuickWayRating,
   switchedToRouting,
   userAuthenticated,
   closedRouting,

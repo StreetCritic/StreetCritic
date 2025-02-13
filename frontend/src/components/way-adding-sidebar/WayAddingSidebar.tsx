@@ -91,7 +91,7 @@ export default function WayAddingSidebar({ onAddClick }: Props) {
           <Button onClick={() => onAddClick()}>{__("continue")}</Button>
         )}
         <Button color="red" onClick={() => dispatch(closedWayAdding())}>
-          {__("abort")}
+          {__("cancel")}
         </Button>
       </Flex>
       <SidebarContent hideWhenFolded>
