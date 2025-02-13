@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Button, RatingForm, SidebarContent } from "@/components";
-import { Title, P } from "@/components/typography";
+import { Text, Title, P } from "@/components/typography";
 import { Group, Rating, Badge } from "@mantine/core";
 import { Way as APIWay } from "@/api-bindings/Way";
 
@@ -51,7 +51,9 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
     <>
       {/* {data.datetime} */}
       {/* Created on 2024/3/12 */}
-      <SidebarContent hideWhenFolded>Bicycle way</SidebarContent>
+      <SidebarContent hideWhenFolded>
+        <Text>Bicycle way</Text>
+      </SidebarContent>
       {loginModal}
       {way.title && <Title size="h3">{way.title}</Title>}
 
@@ -90,6 +92,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
         />
         {ratingFormOpen && (
           <RatingForm
+            wayId={way.id}
             onClose={() => {
               setRatingFormOpen(false);
               onRefresh();

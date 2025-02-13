@@ -93,6 +93,12 @@ export default function RatingForm({ wayId, onClose }: Props) {
         { comment, tags: Object.entries(tags).flatMap(toTagString), rating },
         { wayId: wayId, token, segments },
       );
+      onClose();
+      showNotification({
+        title: __("way-rating-success-title"),
+        message: __("way-rating-success-body"),
+        type: "success",
+      });
     } catch (e) {
       console.log(e);
       showNotification({
@@ -100,7 +106,6 @@ export default function RatingForm({ wayId, onClose }: Props) {
         message: __("generic-error-body"),
         type: "error",
       });
-      onClose();
     }
   };
 
