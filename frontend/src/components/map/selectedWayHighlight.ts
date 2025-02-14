@@ -68,7 +68,7 @@ export default function useSelectedWayHighlight(map: Map | null) {
     const source = map.getMapLibre().getSource("selected-way");
     if (source instanceof GeoJSONSource) {
       source.setData(
-        data && appState.mode === AppMode.Browsing
+        data && wayId && appState.mode === AppMode.Browsing
           ? data.geometry
           : {
               type: "FeatureCollection",
@@ -76,5 +76,5 @@ export default function useSelectedWayHighlight(map: Map | null) {
             },
       );
     }
-  }, [map, initialized, data, appState.mode]);
+  }, [map, initialized, data, appState.mode, wayId]);
 }
