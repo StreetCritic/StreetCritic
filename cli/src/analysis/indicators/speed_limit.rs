@@ -36,8 +36,8 @@ pub fn calculate(way: &Way) -> f32 {
                 let max_speed = 80.0;
                 let min_factor = 0.0;
                 let max_factor = 1.0;
-                let a = (min_factor - max_factor) / (max_speed - min_speed);
-                return a * speed + max_factor - min_speed * a;
+                return (min_factor - max_factor) / (max_speed - min_speed) * (speed - min_speed)
+                    + max_factor;
             }
         }
         None => {}
@@ -68,10 +68,10 @@ mod tests {
     fn test_calculation() {
         assert_eq!(calculate(&way_with_limit("10")), 1.0);
         assert_eq!(calculate(&way_with_limit("20")), 1.0);
-        assert_eq!(calculate(&way_with_limit("50")), 0.49999997);
-        assert_eq!(calculate(&way_with_limit("70")), 0.1666666);
+        assert_eq!(calculate(&way_with_limit("50")), 0.5);
+        assert_eq!(calculate(&way_with_limit("70")), 0.16666663);
         assert_eq!(calculate(&way_with_limit("80")), 0.0);
-        assert_eq!(calculate(&way_with_limit("30 mph")), 0.5286614);
+        assert_eq!(calculate(&way_with_limit("30 mph")), 0.5286613);
         assert_eq!(calculate(&way_with_limit("20 xyz")), 0.5);
     }
 }
