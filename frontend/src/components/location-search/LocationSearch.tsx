@@ -66,6 +66,7 @@ export default function LocationSearch({
             } else {
               dispatch(
                 selectedLocation({
+                  changeCenter: true,
                   location: {
                     center: {
                       lng: entry.geometry.coordinates[0],

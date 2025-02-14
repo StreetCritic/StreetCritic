@@ -37,7 +37,11 @@ export const locationSlice = createSlice({
     // Location has been set.
     selectedLocation: (
       state,
-      action: PayloadAction<{ location: Location; selectedWay?: SelectedWay }>,
+      action: PayloadAction<{
+        location: Location;
+        selectedWay?: SelectedWay;
+        changeCenter?: boolean;
+      }>,
     ) => {
       state.location = {
         center: action.payload.location.center,

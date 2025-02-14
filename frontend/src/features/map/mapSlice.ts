@@ -373,13 +373,15 @@ export const mapSlice = createSlice({
 
     builder.addCase(selectedLocation, (state, action) => {
       dispatchEvent(new Event("selected-location"));
-      state.center = {
-        lng: action.payload.location.center.lng,
-        lat: action.payload.location.center.lat,
-        updateView: true,
-        zoom: 15,
-        flyTo: false,
-      };
+      if (action.payload.changeCenter) {
+        state.center = {
+          lng: action.payload.location.center.lng,
+          lat: action.payload.location.center.lat,
+          updateView: true,
+          zoom: 15,
+          flyTo: false,
+        };
+      }
     });
   },
 });
