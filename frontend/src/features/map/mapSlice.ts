@@ -378,7 +378,7 @@ export const mapSlice = createSlice({
         lat: action.payload.location.center.lat,
         updateView: true,
         zoom: 15,
-        flyTo: true,
+        flyTo: false,
       };
     });
   },
