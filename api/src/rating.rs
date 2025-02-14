@@ -57,6 +57,7 @@ pub struct GetRatingsParams {
     way_id: i32,
 }
 
+/// Retrieves ratings
 pub async fn get_ratings(
     Query(params): Query<GetRatingsParams>,
     State(pool): State<ConnectionPool>,
