@@ -12,12 +12,6 @@ export function updateColors(
   map: LibreMap,
   streetPreferences: StreetPreferences,
 ) {
-  const maxPreference = Math.max(
-    streetPreferences.comfort,
-    streetPreferences.safety,
-    streetPreferences.beauty,
-  );
-  console.log("update colors", streetPreferences, maxPreference);
   const lineColor = [
     "interpolate",
     ["linear"],
@@ -70,28 +64,39 @@ export function updateColors(
         "interpolate",
         ["linear"],
         [
-          "/",
-          [
-            "+",
-            [
-              "*",
-              ["to-number", ["get", "streetcritic:indicator:beauty"]],
-              streetPreferences.beauty * 10,
-            ],
-            [
-              "*",
-              ["to-number", ["get", "streetcritic:indicator:bike_comfort"]],
-              streetPreferences.comfort * 10,
-            ],
-            [
-              "*",
-              ["to-number", ["get", "streetcritic:indicator:bike_safety"]],
-              streetPreferences.safety * 10,
-            ],
-          ],
+          "let",
+          "preferencesSum",
           streetPreferences.beauty +
             streetPreferences.comfort +
             streetPreferences.safety,
+          [
+            "match",
+            ["var", "preferencesSum"],
+            0,
+            0,
+            [
+              "/",
+              [
+                "+",
+                [
+                  "*",
+                  ["to-number", ["get", "streetcritic:indicator:beauty"]],
+                  streetPreferences.beauty * 10,
+                ],
+                [
+                  "*",
+                  ["to-number", ["get", "streetcritic:indicator:bike_comfort"]],
+                  streetPreferences.comfort * 10,
+                ],
+                [
+                  "*",
+                  ["to-number", ["get", "streetcritic:indicator:bike_safety"]],
+                  streetPreferences.safety * 10,
+                ],
+              ],
+              ["var", "preferencesSum"],
+            ],
+          ],
         ],
         ...ratingColors(),
       ],
