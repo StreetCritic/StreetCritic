@@ -27,6 +27,7 @@ export default class WayDisplay {
   private _getAccessToken: GetAccessTokenFn;
   private wayMarker: Record<string, Marker> = {};
   private onWaySelect: WaySelectHandler;
+  private lastBBox: string = "";
 
   constructor({ map, onWaySelect, getAccessToken }: Props) {
     this.map = map;
@@ -65,6 +66,10 @@ export default class WayDisplay {
    */
   async refreshWays(): Promise<void> {
     const bbox = this.map.getBounds().toArray().flat().join(",");
+    if (bbox === this.lastBBox) {
+      return;
+    }
+    this.lastBBox = bbox;
     const token = await this._getAccessToken();
     const response = await fetch(`${config.apiURL}/ways?bbox=${bbox}`, {
       headers: {
