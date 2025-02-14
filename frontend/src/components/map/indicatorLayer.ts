@@ -1,5 +1,5 @@
 import { Map as LibreMap } from "maplibre-gl";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Map } from "./map";
 import { ratingColors } from "./colors";
 import { useSelector } from "react-redux";
@@ -8,7 +8,10 @@ import { selectMapState, StreetPreferences } from "@/features/map/mapSlice";
 /**
  * Updates way colors based on indicators and street preferences.
  */
-function updateColors(map: LibreMap, streetPreferences: StreetPreferences) {
+export function updateColors(
+  map: LibreMap,
+  streetPreferences: StreetPreferences,
+) {
   const maxPreference = Math.max(
     streetPreferences.comfort,
     streetPreferences.safety,
@@ -111,13 +114,32 @@ function updateColors(map: LibreMap, streetPreferences: StreetPreferences) {
 
 /**
  * Hook to initialise the way display functionality.
+ *
+ * @returns onStyleLoaded callback
  */
 export function useIndicatorLayer(map: Map | null) {
   const mapState = useSelector(selectMapState);
+
+  const update = useCallback(
+    (map: Map) => {
+      updateColors(map.getMapLibre(), mapState.streetPreferences);
+    },
+    [mapState.streetPreferences],
+  );
+
   useEffect(() => {
     if (!map) {
       return;
     }
-    updateColors(map.getMapLibre(), mapState.streetPreferences);
-  }, [map, mapState.streetPreferences]);
+    update(map);
+  }, [map, mapState.streetPreferences, update]);
+
+  const onStyleLoaded = useCallback(
+    (map: Map) => {
+      update(map);
+    },
+    [update],
+  );
+
+  return onStyleLoaded;
 }

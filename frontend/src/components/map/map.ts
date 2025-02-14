@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Map as LibreMap,
   LngLat,
@@ -7,7 +7,6 @@ import {
   NavigationControl,
   StyleSpecification,
   ScaleControl,
-  AddLayerObject,
 } from "maplibre-gl";
 
 import config from "@/config";
@@ -33,6 +32,11 @@ export type PositionChangeHandler = (
 // A function that returns an API access token.
 export type GetAccessTokenFn = () => Promise<string | null>;
 
+type Options = {
+  /** Called when the style is loaded */
+  onStyleLoaded: (map: Map) => void;
+};
+
 /**
  * Implements a wrapper for MapLibre.
  */
@@ -53,6 +57,7 @@ export class Map {
     onCenterChange: (center: LngLat, zoom: number) => void,
     container: HTMLElement,
     onLoad: (map: Map) => void,
+    options: Options,
   ) {
     this.map = new LibreMap({
       container,
@@ -63,6 +68,13 @@ export class Map {
         customAttribution:
           '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap Mitwirkende</a> <a href = "https://www.maptiler.com/copyright/" target="_blank" >&copy; MapTiler</a>',
       },
+    });
+
+    this.map.once("styledata", () => {
+      for (const layer of (originalStyle as StyleSpecification).layers) {
+        this.map.addLayer(layer);
+      }
+      options.onStyleLoaded(this);
     });
 
     const scale = new ScaleControl({
@@ -92,10 +104,6 @@ export class Map {
     // });
 
     this.map.once("load", () => {
-      for (const layer of originalStyle.layers) {
-        this.map.addLayer(layer as AddLayerObject);
-      }
-
       this.map.addControl(new NavigationControl(), "bottom-right");
 
       this.map.on("dragstart", () => {
@@ -329,8 +337,12 @@ export function useMap(
   useLocationMarker(map);
   useWayDisplay(map);
   useRouteDisplay(map);
-  useIndicatorLayer(map);
+  const onStyleLoaded = useIndicatorLayer(map);
+  const onStyleLoadedRef = useRef(onStyleLoaded);
   useGeoLocate(map);
+  useEffect(() => {
+    onStyleLoadedRef.current = onStyleLoaded;
+  }, [onStyleLoaded]);
 
   // Initialize the map.
   useEffect(() => {
@@ -346,8 +358,9 @@ export function useMap(
           }),
         );
       };
-      const theMap = new Map(onCenterChange, container.current, setMap);
-      console.log("map created");
+      const theMap = new Map(onCenterChange, container.current, setMap, {
+        onStyleLoaded: onStyleLoadedRef.current,
+      });
       return () => {
         theMap.destruct();
       };
