@@ -1,58 +1,34 @@
-import { useEffect, useState } from "react";
 import { Box } from "@mantine/core";
-import { Way as APIWay } from "@/api-bindings/Way";
-
 import WayInfo from "@/components/way-info";
 import Loader from "@/components/loader";
-import config from "@/config";
+import { api, useGetRatingsByWayIdQuery, useGetWayQuery } from "@/services/api";
+import { useAppDispatch } from "@/hooks";
 
 type Props = {
   wayId: number;
 };
 
 export default function WaySidebar({ wayId }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [wayData, setWayData] = useState<APIWay | null>(null);
-  const [ratingsData, setRatingsData] = useState(null);
+  const dispatch = useAppDispatch();
+  const way = useGetWayQuery(wayId);
+  const ratings = useGetRatingsByWayIdQuery(wayId);
 
-  const loadData = async () => {
-    setWayData(null);
-    setRatingsData(null);
-    setLoading(true);
-    const wayResponse = await fetch(`${config.apiURL}/ways/${wayId}`);
-    const way: APIWay = await wayResponse.json();
-    setWayData(way);
-
-    // TODO use cache
-    const ratingsResponse = await fetch(
-      `${config.apiURL}/ratings?way_id=${wayId}`,
-      { cache: "no-store" },
-    );
-    const ratings = await ratingsResponse.json();
-    setRatingsData(ratings);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadData();
-    // TODO
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wayId]);
-
-  if (loading) {
+  if (way.isLoading || ratings.isLoading) {
     return <Loader />;
   }
 
-  if (!wayData || !ratingsData) {
-    return <p>empty</p>;
+  if (!way.data || !ratings.data) {
+    return;
   }
 
   return (
     <Box p="sm">
       <WayInfo
-        way={wayData}
-        ratings={ratingsData}
-        onRefresh={() => loadData()}
+        way={way.data}
+        ratings={ratings.data}
+        onRefresh={() =>
+          dispatch(api.util.invalidateTags([{ type: "Rating" }]))
+        }
       />
     </Box>
   );

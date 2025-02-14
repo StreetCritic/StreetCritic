@@ -69,7 +69,7 @@ export default function MapApp({ selectedWay }: Props) {
 
   return (
     <div className={styles.root}>
-      <Map selectedWay={selectedWay} />
+      <Map />
       {/* {loginModal} */}
       {mapState.routeSegments && wayCreateFormOpen && (
         <WayCreateForm

@@ -22,11 +22,11 @@ pub struct Way {
     title: Option<String>,
     // comment: String,
     // mode: String,
+    #[ts(type = "GeoJSON.Geometry")]
     #[serde(
         serialize_with = "serialize_geometry",
         deserialize_with = "deserialize_geometry"
     )]
-    #[ts(skip)]
     geometry: geo_types::Geometry<f64>,
 }
 

@@ -4,6 +4,7 @@ import mapReducer from "@/features/map/mapSlice";
 import appReducer from "@/features/map/appSlice";
 import directionsReducer from "@/features/map/directionsSlice";
 import locationReducer from "@/features/map/locationSlice";
+import { api } from "./services/api";
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,10 @@ const store = configureStore({
     app: appReducer,
     directions: directionsReducer,
     location: locationReducer,
+    [api.reducerPath]: api.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
 });
 export default store;
 

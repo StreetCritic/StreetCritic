@@ -1,7 +1,7 @@
 import config from "@/config";
 import { useNavigateMap, useUser } from "@/hooks";
 import { FeatureCollection, MultiLineString } from "geojson";
-import { GeoJSONSource, Map as LibreMap, Marker } from "maplibre-gl";
+import { Map as LibreMap, Marker } from "maplibre-gl";
 import { useCallback, useEffect, useRef } from "react";
 import { GetAccessTokenFn, Map } from "./map";
 import MarkerElement from "./Marker";

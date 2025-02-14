@@ -5,14 +5,18 @@ use axum::{
     Extension, Json,
 };
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 mod db;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(TS)]
+#[ts(export)]
+#[derive(Serialize, Deserialize)]
 pub struct Rating {
     id: i32,
     way_id: i32,
     user_id: String,
+    #[ts(skip)]
     datetime: time::PrimitiveDateTime,
     general_rating: u8,
     safety_rating: u8,

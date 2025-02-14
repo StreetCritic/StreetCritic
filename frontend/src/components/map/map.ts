@@ -3,7 +3,6 @@ import {
   Map as LibreMap,
   LngLat,
   type LngLatLike,
-  GeoJSONSource,
   NavigationControl,
   StyleSpecification,
   ScaleControl,
@@ -173,26 +172,6 @@ export class Map {
       //   },
       // });
 
-      // this.map.addLayer(
-      //   {
-      //     id: "existing-ways",
-      //     type: "line",
-      //     source: "existing-ways",
-      //     paint: {
-      //       "line-color": [
-      //         "interpolate",
-      //         ["linear"],
-      //         ["get", "rating"],
-      //         ...colors,
-      //       ],
-      //       "line-opacity": 0.5,
-      //       "line-width": 5,
-      //       // "line-dasharray": [6, 3],
-      //     },
-      //   },
-      //   "highway-name-path",
-      // );
-
       // this.map.addLayer({
       //   id: "rated-segments",
       //   type: "line",
@@ -237,20 +216,6 @@ export class Map {
    */
   getMapLibre(): LibreMap {
     return this.map;
-  }
-
-  /**
-   * Displays the given rating.
-   *
-   * @param id - The rating to display.
-   */
-  async displayRating(id: number) {
-    const response = await fetch(`${config.apiURL}/ratings/${id}`);
-    const data = await response.json();
-    const source = this.map.getSource("existing-ways");
-    if (source instanceof GeoJSONSource) {
-      source.setData(data.geometry);
-    }
   }
 
   /**
@@ -315,23 +280,15 @@ export class Map {
   // }
 }
 
-export type MapOptions = {
-  selectedWay: number | null;
-};
-
 /**
  * React hook to initialize and update the transport map.
  *
  * @param container - The map container.
  */
-export function useMap(
-  container: React.RefObject<HTMLElement>,
-  options: MapOptions,
-) {
+export function useMap(container: React.RefObject<HTMLElement>) {
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const [map, setMap] = useState<Map | null>(null);
-  const { selectedWay } = options;
 
   useStops(map);
   useLocationMarker(map);
@@ -366,13 +323,6 @@ export function useMap(
       };
     }
   }, [dispatch, container]);
-
-  // Display selected rating.
-  useEffect(() => {
-    if (map && selectedWay) {
-      map.displayRating(selectedWay);
-    }
-  }, [selectedWay, map]);
 
   // Update center when changed.
   useEffect(() => {
