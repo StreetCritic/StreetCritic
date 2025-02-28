@@ -34,6 +34,11 @@ export type AppState = {
 
   // Authentication state.
   authState: AuthenticationState;
+
+  /**
+   * Is the announcement banner visible?
+   */
+  announcementBannerVisible: boolean;
 };
 
 const initialState: AppState = {
@@ -41,12 +46,20 @@ const initialState: AppState = {
   locale: "en",
   user: null,
   authState: AuthenticationState.Unauthenticated,
+  announcementBannerVisible: localStorage.getItem("state") === null,
 };
+
+localStorage.setItem("state", "visited");
 
 export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    /** User closed the announcement banner. */
+    closedAnnouncementBanner: (state) => {
+      state.announcementBannerVisible = false;
+    },
+
     // User switched to way adding mode.
     switchedToWayAdding: (
       state,
@@ -107,6 +120,7 @@ export const appSlice = createSlice({
 });
 
 export const {
+  closedAnnouncementBanner,
   closedQuickWayRating,
   switchedToBrowsing,
   switchedToWayAdding,

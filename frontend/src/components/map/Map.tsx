@@ -11,6 +11,7 @@ import useLocationSelector from "./locationSelector";
 
 import styles from "./Map.module.css";
 import useSelectedWayHighlight from "./selectedWayHighlight";
+import { AnnouncementBanner } from "@/components";
 
 export default function Map(): React.JSX.Element {
   const container = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ export default function Map(): React.JSX.Element {
   useSelectedWayHighlight(map);
   return (
     <div className={styles.root}>
+      <AnnouncementBanner />
       <div className={styles.map} ref={container} />
       <ContextMenu onClick={onClick} />
     </div>

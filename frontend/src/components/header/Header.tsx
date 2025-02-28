@@ -19,8 +19,7 @@ import UserNavigation from "./UserNavigation";
 import { useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
-import { ActionIcon, LoginButtons } from "@/components";
-import SocialMediaLinks from "./SocialMediaLinks";
+import { ActionIcon, LoginButtons, SocialMediaLinks } from "@/components";
 import LogoLink from "./LogoLink";
 
 export default function Header() {
