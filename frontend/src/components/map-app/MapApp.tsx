@@ -109,7 +109,7 @@ export default function MapApp({ selectedWay }: Props) {
 
       <div className={styles.controls}>
         <ProfileControl />
-        <Box className={styles.locationSearch} w={300}>
+        <Box className={styles.locationSearch}>
           <LocationSearch />
         </Box>
         {appState.mode === AppMode.Browsing && (

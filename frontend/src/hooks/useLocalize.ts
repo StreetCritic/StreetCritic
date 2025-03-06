@@ -30,6 +30,8 @@ search-label = Search in StreetCritic...
 search-fetch-error-title = Could not search location
 search-fetch-error-body = The search server is not reachable or there has been an other error. Please try again later.
 
+location-search-label = Search for location in StreetCritic...
+
 title = Title
 
 authentication-required = Authentication required

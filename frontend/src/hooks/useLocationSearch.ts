@@ -45,18 +45,27 @@ type LocationFeature = Feature<Point, LocationProperties>;
 
 /** Generate location label. */
 function getLocationLabel(item: LocationFeatureJSON) {
-  return `${item.properties.name || ""}${item.properties.name ? ", " : ""}${item.properties.locality || ""}${item.properties.locality ? ", " : ""}${item.properties.district || ""}${item.properties.district ? ", " : ""}${item.properties.street || ""}${item.properties.housenumber ? ` ${item.properties.housenumber}` : ""}${item.properties.street ? ", " : ""}${item.properties.city || ""}${item.properties.city ? " " : ""} (${item.properties.country})`;
+  const subLabels = [
+    item.properties.name,
+    item.properties.locality,
+    item.properties.locality,
+    item.properties.district,
+    `${item.properties.street || ""} ${item.properties.housenumber || ""}`.trim(),
+    item.properties.city,
+    item.properties.country,
+  ];
+  return subLabels.filter((label) => !!label).join(", ");
 }
 
 type Props = {
-  /** The search query */
+  /** The search query. */
   query: string;
   /** Should the search execute? */
   update: boolean;
 };
 
 /**
- * Hook to fetch locations via query.
+ * Hook to search locations via query.
  */
 export default function useLocationSearch({
   query,
@@ -83,7 +92,7 @@ export default function useLocationSearch({
       setLoading(true);
       try {
         const response = await fetch(
-          `${config.locationSearchURL}/api?q=${encodeURIComponent(query)}&limit=5&lat=${mapState.center.lat}&lon=${mapState.center.lng}`,
+          `${config.locationSearchURL}/api?q=${encodeURIComponent(query)}&limit=10&lat=${mapState.center.lat}&lon=${mapState.center.lng}&zoom=${Math.round(mapState.center.zoom)}&location_bias_scale=0.5`,
           { signal: abortController.current.signal },
         );
         if (!response.ok) {
@@ -115,7 +124,14 @@ export default function useLocationSearch({
         abortController.current = undefined;
       }
     })();
-  }, [query, mapState.center.lng, mapState.center.lat, __, update]);
+  }, [
+    query,
+    mapState.center.lng,
+    mapState.center.lat,
+    __,
+    update,
+    mapState.center.zoom,
+  ]);
 
   return [data, loading];
 }

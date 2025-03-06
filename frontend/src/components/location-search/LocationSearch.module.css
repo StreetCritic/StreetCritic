@@ -1,10 +1,27 @@
-.root button {
-  background: none;
-  border: none;
-  color: var(--mantine-color-gray-6);
-  padding-top: 3px;
+.widget {
+  overflow: hidden;
+  border-radius: 4px;
+  a {
+    border: 1px solid var(--mantine-color-gray-4);
+    border-radius: 4px;
+    color: var(--mantine-color-gray-5);
+    font-size: var(--mantine-font-size-sm);
+    background: white;
+    display: block;
+    padding: 0.2em 0.5em;
+    text-decoration: none;
+  }
 }
 
-.root button:hover {
+.widgetLabel {
+  font-size: var(--mantine-font-size-sm);
   color: var(--mantine-color-gray-8);
+  padding-top: 5px;
+}
+
+.widgetPlaceholder {
+  display: flex;
+  flex-flow: space-between;
+  gap: 10px;
+  align-items: center;
 }
