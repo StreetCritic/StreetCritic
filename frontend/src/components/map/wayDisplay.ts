@@ -1,8 +1,13 @@
 import config from "@/config";
 import { useNavigateMap, useUser } from "@/hooks";
 import { FeatureCollection, MultiLineString } from "geojson";
-import { Map as LibreMap, Marker } from "maplibre-gl";
-import { useCallback, useEffect, useRef } from "react";
+import {
+  GeoJSONSource,
+  Map as LibreMap,
+  Marker,
+  Subscription,
+} from "maplibre-gl";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GetAccessTokenFn, Map } from "./map";
 import MarkerElement from "./Marker";
 
@@ -28,6 +33,10 @@ export default class WayDisplay {
   private wayMarker: Record<string, Marker> = {};
   private onWaySelect: WaySelectHandler;
   private lastBBox: string = "";
+  private subscriptions: Subscription[] = [];
+
+  /** Should the ways and markers be shown? */
+  private visible = false;
 
   constructor({ map, onWaySelect, getAccessToken }: Props) {
     this.map = map;
@@ -40,6 +49,7 @@ export default class WayDisplay {
         type: "FeatureCollection",
         features: [],
       },
+      promoteId: "id",
     });
 
     this.map.addLayer(
@@ -48,23 +58,30 @@ export default class WayDisplay {
         type: "line",
         source: "existing-ways",
         paint: {
-          "line-color": "#000000",
-          "line-opacity": 0.3,
-          "line-width": 6,
+          "line-color": "#d53e4f",
+          "line-opacity": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            1,
+            0,
+          ],
+          "line-width": 5,
         },
       },
       "highway-name-path",
     );
 
-    this.map.on("moveend", () => this.refreshWays());
-    this.map.on("zoomend", () => this.refreshWays());
-    this.refreshWays();
+    this.subscriptions.push(this.map.on("moveend", () => this.refreshWays()));
+    this.subscriptions.push(this.map.on("zoomend", () => this.refreshWays()));
   }
 
   /**
    * Refreshes the visible ways.
    */
   async refreshWays(): Promise<void> {
+    if (!this.visible) {
+      return;
+    }
     const bbox = this.map.getBounds().toArray().flat().join(",");
     if (bbox === this.lastBBox) {
       return;
@@ -100,6 +117,22 @@ export default class WayDisplay {
           }).setLngLat([coordinate[0], coordinate[1]]);
           root.render(MarkerElement({ onClick: () => this.onWaySelect(id) }));
           newMarkers[id] = marker;
+
+          const element = marker.getElement();
+          element.addEventListener("mousemove", () => {
+            this.map.setFeatureState(
+              { source: "existing-ways", id },
+              { hover: true },
+            );
+          });
+
+          element.addEventListener("mouseleave", () => {
+            this.map.setFeatureState(
+              { source: "existing-ways", id },
+              { hover: false },
+            );
+          });
+
           marker.addTo(this.map);
         }
       }
@@ -121,9 +154,31 @@ export default class WayDisplay {
   remove(): void {
     this.map.removeLayer("existing-ways");
     this.map.removeSource("existing-ways");
+    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.clearMarkers();
+  }
+
+  /**
+   * Makes the ways and markers visible, refreshes the ways.
+   */
+  setVisible(visible: boolean) {
+    this.visible = visible;
+    if (visible) {
+      this.lastBBox = "";
+      this.refreshWays();
+    } else {
+      this.clearMarkers();
+    }
+  }
+
+  /**
+   * Clears the markers from the map.
+   */
+  clearMarkers() {
     for (const marker of Object.values(this.wayMarker)) {
       marker.remove();
     }
+    this.wayMarker = {};
   }
 }
 
@@ -131,6 +186,7 @@ export default class WayDisplay {
  * Hook to initialise the way display functionality.
  */
 export function useWayDisplay(map: Map | null) {
+  const [wayDisplay, setWayDisplay] = useState<WayDisplay | null>(null);
   const onWaySelectRef = useRef<WaySelectHandler>((_: number) => {});
   const appState = useSelector(selectAppState);
   const navigateMap = useNavigateMap();
@@ -145,8 +201,15 @@ export function useWayDisplay(map: Map | null) {
     };
   }, [navigateMap]);
 
+  // Make ways/markers (in)visible.
   useEffect(() => {
-    if (!map || appState.mode !== AppMode.Browsing) {
+    const visible = appState.mode === AppMode.Browsing;
+    wayDisplay?.setVisible(visible);
+  }, [wayDisplay, appState.mode]);
+
+  // Create instance.
+  useEffect(() => {
+    if (!map) {
       return;
     }
     const wayDisplay = new WayDisplay({
@@ -156,8 +219,9 @@ export function useWayDisplay(map: Map | null) {
       },
       getAccessToken,
     });
+    setWayDisplay(wayDisplay);
     return () => {
       wayDisplay.remove();
     };
-  }, [map, getAccessToken, onWaySelectRef, appState.mode]);
+  }, [map, getAccessToken, onWaySelectRef]);
 }
