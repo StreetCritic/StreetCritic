@@ -2,9 +2,14 @@ import { Link } from "react-router-dom";
 
 import classes from "./LogoLink.module.css";
 
-export default function LogoLink() {
+type Props = {
+  /** Called when link is clicked. */
+  onClick?: () => void;
+};
+
+export default function LogoLink({ onClick }: Props) {
   return (
-    <Link className={classes.root} to={"/"}>
+    <Link className={classes.root} to={"/"} onClick={onClick}>
       <img src={new URL("logo.svg", import.meta.url).href} alt="StreetCritic" />
     </Link>
   );

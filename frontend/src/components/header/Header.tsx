@@ -38,10 +38,6 @@ export default function Header() {
           </Box>
 
           <Group h="100%" gap={0} visibleFrom="md">
-            <Link to={"/"} className={classes.link}>
-              Home
-            </Link>
-
             <Link to={"/about"} className={classes.link}>
               About
             </Link>
@@ -101,14 +97,11 @@ export default function Header() {
       >
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
           <Box w="50%" maw="200px" p="md">
-            <LogoLink />
+            <LogoLink onClick={toggleDrawer} />
           </Box>
 
           <Divider my="sm" />
 
-          <Link to={""} className={classes.link} onClick={toggleDrawer}>
-            Home
-          </Link>
           <Link to={"about"} className={classes.link} onClick={toggleDrawer}>
             About
           </Link>
