@@ -5,7 +5,11 @@ import { selectDirectionsState } from "@/features/map/directionsSlice";
 import { Export, Ruler, Timer } from "@phosphor-icons/react";
 import { downloadGPX } from "@/features/directions/valhalla";
 import { showNotification } from "@/notifications";
+import { SidebarContent } from "@/components";
 
+/**
+ * Shows information about the calculated route.
+ */
 export default function Directions() {
   const __ = useLocalize();
   const directionsState = useSelector(selectDirectionsState);
@@ -53,14 +57,16 @@ export default function Directions() {
           </Group>
         </Group>
       </Card>
-      <Button
-        size="xs"
-        leftSection={<Export size={18} />}
-        mt="sm"
-        onClick={exportGPX}
-      >
-        Export track (GPX)
-      </Button>
+      <SidebarContent hideWhenFolded>
+        <Button
+          size="xs"
+          leftSection={<Export size={18} />}
+          mt="sm"
+          onClick={exportGPX}
+        >
+          Export track (GPX)
+        </Button>
+      </SidebarContent>
     </Box>
   );
 }
