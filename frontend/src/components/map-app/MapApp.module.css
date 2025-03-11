@@ -25,7 +25,7 @@
 .styleControls {
   left: auto;
   right: var(--controls-spacing);
-  @media (max-width: $mantine-breakpoint-md) {
+  @media (max-width: calc($mantine-breakpoint-md - 1px)) {
     top: 70px;
   }
 }
@@ -34,10 +34,27 @@
   bottom: 50;
 }
 
+.infoBoxes {
+  top: 50;
+  right: 50;
+}
+
 .locationSearch {
   box-shadow: 0 0 0 1px #0000001a;
   border-radius: 4px;
-  @media (max-width: $mantine-breakpoint-md) {
-    width: 13em;
+}
+
+.loader {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 60px;
+  box-shadow: var(--mantine-shadow-sm);
+  top: calc(var(--controls-spacing) + var(--header-height));
+  right: var(--controls-spacing);
+  width: 40;
+  height: 40;
+  padding: 5;
+  @media (min-width: calc($mantine-breakpoint-md)) {
+    top: var(--controls-spacing);
   }
 }

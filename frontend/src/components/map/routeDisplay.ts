@@ -35,9 +35,17 @@ export default class RouteDisplay {
       },
       paint: {
         "line-color": "#0000FF",
-        "line-opacity": 0.5,
-        "line-width": 2,
-        "line-dasharray": [3, 1],
+        "line-opacity": 0.4,
+        "line-width": 6,
+        "line-dasharray": [
+          "step",
+          ["zoom"],
+          ["literal", [1, 0]],
+          14,
+          ["literal", [3, 2]],
+          16,
+          ["literal", [2, 3]],
+        ],
       },
     });
   }
@@ -56,6 +64,18 @@ export default class RouteDisplay {
           features: [],
         },
       );
+    }
+  }
+
+  /**
+   * Remove from map.
+   */
+  remove() {
+    try {
+      this.map.removeLayer("route");
+      this.map.removeSource("route");
+    } catch (_) {
+      return;
     }
   }
 }
@@ -79,14 +99,12 @@ export function useRouteDisplay(map: Map | null) {
     if (!map) {
       return;
     }
-    if (routeDisplay) {
-      console.warn("routeDisplay already created");
-      return;
-    }
-    setRouteDisplay(
-      new RouteDisplay({
-        map: map.getMapLibre(),
-      }),
-    );
-  }, [map, routeDisplay]);
+    const routeDisplay = new RouteDisplay({
+      map: map.getMapLibre(),
+    });
+    setRouteDisplay(routeDisplay);
+    return () => {
+      routeDisplay.remove();
+    };
+  }, [map]);
 }

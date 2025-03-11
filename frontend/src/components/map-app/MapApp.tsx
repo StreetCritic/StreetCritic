@@ -27,7 +27,7 @@ import {
 } from "@/components";
 import { default as Map, Legend } from "@/components/map";
 
-import { Box, Group } from "@mantine/core";
+import { Box, Group, Loader } from "@mantine/core";
 
 import {
   AppMode,
@@ -36,6 +36,7 @@ import {
   /* switchedToWayAdding, */
   closedRouting,
   closedWayAdding,
+  selectIsLoading,
 } from "@/features/map/appSlice";
 import { selectMapState } from "@/features/map/mapSlice";
 
@@ -55,6 +56,8 @@ export default function MapApp({ selectedWay }: Props) {
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
   const locationState = useSelector(selectLocationState);
+  const isLoading = useSelector(selectIsLoading);
+
   /* const [loginModal, requireAuthentication] = useLoginGate(); */
   const navigateMap = useNavigateMap();
   useWay();
@@ -135,6 +138,12 @@ export default function MapApp({ selectedWay }: Props) {
       {appState.mode === AppMode.Browsing && (
         <div className={styles.legend}>
           <Legend />
+        </div>
+      )}
+
+      {isLoading && (
+        <div className={styles.loader}>
+          <Loader size={30} />
         </div>
       )}
     </div>

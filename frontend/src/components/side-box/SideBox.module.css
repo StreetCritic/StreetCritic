@@ -4,9 +4,6 @@
   bottom: 0;
   height: auto;
   width: 100%;
-  /* @media (max-width: $mantine-breakpoint-md) { */
-  /*   max-height: calc(100% - 40px); */
-  /* } */
   @media (min-width: 40em) {
     left: calc(50% - 20em);
     width: 40em;

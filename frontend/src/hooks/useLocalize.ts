@@ -21,6 +21,8 @@ sign-up = Sign up
 log-in = Log in
 no = No
 yes = Yes
+preferences = Preferences
+back = Back
 
 routing-error-title = Could not calculate route
 routing-error-body = The route could not be calculated. Please try again later.
@@ -46,6 +48,8 @@ add-way-info = Currently, there is a limit in the length of the way. You will no
 
 reviews = Reviews
 reviews-empty = No reviews yet. Be the first to add one!
+
+routing-shortest-route = Shortest route
 
 form-submitted-success-title = Submission Successful
 form-submitted-success-body = Your message has been successfully submitted.

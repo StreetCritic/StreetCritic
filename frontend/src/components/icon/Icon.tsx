@@ -2,6 +2,7 @@ import React from "react";
 import { Envelope } from "@phosphor-icons/react/dist/ssr";
 import styles from "./Icon.module.css";
 import {
+  ArrowLeft,
   GithubLogo,
   InstagramLogo,
   LinkedinLogo,
@@ -14,6 +15,7 @@ const icons = {
   instagram: InstagramLogo,
   linkedin: LinkedinLogo,
   mastodon: MastodonLogo,
+  "arrow-left": ArrowLeft,
 };
 
 export type IconId = keyof typeof icons;

@@ -1,5 +1,9 @@
-import { useEffect } from "react";
-import { Valhalla, ValhallaCostingOptsBicycle } from "@routingjs/valhalla";
+import { useEffect, useRef } from "react";
+import {
+  Valhalla,
+  ValhallaCostingOptsBicycle,
+  ValhallaAPIError,
+} from "@routingjs/valhalla";
 import type { Feature, LineString } from "geojson";
 import type { LngLat as Stop } from "@/features/map";
 import config from "@/config";
@@ -11,6 +15,10 @@ import {
 import { selectMapState } from "@/features/map/mapSlice";
 import { showNotification } from "@/notifications";
 import useLocalize from "./useLocalize";
+import { loadingFinished, loadingStarted } from "@/features/map/appSlice";
+
+// Unique id for loading state.
+let uniqId = 0;
 
 /**
  * React hook to calculate the route.
@@ -21,15 +29,22 @@ export function useDirections(stops: Stop[]) {
   const dispatch = useDispatch();
   const directionsState = useSelector(selectDirectionsState);
   const mapState = useSelector(selectMapState);
+  const abortController = useRef<AbortController>();
   const __ = useLocalize();
   useEffect(() => {
     if (stops.length === 0) {
       return;
     }
     (async () => {
+      const loadingId = `directions-${uniqId++}`;
+      abortController.current?.abort();
+      abortController.current = new AbortController();
+      const signal = abortController.current.signal;
+      dispatch(loadingStarted(loadingId));
       try {
         const v = new Valhalla({
           baseUrl: config.valhallaURL,
+          axiosOpts: { signal },
         });
         const directions =
           stops.length > 1
@@ -48,7 +63,7 @@ export function useDirections(stops: Stop[]) {
                 },
               )
             : null;
-        if (directions) {
+        if (directions && !signal.aborted) {
           const direction = directions.directions[0];
           dispatch(
             receivedDirections({
@@ -59,14 +74,20 @@ export function useDirections(stops: Stop[]) {
           );
         }
       } catch (e) {
-        console.log("Routing error: ", e);
-        showNotification({
-          title: __("routing-error-title"),
-          message: __("routing-error-body"),
-          type: "error",
-        });
+        if ((e as ValhallaAPIError).name !== "Error") {
+          console.log("Routing error: ", e);
+          showNotification({
+            title: __("routing-error-title"),
+            message: __("routing-error-body"),
+            type: "error",
+          });
+        }
       }
+      dispatch(loadingFinished(loadingId));
     })();
+    return () => {
+      abortController.current?.abort();
+    };
   }, [
     stops,
     dispatch,

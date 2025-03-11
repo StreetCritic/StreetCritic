@@ -39,6 +39,11 @@ export type AppState = {
    * Is the announcement banner visible?
    */
   announcementBannerVisible: boolean;
+
+  /**
+   * Is a component in a loading state?
+   */
+  loading: Record<string, boolean>;
 };
 
 const initialState: AppState = {
@@ -47,6 +52,7 @@ const initialState: AppState = {
   user: null,
   authState: AuthenticationState.Unauthenticated,
   announcementBannerVisible: localStorage.getItem("state") === null,
+  loading: {},
 };
 
 localStorage.setItem("state", "visited");
@@ -58,6 +64,16 @@ export const appSlice = createSlice({
     /** User closed the announcement banner. */
     closedAnnouncementBanner: (state) => {
       state.announcementBannerVisible = false;
+    },
+
+    /** Component with id started loading something. */
+    loadingStarted: (state, action: PayloadAction<string>) => {
+      state.loading[action.payload] = true;
+    },
+
+    /** Component with id finished loading something. */
+    loadingFinished: (state, action: PayloadAction<string>) => {
+      delete state.loading[action.payload];
     },
 
     // User switched to way adding mode.
@@ -122,6 +138,8 @@ export const appSlice = createSlice({
 export const {
   closedAnnouncementBanner,
   closedQuickWayRating,
+  loadingStarted,
+  loadingFinished,
   switchedToBrowsing,
   switchedToWayAdding,
   switchedToQuickWayRating,
@@ -131,4 +149,10 @@ export const {
   closedWayAdding,
 } = appSlice.actions;
 export const selectAppState = (state: RootState) => state.app;
+
+/**
+ * Returns true if any component is loading something.
+ */
+export const selectIsLoading = (state: RootState) =>
+  Object.values(state.app.loading).includes(true);
 export default appSlice.reducer;

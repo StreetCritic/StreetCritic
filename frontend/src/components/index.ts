@@ -21,4 +21,5 @@ export * from "./sidebar";
 export { default as SideBox } from "./side-box";
 export { default as SocialMediaLinks } from "./social-media-links";
 export { default as WayAddingSidebar } from "./way-adding-sidebar";
+export { default as WayPreferences } from "./way-preferences";
 export { default as WaySidebar } from "./way-sidebar";

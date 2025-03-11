@@ -1,79 +1,97 @@
 import { useLocalize } from "@/hooks";
-import { SidebarContent } from "@/components";
-import { Box, Chip, Group, Slider, Stack, Text } from "@mantine/core";
+import { Icon, SidebarContent } from "@/components";
+import { Box, Button, Flex, Stack } from "@mantine/core";
 import Directions from "./Directions";
 import WayPoints from "./WayPoints";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectDirectionsState,
-  toggledUseShortest,
-} from "@/features/map/directionsSlice";
-import {
-  selectMapState,
-  streetPreferenceChanged,
-  StreetPreferences,
-} from "@/features/map/mapSlice";
 
-const preferences: { [key in keyof StreetPreferences]: { label: string } } = {
-  safety: {
-    label: "Safety",
-  },
-  comfort: {
-    label: "Comfort",
-  },
-  beauty: {
-    label: "Beauty",
-  },
-};
+import { Export } from "@phosphor-icons/react";
+import { downloadGPX } from "@/features/directions/valhalla";
+import { showNotification } from "@/notifications";
+
+import { SlidersHorizontal } from "@phosphor-icons/react";
+import { useState } from "react";
+import RoutingPreferences from "../routing-preferences";
+import { useSelector } from "react-redux";
+import { selectDirectionsState } from "@/features/map/directionsSlice";
+
+enum View {
+  Default,
+  Preferences,
+}
 
 export default function RoutingSidebar() {
-  const __ = useLocalize();
+  const [view, setView] = useState<View>(View.Default);
   const directionsState = useSelector(selectDirectionsState);
-  const mapState = useSelector(selectMapState);
-  const dispatch = useDispatch();
+  const __ = useLocalize();
+
+  const exportGPX = () => {
+    (async () => {
+      if (
+        !directionsState.directions ||
+        !downloadGPX(directionsState.directions)
+        /* mapState.stops.map((stop) => new LngLat(stop.lng, stop.lat)),
+         * {
+         *   shortest: directionsState.useShortest,
+         * }, */
+        /* )) */
+      ) {
+        showNotification({
+          title: "Could not export route",
+          message:
+            "The route could not be exported. If this problem persists, please contact us.",
+          type: "error",
+        });
+      }
+    })();
+  };
+
   return (
     <Box p="sm">
       <SidebarContent hideWhenFolded>
-        <WayPoints />
-        <Text mb="xs">Options:</Text>
-        <Chip
-          defaultChecked
-          radius="sm"
-          mb="md"
-          variant="outline"
-          checked={directionsState.useShortest}
-          onChange={() => dispatch(toggledUseShortest())}
-        >
-          Shortest route
-        </Chip>
-        <Text>Preferences:</Text>
-        <Stack>
-          {Object.entries(preferences).map(([id, preference]) => (
-            <Group justify="space-between">
-              <Text>{preference.label}</Text>
-              <Slider
-                w="75%"
-                restrictToMarks
-                value={
-                  mapState.streetPreferences[id as keyof StreetPreferences]
-                }
-                onChange={(value) =>
-                  dispatch(
-                    streetPreferenceChanged({
-                      id: id as keyof StreetPreferences,
-                      value,
-                    }),
-                  )
-                }
-                marks={Array.from({ length: 5 }).map((_, index) => ({
-                  value: index * 25,
-                }))}
-              />
-            </Group>
-          ))}
-        </Stack>
+        {view === View.Default && (
+          <>
+            <WayPoints />
+            <Flex gap="md" mt="sm">
+              <Button
+                onClick={() => setView(View.Preferences)}
+                size="xs"
+                variant="outline"
+                leftSection={<SlidersHorizontal size={24} />}
+              >
+                {__("preferences")}
+              </Button>
+
+              <Button
+                size="xs"
+                variant="outline"
+                color="gray"
+                leftSection={<Export size={18} />}
+                onClick={exportGPX}
+              >
+                Export track (GPX)
+              </Button>
+            </Flex>
+          </>
+        )}
+
+        {view === View.Preferences && (
+          <Stack gap="lg" align="flex-start">
+            <Box w="100%">
+              <RoutingPreferences />
+            </Box>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setView(View.Default)}
+              leftSection={<Icon id="arrow-left" />}
+            >
+              {__("back")}
+            </Button>
+          </Stack>
+        )}
       </SidebarContent>
-      <Directions />
+
+      {view === View.Default && <Directions />}
     </Box>
   );
 }

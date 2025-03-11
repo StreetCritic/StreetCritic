@@ -16,13 +16,20 @@ type Props = {
   children: React.ReactNode;
   // Callback when user clicks close button. The button is not shown if not set.
   onClose?: () => void;
+  /** Should the full height be used, even on mobile? */
+  fullHeight?: boolean;
 };
 
-export default function Sidebar({ children, onClose }: Props) {
+export default function Sidebar({ children, onClose, fullHeight }: Props) {
   const [folded, setFolded] = useState(false);
   return (
     <SidebarContext.Provider value={{ folded }}>
-      <div className={cx(styles.root, { [styles.folded]: folded })}>
+      <div
+        className={cx(styles.root, {
+          [styles.folded]: folded,
+          [styles.fullHeight]: !folded && fullHeight,
+        })}
+      >
         <Paper shadow="lg" h="100%" withBorder radius={0}>
           <div className={styles.close}>
             <CloseButton size="xl" onClick={onClose} />

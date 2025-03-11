@@ -21,6 +21,8 @@ import { useWayDisplay } from "./wayDisplay";
 import useGeoLocate from "./geoLocate";
 import { useRouteDisplay } from "./routeDisplay";
 import { useIndicatorLayer } from "./indicatorLayer";
+import { useMediaQuery } from "@mantine/hooks";
+import { useMantineTheme } from "@mantine/core";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -341,6 +343,9 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     }
   }, [map, mapState.center, mapState.center.updateView, dispatch]);
 
+  const theme = useMantineTheme();
+  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+
   // Update view to fit stops.
   useEffect(() => {
     const stops = mapState.fitPositionsIntoMap;
@@ -348,7 +353,8 @@ export function useMap(container: React.RefObject<HTMLElement>) {
       return;
     }
     const bounds = map.getMapLibre().getBounds();
-    let updateNeeded = false;
+    // TODO need to include padding!
+    let updateNeeded = true; // simple setting to true does not
     for (const stop of stops) {
       if (!bounds.contains(stop)) {
         updateNeeded = true;
@@ -358,9 +364,15 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     if (!updateNeeded) {
       return;
     }
-    const newTransform = map
-      .getMapLibre()
-      .cameraForBounds(bounds, { padding: 100 });
+    const padding = 50;
+    const newTransform = map.getMapLibre().cameraForBounds(bounds, {
+      padding: {
+        top: padding,
+        bottom: padding + (isMobile ? 320 : 0),
+        right: padding,
+        left: padding + (isMobile ? 0 : 415),
+      },
+    });
     if (
       newTransform &&
       newTransform.center &&
@@ -378,7 +390,7 @@ export function useMap(container: React.RefObject<HTMLElement>) {
         }),
       );
     }
-  }, [map, mapState.stops, dispatch, mapState.fitPositionsIntoMap]);
+  }, [map, mapState.stops, dispatch, mapState.fitPositionsIntoMap, isMobile]);
 
   return map;
 }
