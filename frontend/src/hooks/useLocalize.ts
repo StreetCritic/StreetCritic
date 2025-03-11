@@ -50,6 +50,7 @@ reviews = Reviews
 reviews-empty = No reviews yet. Be the first to add one!
 
 routing-shortest-route = Shortest route
+routing-export = Export track (GPX)
 
 form-submitted-success-title = Submission Successful
 form-submitted-success-body = Your message has been successfully submitted.

@@ -62,13 +62,14 @@ export default function RoutingSidebar() {
               </Button>
 
               <Button
+                disabled={!directionsState.directions}
                 size="xs"
                 variant="outline"
                 color="gray"
                 leftSection={<Export size={18} />}
                 onClick={exportGPX}
               >
-                Export track (GPX)
+                {__("routing-export")}
               </Button>
             </Flex>
           </>
