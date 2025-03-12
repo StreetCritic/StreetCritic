@@ -8,7 +8,6 @@ import {
   ScaleControl,
 } from "maplibre-gl";
 
-import config from "@/config";
 import style from "./style.json";
 import originalStyle from "./originalStyle.json";
 
@@ -36,6 +35,10 @@ export type GetAccessTokenFn = () => Promise<string | null>;
 type Options = {
   /** Called when the style is loaded */
   onStyleLoaded: (map: Map) => void;
+  /** Initial center coordinates. */
+  center: LngLatLike;
+  /** Initial zoom. */
+  zoom: number;
 };
 
 /**
@@ -48,10 +51,8 @@ export class Map {
   /**
    * Initializes the map.
    *
-   * @param center - Initial center coordinates.
    * @param container - The HTML element to attach to.
    * @param onLoad - Callback which is called when the map is loaded.
-   * @param onWaySelect - Callback which is called when the user clicks a
    * rating on the map.
    */
   constructor(
@@ -62,8 +63,8 @@ export class Map {
   ) {
     this.map = new LibreMap({
       container,
-      center: config.defaultMapCenter,
-      zoom: config.defaultMapCenter.zoom,
+      center: options.center,
+      zoom: options.zoom,
       style: style as StyleSpecification,
       attributionControl: {
         customAttribution:
@@ -221,20 +222,6 @@ export class Map {
   }
 
   /**
-   * Sets center of map.
-   */
-  setCenter(center: LngLatLike) {
-    this.map.setCenter(center);
-  }
-
-  /**
-   * Sets zoom of map.
-   */
-  setZoom(zoom: number) {
-    this.map.setZoom(zoom);
-  }
-
-  /**
    * Cleans up the map.
    */
   destruct() {
@@ -303,9 +290,22 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     onStyleLoadedRef.current = onStyleLoaded;
   }, [onStyleLoaded]);
 
+  const [initialCenter, setInitialCenter] = useState<{
+    center: LngLatLike;
+    zoom: number;
+  } | null>(null);
+  useEffect(() => {
+    if (mapState.readyToRender && initialCenter === null) {
+      setInitialCenter({
+        center: { lng: mapState.center.lng, lat: mapState.center.lat },
+        zoom: mapState.center.zoom,
+      });
+    }
+  }, [mapState.readyToRender, mapState.center, initialCenter]);
+
   // Initialize the map.
   useEffect(() => {
-    if (container.current) {
+    if (container.current && initialCenter) {
       init_hooks();
       const onCenterChange = (center: LngLat, zoom: number) => {
         dispatch(
@@ -319,12 +319,14 @@ export function useMap(container: React.RefObject<HTMLElement>) {
       };
       const theMap = new Map(onCenterChange, container.current, setMap, {
         onStyleLoaded: onStyleLoadedRef.current,
+        center: initialCenter.center,
+        zoom: initialCenter.zoom,
       });
       return () => {
         theMap.destruct();
       };
     }
-  }, [dispatch, container]);
+  }, [dispatch, container, initialCenter]);
 
   // Update center when changed.
   useEffect(() => {
@@ -334,8 +336,10 @@ export function useMap(container: React.RefObject<HTMLElement>) {
           .getMapLibre()
           .flyTo({ center: mapState.center, zoom: mapState.center.zoom });
       } else {
-        map.setCenter(mapState.center);
-        map.setZoom(mapState.center.zoom);
+        map.getMapLibre().jumpTo({
+          center: { lng: mapState.center.lng, lat: mapState.center.lat },
+          zoom: mapState.center.zoom,
+        });
       }
       dispatch(
         centerUpdated({ ...mapState.center, updateView: false, flyTo: false }),

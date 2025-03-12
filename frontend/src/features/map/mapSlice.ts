@@ -55,6 +55,8 @@ export type StreetPreferences = {
 };
 
 export type MapState = {
+  /** Is the map ready to render (e.g. all URL params parsed to store)? */
+  readyToRender: boolean;
   // Map center.
   // If updateView is true, updates the map view once and sets this too false.
   center: {
@@ -102,6 +104,7 @@ export type MapState = {
 };
 
 const initialState: MapState = {
+  readyToRender: false,
   center: config.defaultMapCenter,
   fitPositionsIntoMap: [],
   stops: [],
@@ -181,6 +184,11 @@ export const mapSlice = createSlice({
         state.stops[0].lat = action.payload.lat;
         state.stops[0].inactive = false;
       }
+    },
+
+    /** The map is ready to render. */
+    readyToRender: (state) => {
+      state.readyToRender = true;
     },
 
     // Context menu has been requested.
@@ -391,6 +399,7 @@ export const {
   centerUpdated,
   enabledCurrentPositionAsStart,
   locatedPosition,
+  readyToRender,
   requestedContextMenu,
   routeCalculated,
   routeSegmentsCalculated,

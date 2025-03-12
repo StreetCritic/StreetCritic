@@ -5,7 +5,11 @@ import styles from "./map.module.css";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
+import {
+  centerUpdated,
+  readyToRender,
+  selectMapState,
+} from "@/features/map/mapSlice";
 import useMapSearchParams from "@/hooks/useMapSearchParams";
 import useMeta from "@/hooks/useMeta";
 import { selectedLocation } from "@/features/map/locationSlice";
@@ -16,18 +20,19 @@ export default function Map() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const mapSearchParams = useMapSearchParams();
+  const mapState = useSelector(selectMapState);
 
   const dispatch = useDispatch();
-  const mapState = useSelector(selectMapState);
 
   useEffect(() => {
     setSearchParams(() => mapSearchParams, { replace: true });
-    // TODO
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapState]);
+  }, [mapSearchParams, setSearchParams]);
 
   // Set map zoom and center based on URL params.
   useEffect(() => {
+    if (mapState.readyToRender) {
+      return;
+    }
     const centerCoords = searchParams.get("c")
       ? searchParams.get("c")!.split(",").map(parseFloat)
       : [];
@@ -67,9 +72,8 @@ export default function Map() {
         }),
       );
     }
-    // TODO
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    dispatch(readyToRender());
+  }, [dispatch, searchParams, mapState.readyToRender]);
 
   return (
     <main className={styles.root}>

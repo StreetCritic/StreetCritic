@@ -35,9 +35,9 @@ const config: Config = {
   transportTilesURL: process.env.TRANSPORT_TILES_URL as string,
   ratedSegmentsURL: process.env.RATED_SEGMENTS_URL as string,
   defaultMapCenter: {
-    zoom: 14,
-    lng: 8.684966,
-    lat: 50.110573,
+    zoom: 0.0,
+    lng: 0.0,
+    lat: 0.0,
     updateView: false,
     flyTo: false,
   },
