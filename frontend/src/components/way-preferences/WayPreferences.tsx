@@ -36,7 +36,7 @@ export default function WayPreferences({ disabled }: Props) {
       <Text>Preferences:</Text>
       <Stack>
         {Object.entries(preferences).map(([id, preference]) => (
-          <Group justify="space-between">
+          <Group key={id} justify="space-between">
             <Text>{preference.label}</Text>
             <Slider
               disabled={disabled}

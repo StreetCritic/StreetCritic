@@ -45,7 +45,7 @@ export default function SocialMediaLinks({ visibleFrom, withLabels }: Props) {
   return (
     <Group h="100%" gap={10} className={classes.root} visibleFrom={visibleFrom}>
       {channels.map((channel) => (
-        <a href={channel.href} target="_blank">
+        <a key={channel.label} href={channel.href} target="_blank">
           <Icon id={channel.icon} inline />
           {withLabels && channel.label}
         </a>
