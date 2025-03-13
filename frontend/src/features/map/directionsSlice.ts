@@ -33,6 +33,10 @@ export const directionsSlice = createSlice({
     toggledUseShortest: (state) => {
       state.useShortest = !state.useShortest;
     },
+    /** Shortest route option set. */
+    setUseShortest: (state, action: PayloadAction<boolean>) => {
+      state.useShortest = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(closedRouting, (state, _action) => {
@@ -41,7 +45,7 @@ export const directionsSlice = createSlice({
   },
 });
 
-export const { receivedDirections, toggledUseShortest } =
+export const { receivedDirections, setUseShortest, toggledUseShortest } =
   directionsSlice.actions;
 export const selectDirectionsState = (state: RootState) => state.directions;
 export default directionsSlice.reducer;
