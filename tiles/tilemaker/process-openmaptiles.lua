@@ -50,6 +50,16 @@ aerodromeValues = Set { "international", "public", "regional", "military", "priv
 pavedValues = Set { "paved", "asphalt", "cobblestone", "concrete", "concrete:lanes", "concrete:plates", "metal", "paving_stones", "sett", "unhewn_cobblestone", "wood" }
 unpavedValues = Set { "unpaved", "compacted", "dirt", "earth", "fine_gravel", "grass", "grass_paver", "gravel", "gravel_turf", "ground", "ice", "mud", "pebblestone", "salt", "sand", "snow", "woodchips" }
 
+-- Bicycle networks
+cycle_networks_order = { "icn", "ncn", "rcn", "lcn" }
+cycle_networks = {
+  icn={ key="international", order=1 },
+  ncn={ key="national", order=2 },
+  rcn={ key="regional", order=3 },
+  lcn={ key="local", order=4 },
+  [""]={ key="", order=5 },
+}
+
 -- Process node tags
 
 node_keys = { "addr:housenumber","aerialway","aeroway","amenity","barrier","highway","historic","leisure","natural","office","place","railway","shop","sport","tourism","waterway" }
@@ -305,9 +315,14 @@ function relation_scan_function()
 	if Find("type")=="boundary" and Find("boundary")=="administrative" then
 		Accept()
 	end
+
+  -- Scan for bicycle routes
+  if Find("type") == "route" and Find("route") == "bicycle" then
+    Accept()
+  end
 end
 
-function write_to_transportation_layer(minzoom, highway_class, subclass, ramp, service, is_rail, is_road, is_area)
+function write_to_transportation_layer(minzoom, highway_class, subclass, ramp, service, is_rail, is_road, is_area, bicycle_network)
 	Layer("transportation", is_area)
 	SetZOrder()
 	Attribute("class", highway_class)
@@ -329,6 +344,9 @@ function write_to_transportation_layer(minzoom, highway_class, subclass, ramp, s
 
 	local accessMinzoom = 9
 	if is_road then
+    if bicycle_network ~= "" then
+      Attribute("cycle_net", bicycle_network)
+    end
     local tags = AllTags()
     for key, value in pairs(tags) do
       if string.sub(key, 1, 23) == "streetcritic:indicator:" then
@@ -414,11 +432,28 @@ function way_function()
 	--  because otherwise we get multiple renderings where boundaries are coterminous
 	local admin_level = 11
 	local isBoundary = false
+  local is_route = false
+  local route_network = ""
+  local route_ref = ""
+  local route_refs = {}
 	while true do
 		local rel = NextRelation()
 		if not rel then break end
-		isBoundary = true
-		admin_level = math.min(admin_level, tonumber(FindInRelation("admin_level")) or 11)
+    if FindInRelation("type") == "boundary" then
+      isBoundary = true
+      admin_level = math.min(admin_level, tonumber(FindInRelation("admin_level")) or 11)
+    elseif FindInRelation("type") == "route" then
+      local this_network = FindInRelation("network")
+      local this_ref = FindInRelation("ref")
+      if this_ref ~= "" and cycle_networks[this_network] then
+        if route_network == "" or cycle_networks[this_network].order < cycle_networks[route_network].order then
+          route_network = this_network
+          route_ref = this_ref
+        end
+        table.insert(route_refs, this_ref)
+      end
+      is_route = true
+    end
 	end
 
 	-- Boundaries in ways
@@ -451,7 +486,7 @@ function way_function()
 
 	-- Aerialways ('transportation' and 'transportation_name')
 	if aerialway ~= "" then
-		write_to_transportation_layer(12, "aerialway", aerialway, false, nil, false, false, is_closed)
+		write_to_transportation_layer(12, "aerialway", aerialway, false, nil, false, false, is_closed, "")
 		if HasNames() then
 			Layer("transportation_name", false)
 			MinZoom(12)
@@ -479,7 +514,13 @@ function way_function()
 			under_construction = true
 		end
 		local minzoom = INVALID_ZOOM
-		if majorRoadValues[h]        then minzoom = 4
+    if is_route then
+      if route_network == "icn" then minzoom = 4
+      elseif route_network == "ncn" then minzoom = 4
+      elseif route_network == "rcn" then minzoom = 6
+      elseif route_network == "lcn" then minzoom = 9
+      end
+    elseif majorRoadValues[h]    then minzoom = 4
 		elseif h == "trunk"          then minzoom = 5
 		elseif highway == "primary"  then minzoom = 7
 		elseif z9RoadValues[h]       then minzoom = 9
@@ -524,7 +565,18 @@ function way_function()
 
 		-- Write to layer
 		if minzoom <= 14 then
-			write_to_transportation_layer(minzoom, h, subclass, ramp, service, false, is_road, is_highway_area)
+			write_to_transportation_layer(minzoom, h, subclass, ramp, service, false, is_road, is_highway_area, cycle_networks[route_network].key)
+
+      -- Write route name attributes
+      if not is_closed and table.getn(route_refs) > 0 then
+        Layer("transportation_name", false)
+        MinZoom(4);
+        if route_ref ~= "" then
+          Attribute("route_ref", route_ref);
+          AttributeNumeric("route_ref_len", route_ref:len());
+        end
+        Attribute("route_refs", table.concat(route_refs, ' · '));
+      end
 
 			-- Write names
 			if not is_closed and (HasNames() or Holds("ref")) then
@@ -573,7 +625,7 @@ function way_function()
 			elseif railway == "light_rail" and service == "" then
 				minzoom = 11
 			end
-			write_to_transportation_layer(minzoom, class, railway, false, service, true, false, is_closed)
+			write_to_transportation_layer(minzoom, class, railway, false, service, true, false, is_closed, "")
 
 			if HasNames() then
 				Layer("transportation_name", false)
@@ -586,12 +638,12 @@ function way_function()
 
 	-- Pier
 	if manMadeRoadValues[man_made] then
-		write_to_transportation_layer(13, man_made, nil, false, nil, false, false, is_closed)
+		write_to_transportation_layer(13, man_made, nil, false, nil, false, false, is_closed, "")
 	end
 
 	-- 'Ferry'
 	if route=="ferry" then
-		write_to_transportation_layer(9, "ferry", nil, false, nil, false, false, is_closed)
+		write_to_transportation_layer(9, "ferry", nil, false, nil, false, false, is_closed, "")
 
 		if HasNames() then
 			Layer("transportation_name", false)

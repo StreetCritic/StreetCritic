@@ -17,6 +17,93 @@
         "text-halo-color": "#FFF",
         "text-halo-width": 1
       }
+    },
+    {
+      "id": "bicycle-route",
+      "beforeId": "highway-name-path",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "minzoom": 4,
+      "filter": ["has", "cycle_net"],
+      "layout": {
+        "line-cap": ["step", ["zoom"], "round", 14, "butt"]
+      },
+      "paint": {
+        "line-opacity": 1.0,
+        "line-color": [
+          "match",
+          ["get", "cycle_net"],
+          "international",
+          "#ba8d73",
+          "national",
+          "#ba7373",
+          "regional",
+          "#7388ba",
+          "local",
+          "#a173ba",
+          "#000"
+        ],
+        "line-width": ["step", ["zoom"], 2, 14, 2],
+        "line-dasharray": [
+          "step",
+          ["zoom"],
+          ["literal", [1, 0]],
+          14,
+          ["literal", [1, 0]]
+        ]
+      }
+    },
+    {
+      "id": "bicycle-route-refs",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 15,
+      "filter": ["has", "route_refs"],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 300,
+        "text-field": "{route_refs}",
+        "text-font": ["Noto Sans Regular"],
+        "text-rotation-alignment": "map",
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [13, 12],
+            [14, 13]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": "#765",
+        "text-halo-blur": 0.5,
+        "text-halo-width": 1.5,
+        "text-halo-color": "rgba(255,255,255,0.7)"
+      }
+    },
+    {
+      "id": "bicycle-route-shield",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "transportation_name",
+      "minzoom": 4,
+      "maxzoom": 15,
+      "filter": [
+        "all",
+        ["==", ["geometry-type"], "LineString"],
+        ["<=", ["get", "route_ref_len"], 6]
+      ],
+      "layout": {
+        "icon-image": "road_{route_ref_len}",
+        "icon-size": 1,
+        "symbol-spacing": 300,
+        "symbol-placement": "line",
+        "text-field": "{route_ref}",
+        "text-font": ["Noto Sans Regular"],
+        "text-rotation-alignment": "viewport",
+        "text-size": 10
+      }
     }
   ]
 }

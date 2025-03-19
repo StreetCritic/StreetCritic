@@ -74,7 +74,7 @@ export class Map {
 
     this.map.once("styledata", () => {
       for (const layer of (originalStyle as StyleSpecification).layers) {
-        this.map.addLayer(layer);
+        this.map.addLayer(layer, layer.beforeId);
       }
       options.onStyleLoaded(this);
     });
