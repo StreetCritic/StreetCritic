@@ -157,7 +157,7 @@
           ]
         },
         "fill-color": "#6a4",
-        "fill-opacity": 0.1,
+        "fill-opacity": 0.2,
         "fill-outline-color": "hsla(0, 0%, 0%, 0.03)"
       }
     },
@@ -952,8 +952,14 @@
       "source-layer": "transportation",
       "filter": ["all", ["==", "brunnel", "tunnel"], ["==", "class", "rail"]],
       "paint": {
-        "line-color": "#bbb",
-        "line-dasharray": [2, 2],
+        "line-color": ["step", ["zoom"], "#AAA", 14, "#bbb"],
+        "line-dasharray": [
+          "step",
+          ["zoom"],
+          ["literal", [1, 0]],
+          14,
+          ["literal", [2, 2]]
+        ],
         "line-width": {
           "base": 1.4,
           "stops": [
@@ -1870,12 +1876,12 @@
         ["==", "class", "rail"]
       ],
       "paint": {
-        "line-color": "#bbb",
+        "line-color": "#AAA",
         "line-width": {
           "base": 1.4,
           "stops": [
-            [14, 0.4],
-            [15, 0.75],
+            [14, 0.8],
+            [15, 1.0],
             [20, 2]
           ]
         }
@@ -2763,7 +2769,9 @@
         "text-color": "#666",
         "text-halo-blur": 0.5,
         "text-halo-color": "#ffffff",
-        "text-halo-width": 1
+        "text-halo-width": 1,
+        "icon-color": "#FF0000",
+        "text-opacity": ["step", ["zoom"], 0, 12, 1]
       }
     },
     {
