@@ -302,7 +302,7 @@ poiClasses      = { townhall="town_hall", public_building="town_hall", courthous
 					castle="castle", ruins="castle" }
 -- POI classes where class is the matching value and subclass is the value of a separate key
 poiSubClasses = { information="information", place_of_worship="religion", pitch="sport" }
-poiClassRanks   = { hospital=1, railway=2, bus=3, attraction=4, harbor=5, college=6,
+poiClassRanks   = { hospital=1, railway=0, bus=3, attraction=4, harbor=5, college=6,
 					school=7, stadium=8, zoo=9, town_hall=10, campsite=11, cemetery=12,
 					park=13, library=14, police=15, post=16, golf=17, shop=18, grocery=19,
 					fast_food=20, clothing_store=21, bar=22 }
@@ -806,7 +806,8 @@ end
 
 -- Write a way centroid to POI layer
 function WritePOI(class,subclass,rank)
-	local layer = "poi"
+	local layer = "poi_regional"
+	if rank>0 then layer="poi" end
 	if rank>4 then layer="poi_detail" end
 	LayerAsCentroid(layer)
 	SetNameAttributes()
