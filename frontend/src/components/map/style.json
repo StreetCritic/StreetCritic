@@ -2894,6 +2894,26 @@
       }
     },
     {
+      "id": "place-locality",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "filter": ["==", "class", "locality"],
+      "layout": {
+        "text-field": "{name:latin}\n{name:nonlatin}",
+        "text-font": ["Noto Sans Bold"],
+        "text-letter-spacing": 0.1,
+        "text-max-width": 9,
+        "text-size": 10,
+        "text-transform": "uppercase"
+      },
+      "paint": {
+        "text-color": "#966",
+        "text-halo-color": "rgba(255,255,255,0.8)",
+        "text-halo-width": 1.2
+      }
+    },
+    {
       "id": "place-other",
       "type": "symbol",
       "metadata": { "mapbox:group": "1444849242106.713" },
@@ -2907,7 +2927,8 @@
         "village",
         "state",
         "country",
-        "continent"
+        "continent",
+        "locality"
       ],
       "layout": {
         "text-field": "{name:latin}\n{name:nonlatin}",

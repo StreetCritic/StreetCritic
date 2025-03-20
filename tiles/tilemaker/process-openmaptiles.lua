@@ -180,7 +180,7 @@ function node_function()
 		elseif place == "hamlet"        then mz=12
 		elseif place == "neighbourhood" then mz=13
 		elseif place == "isolated_dwelling" then mz=13
-		elseif place == "locality"      then mz=13
+		elseif place == "locality"      then mz=14
 		elseif place == "island"      then mz=12
 		end
 
