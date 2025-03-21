@@ -2,6 +2,7 @@ pub mod analysis;
 pub mod commands;
 pub mod db;
 pub mod osm;
+pub mod process;
 
 use clap::{Parser, Subcommand};
 use log::LevelFilter;
@@ -27,19 +28,30 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Merges StreetCritic ratings into an OpenStreetMap planet PBF.
+    /// Merges StreetCritic ratings from the database into an OpenStreetMap planet PBF.
     MergeRatingsIntoOSMPlanet {
         // Path to the inplut planet PBF.
         #[arg(short, long)]
         input: PathBuf,
 
-        // Path to the output planet PBF to.
+        // Path to the output planet PBF.
         #[arg(short, long)]
         output: PathBuf,
 
         // Postgres connection string for StreetCritic database.
         #[arg(short, long)]
         db: String,
+    },
+
+    /// Calculates way scores. If present, uses StreetCritic ratings present in input PBF.
+    CalculateWayScores {
+        // Path to the inplut planet PBF.
+        #[arg(short, long)]
+        input: PathBuf,
+
+        // Path to the output planet PBF.
+        #[arg(short, long)]
+        output: PathBuf,
     },
 }
 
@@ -50,6 +62,9 @@ fn main() -> Result<(), anyhow::Error> {
     match &cli.command {
         Some(Commands::MergeRatingsIntoOSMPlanet { input, output, db }) => {
             commands::merge_ratings_into_osm_planet(input, output, db)
+        }
+        Some(Commands::CalculateWayScores { input, output }) => {
+            commands::calculate_way_scores(input, output)
         }
         None => Ok(()),
     }
