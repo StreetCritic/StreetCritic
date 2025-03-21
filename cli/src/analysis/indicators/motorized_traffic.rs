@@ -36,7 +36,7 @@ pub fn calculate(way: &Way) -> f32 {
                 return 0.0;
             }
             _ => {
-                log::warn!("Unknown value for tag highway: {}", value);
+                log::debug!("Unknown value for tag highway: {}", value);
                 return 0.0;
             }
         },

@@ -8,7 +8,7 @@ pub fn calculate(way: &Way) -> f32 {
             "yes" => return 1.0,
             "no" => {}
             _ => {
-                log::warn!("Unknown value for tag bicycle_road: {}", value);
+                log::debug!("Unknown value for tag bicycle_road: {}", value);
             }
         },
         None => {}
@@ -20,7 +20,7 @@ pub fn calculate(way: &Way) -> f32 {
             "yes" | "no" | "designated" | "use_sidepath" | "permissive" | "dismount"
             | "private" => 0.0,
             _ => {
-                log::warn!("Unknown value for tag bicycle: {}", value);
+                log::debug!("Unknown value for tag bicycle: {}", value);
                 0.0
             }
         },

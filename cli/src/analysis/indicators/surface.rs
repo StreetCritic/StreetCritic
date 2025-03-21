@@ -19,7 +19,7 @@ pub fn calculate(way: &Way) -> f32 {
             "grass" | "mud" | "ice" | "sand" | "soil" => 0.15,
             "stepping_stones" | "rock" | "stone" | "pebblestone" | "trail" => 0.1,
             _ => {
-                log::warn!("Unknown way surface \"{}\"", surface);
+                log::debug!("Unknown way surface \"{}\"", surface);
                 0.5
             }
         },
