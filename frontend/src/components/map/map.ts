@@ -74,6 +74,28 @@ export class Map {
 
     this.map.once("styledata", () => {
       for (const layer of (originalStyle as StyleSpecification).layers) {
+        // TODO remove after next tiles gen round
+        if (layer.id === "bicycle-route" && layer.paint) {
+          // @ts-ignore
+          layer.paint["line-opacity"] = [
+            "step",
+            ["zoom"],
+            [
+              "match",
+              ["get", "cycle_net"],
+              "regional",
+              0.0,
+              "national",
+              0.0,
+              1.0,
+            ],
+            5,
+            ["match", ["get", "cycle_net"], "regional", 0.0, 1.0],
+            8,
+            1.0,
+          ];
+        }
+        // @ts-ignore TODO
         this.map.addLayer(layer, layer.beforeId);
       }
       options.onStyleLoaded(this);

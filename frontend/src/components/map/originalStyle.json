@@ -30,7 +30,6 @@
         "line-cap": ["step", ["zoom"], "round", 14, "butt"]
       },
       "paint": {
-        "line-opacity": 1.0,
         "line-color": [
           "match",
           ["get", "cycle_net"],
@@ -44,7 +43,7 @@
           "#a173ba",
           "#000"
         ],
-        "line-width": ["step", ["zoom"], 2, 14, 2],
+        "line-width": ["step", ["zoom"], 1, 10, 2],
         "line-dasharray": [
           "step",
           ["zoom"],

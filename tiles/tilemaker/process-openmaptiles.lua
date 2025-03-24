@@ -516,8 +516,8 @@ function way_function()
 		local minzoom = INVALID_ZOOM
     if is_route then
       if route_network == "icn" then minzoom = 4
-      elseif route_network == "ncn" then minzoom = 4
-      elseif route_network == "rcn" then minzoom = 9
+      elseif route_network == "ncn" then minzoom = 5
+      elseif route_network == "rcn" then minzoom = 8
       elseif route_network == "lcn" then minzoom = 9
       end
     elseif majorRoadValues[h]    then minzoom = 4
