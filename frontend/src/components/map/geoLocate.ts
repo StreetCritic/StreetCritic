@@ -47,7 +47,7 @@ export default function useGeoLocate(map: Map | null) {
       mapState.currentPositionAsStart &&
       appState.mode == AppMode.Routing
     ) {
-      geoLocateControl.trigger();
+      geoLocateControl.enable_location();
     }
   }, [mapState.currentPositionAsStart, appState.mode, geoLocateControl]);
 }

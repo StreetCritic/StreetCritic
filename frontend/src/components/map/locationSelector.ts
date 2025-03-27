@@ -41,6 +41,9 @@ export default function useLocationSelector(map: Map | null) {
     };
 
     const onClick = (e: MapMouseEvent) => {
+      if (e.defaultPrevented) {
+        return;
+      }
       let selectedWay: SelectedWay | undefined = undefined;
       if (mapLibre.getZoom() >= minZoomForWaySelection) {
         const features = queryFeatures(e.point, 10);

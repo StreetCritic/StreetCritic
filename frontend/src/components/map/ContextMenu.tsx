@@ -1,5 +1,9 @@
 import config from "@/config";
-import { AppMode, selectAppState } from "@/features/map/appSlice";
+import {
+  AppMode,
+  selectAppState,
+  switchedToRouting,
+} from "@/features/map/appSlice";
 import {
   locatedPosition,
   selectMapState,
@@ -24,29 +28,35 @@ export default function ContextMenu({ onClick }: Props) {
   const mapState = useSelector(selectMapState);
   const appState = useSelector(selectAppState);
   const dispatch = useDispatch();
-  const showStopEdit = [
-    AppMode.Routing,
-    AppMode.WayAdding,
-    AppMode.QuickWayRating,
-  ].includes(appState.mode);
-
-  if (!mapState.contextMenuPosition || !showStopEdit) {
-    return null;
-  }
-
-  const lng = mapState.contextMenuPosition.lngLat.lng;
-  const lat = mapState.contextMenuPosition.lngLat.lat;
-  const point = mapState.contextMenuPosition.point;
-  const canvasSize = mapState.contextMenuPosition.canvasSize;
+  const lng = mapState.contextMenuPosition?.lngLat.lng || 0;
+  const lat = mapState.contextMenuPosition?.lngLat.lat || 0;
+  const point = mapState.contextMenuPosition?.point || { x: 0, y: 0 };
+  const canvasSize = mapState.contextMenuPosition?.canvasSize || {
+    width: 0,
+    height: 0,
+  };
   const width = containerRef.current?.offsetWidth || 0;
   const height = containerRef.current?.offsetHeight || 0;
+
+  const maybeEnableRouting = () => {
+    if (
+      ![AppMode.Routing, AppMode.QuickWayRating, AppMode.WayAdding].includes(
+        appState.mode,
+      )
+    ) {
+      dispatch(switchedToRouting());
+    }
+  };
 
   return (
     <div
       ref={containerRef}
       style={{
         position: "absolute",
-        opacity: containerRef.current ? 100 : 0,
+        display:
+          containerRef.current && mapState.contextMenuPosition
+            ? "block"
+            : "none",
         top: !containerRef.current
           ? 0
           : point.y + height > canvasSize.height
@@ -74,6 +84,7 @@ export default function ContextMenu({ onClick }: Props) {
         <NavLink
           href="#"
           onClick={() => {
+            maybeEnableRouting();
             dispatch(stopChanged({ index: 0, lng, lat, inactive: false }));
             onClick();
           }}
@@ -84,6 +95,8 @@ export default function ContextMenu({ onClick }: Props) {
           href="#"
           onClick={() => {
             dispatch(stopAdded({ index: mapState.stops.length - 1, lng, lat }));
+
+            maybeEnableRouting();
             onClick();
           }}
           label="Add waypoint"
@@ -101,6 +114,8 @@ export default function ContextMenu({ onClick }: Props) {
                 inactive: false,
               }),
             );
+
+            maybeEnableRouting();
             onClick();
           }}
           leftSection={<FlagCheckered size={14} />}

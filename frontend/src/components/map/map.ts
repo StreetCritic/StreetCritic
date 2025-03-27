@@ -218,7 +218,6 @@ export class Map {
       // });
 
       this.map.on("click", (e) => {
-        e.preventDefault();
         const ratings = this.map.queryRenderedFeatures(e.point, {
           // layers: ["bikeability"],
         });

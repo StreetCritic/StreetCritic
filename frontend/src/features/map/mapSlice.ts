@@ -259,6 +259,9 @@ export const mapSlice = createSlice({
       }>,
     ) => {
       dispatchEvent(new Event("stop-changed"));
+      if (state.stops.length === 0) {
+        resetRouting(state);
+      }
       if (action.payload.index == 0) {
         state.currentPositionAsStart = false;
       }
