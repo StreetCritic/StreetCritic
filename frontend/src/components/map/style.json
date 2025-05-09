@@ -42,6 +42,7 @@
         "https://tiles.streetcritic.org/tiles/r1/jaxa_terrainrgb_0-11_png/{z}/{x}/{y}"
       ],
       "maxzoom": 11,
+      "attribution": "<a target='_blank' href='https://www.eorc.jaxa.jp/ALOS/en/dataset/aw3d30/'>AW3D</a> (JAXA)",
       "tileSize": 256
     }
   },
