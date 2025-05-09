@@ -1,8 +1,10 @@
 "use client";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import cx from "clsx";
 
 import {
+  useLocalize,
   /* useLoginGate, */
   useNavigateMap,
   useWay,
@@ -24,6 +26,8 @@ import {
   WaySidebar,
   WayAddingSidebar,
   ProfileControl,
+  Icon,
+  LayerSelection,
 } from "@/components";
 import { default as Map, Legend } from "@/components/map";
 
@@ -52,11 +56,13 @@ type Props = {
 };
 
 export default function MapApp({ selectedWay }: Props) {
+  const __ = useLocalize();
   const dispatch = useDispatch();
   const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
   const locationState = useSelector(selectLocationState);
   const isLoading = useSelector(selectIsLoading);
+  const [showLayerSelection, setShowLayerSelection] = useState(false);
 
   /* const [loginModal, requireAuthentication] = useLoginGate(); */
   const navigateMap = useNavigateMap();
@@ -135,6 +141,15 @@ export default function MapApp({ selectedWay }: Props) {
         )}
       </div>
 
+      <div className={cx(styles.controls, styles.styleControls)}>
+        <ActionIcon
+          label={__("map-app-select-visible-layers")}
+          color="gray.7"
+          icon={<Icon id="stack" size={32} weight="fill" />}
+          onClick={() => setShowLayerSelection((state) => !state)}
+        />
+      </div>
+
       {appState.mode === AppMode.Browsing && (
         <div className={styles.legend}>
           <Legend />
@@ -145,6 +160,12 @@ export default function MapApp({ selectedWay }: Props) {
         <div className={styles.loader}>
           <Loader size={30} />
         </div>
+      )}
+
+      {showLayerSelection && (
+        <SideBox onClose={() => setShowLayerSelection(false)}>
+          <LayerSelection />
+        </SideBox>
       )}
     </div>
   );

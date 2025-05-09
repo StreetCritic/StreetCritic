@@ -7,6 +7,8 @@ import {
   InstagramLogo,
   LinkedinLogo,
   MastodonLogo,
+  Mountains,
+  Stack,
 } from "@phosphor-icons/react";
 
 const icons = {
@@ -15,6 +17,8 @@ const icons = {
   instagram: InstagramLogo,
   linkedin: LinkedinLogo,
   mastodon: MastodonLogo,
+  mountains: Mountains,
+  stack: Stack,
   "arrow-left": ArrowLeft,
 };
 
@@ -27,12 +31,20 @@ type Props = {
   inline?: boolean;
   /** Render size in pixel of the icon, default is 24. */
   size?: number;
+  /** Weight of the icon. Default is "regular". */
+  weight?: "regular" | "bold" | "fill";
+  /** Color of the icon. */
+  color?: string;
 };
 
 /**
  * An icon.
  */
-export default function Icon({ id, size }: Props) {
-  const icon = React.createElement(icons[id], { size: size || 24 });
+export default function Icon({ id, color, size, weight }: Props) {
+  const icon = React.createElement(icons[id], {
+    color: color,
+    size: size || 24,
+    weight: weight || "regular",
+  });
   return <span className={styles.root}>{icon}</span>;
 }

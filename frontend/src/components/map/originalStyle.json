@@ -1,6 +1,62 @@
 {
   "layers": [
     {
+      "id": "hills",
+      "beforeId": "waterway_tunnel",
+      "type": "hillshade",
+      "source": "hillshade",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "hillshade-shadow-color": "#473B24"
+      }
+    },
+    {
+      "id": "contour-100m",
+      "beforeId": "waterway_tunnel",
+      "type": "line",
+      "minzoom": 11,
+      "source": "contour_100m",
+      "source-layer": "contour_100m",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "rgba(99, 71, 8, 0.5)",
+        "line-width": 1,
+        "line-dasharray": [
+          "step",
+          ["zoom"],
+          ["literal", [1, 0]],
+          14,
+          ["literal", [1, 0]]
+        ]
+      }
+    },
+    {
+      "id": "contour-100m-elevation",
+      "beforeId": "waterway_tunnel",
+      "type": "symbol",
+      "minzoom": 11,
+      "source": "contour_100m",
+      "source-layer": "contour_100m",
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing": 200,
+        "text-field": "{elev}m",
+        "text-font": ["Noto Sans Italic"],
+        "text-rotation-alignment": "map",
+        "text-size": 12,
+        "visibility": "none"
+      },
+      "paint": {
+        "text-color": "#805733",
+        "text-halo-color": "rgba(255,255,255,0.7)",
+        "text-halo-width": 1.5
+      }
+    },
+    {
       "id": "housenumber",
       "type": "symbol",
       "source": "openmaptiles",

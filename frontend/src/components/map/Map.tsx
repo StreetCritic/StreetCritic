@@ -8,6 +8,7 @@ import ContextMenu from "./ContextMenu";
 import useContextMenu from "./contextMenu";
 import useLocationHighlight from "./locationHighlight";
 import useLocationSelector from "./locationSelector";
+import useVisibleLayers from "./visibleLayers";
 
 import styles from "./Map.module.css";
 import useSelectedWayHighlight from "./selectedWayHighlight";
@@ -20,6 +21,7 @@ export default function Map(): React.JSX.Element {
   useLocationHighlight(map);
   useLocationSelector(map);
   useSelectedWayHighlight(map);
+  useVisibleLayers(map);
   return (
     <div className={styles.root}>
       <AnnouncementBanner />

@@ -24,6 +24,8 @@ yes = Yes
 preferences = Preferences
 back = Back
 
+map-app-select-visible-layers = Select visible layers
+
 routing-error-title = Could not calculate route
 routing-error-body = The route could not be calculated. Please try again later.
 

@@ -101,6 +101,12 @@ export type MapState = {
 
   // Users preferences for different rating dimensions.
   streetPreferences: StreetPreferences;
+
+  /** Visible map layers. */
+  visibleLayers: {
+    /** Terrain layer (hill shading and contour lines) */
+    terrain: boolean;
+  };
 };
 
 const initialState: MapState = {
@@ -115,6 +121,7 @@ const initialState: MapState = {
   contextMenuPosition: null,
   lastLocatedPosition: null,
   streetPreferences: { safety: 50, comfort: 50, beauty: 50 },
+  visibleLayers: { terrain: false },
 };
 
 export const mapSlice = createSlice({
@@ -168,6 +175,17 @@ export const mapSlice = createSlice({
         state.stops[0].lat = state.lastLocatedPosition.lat;
         state.stops[0].inactive = false;
       }
+    },
+
+    /** User set the visibility of the given layer. */
+    setLayerVisibility: (
+      state,
+      action: PayloadAction<{
+        layer: keyof MapState["visibleLayers"];
+        visible: boolean;
+      }>,
+    ) => {
+      state.visibleLayers[action.payload.layer] = action.payload.visible;
     },
 
     // Current position has been located.
@@ -406,6 +424,7 @@ export const {
   requestedContextMenu,
   routeCalculated,
   routeSegmentsCalculated,
+  setLayerVisibility,
   stopAdded,
   stopChanged,
   stopRemoved,
@@ -416,4 +435,6 @@ export const {
   toggledRatingLayer,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
+export const selectVisibleLayers = (state: RootState) =>
+  state.map.visibleLayers;
 export default mapSlice.reducer;

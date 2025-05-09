@@ -24,9 +24,25 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "tiles": ["https://tiles.streetcritic.org/tiles/basemap/{z}/{x}/{y}"],
+      "tiles": ["https://tiles.streetcritic.org/tiles/r4/basemap/{z}/{x}/{y}"],
       "minzoom": 0,
       "maxzoom": 14
+    },
+    "contour_100m": {
+      "type": "vector",
+      "tiles": [
+        "https://tiles.streetcritic.org/tiles/r1/contour_100m/{z}/{x}/{y}"
+      ],
+      "minzoom": 7,
+      "maxzoom": 13
+    },
+    "hillshade": {
+      "type": "raster-dem",
+      "tiles": [
+        "https://tiles.streetcritic.org/tiles/r1/jaxa_terrainrgb_0-11_png/{z}/{x}/{y}"
+      ],
+      "maxzoom": 11,
+      "tileSize": 256
     }
   },
   "sprite": "https://openmaptiles.github.io/osm-bright-gl-style/sprite",

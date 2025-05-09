@@ -76,7 +76,7 @@ export class Map {
       for (const layer of (originalStyle as StyleSpecification).layers) {
         // TODO remove after next tiles gen round
         if (layer.id === "bicycle-route" && layer.paint) {
-          // @ts-ignore
+          // @ts-expect-error
           layer.paint["line-opacity"] = [
             "step",
             ["zoom"],
@@ -95,7 +95,7 @@ export class Map {
             1.0,
           ];
         }
-        // @ts-ignore TODO
+        // @ts-expect-error TODO
         this.map.addLayer(layer, layer.beforeId);
       }
       options.onStyleLoaded(this);
