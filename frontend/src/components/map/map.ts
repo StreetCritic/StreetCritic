@@ -420,8 +420,10 @@ export function useMap(container: React.RefObject<HTMLElement>) {
       return;
     }
     const bounds = map.getMapLibre().getBounds();
-    // TODO need to include padding!
-    let updateNeeded = false; // simple setting to true does not
+    // TODO update check needs to include padding that is later applied.
+    // Possible solution: calculated bounding box, check if its bigger than maps
+    // bounding box.
+    let updateNeeded = false;
     for (const stop of stops) {
       if (!bounds.contains(stop)) {
         updateNeeded = true;
