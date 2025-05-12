@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import {
   Map as LibreMap,
   LngLat,
@@ -6,6 +6,7 @@ import {
   NavigationControl,
   StyleSpecification,
   ScaleControl,
+  LngLatBounds,
 } from "maplibre-gl";
 
 import style from "./style.json";
@@ -22,6 +23,7 @@ import { useRouteDisplay } from "./routeDisplay";
 import { useIndicatorLayer } from "./indicatorLayer";
 import { useMediaQuery } from "@mantine/hooks";
 import { useMantineTheme } from "@mantine/core";
+import { UnknownAction } from "@reduxjs/toolkit";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -31,6 +33,46 @@ export type PositionChangeHandler = (
 
 // A function that returns an API access token.
 export type GetAccessTokenFn = () => Promise<string | null>;
+
+/**
+ * Fit the given bounds into the map.
+ */
+export function fitBounds(
+  bounds: LngLatBounds,
+  isMobile: boolean,
+  map: LibreMap,
+  dispatch: Dispatch<UnknownAction>,
+  resetFitPositions: boolean,
+  resetFitRoute: boolean,
+) {
+  const padding = 50;
+  const newTransform = map.cameraForBounds(bounds, {
+    padding: {
+      top: padding,
+      bottom: padding + (isMobile ? 320 : 0),
+      right: padding,
+      left: padding + (isMobile ? 0 : 415),
+    },
+  });
+  if (
+    newTransform &&
+    newTransform.center &&
+    "lng" in newTransform.center &&
+    "lat" in newTransform.center
+  ) {
+    dispatch(
+      centerUpdated({
+        lng: newTransform.center.lng,
+        lat: newTransform.center.lat,
+        zoom: newTransform.zoom,
+        updateView: true,
+        flyTo: true,
+        resetFitPositionsIntoMap: resetFitPositions || undefined,
+        resetFitRouteIntoMap: resetFitRoute || undefined,
+      }),
+    );
+  }
+}
 
 type Options = {
   /** Called when the style is loaded */
@@ -379,7 +421,7 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     }
     const bounds = map.getMapLibre().getBounds();
     // TODO need to include padding!
-    let updateNeeded = true; // simple setting to true does not
+    let updateNeeded = false; // simple setting to true does not
     for (const stop of stops) {
       if (!bounds.contains(stop)) {
         updateNeeded = true;
@@ -389,32 +431,7 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     if (!updateNeeded) {
       return;
     }
-    const padding = 50;
-    const newTransform = map.getMapLibre().cameraForBounds(bounds, {
-      padding: {
-        top: padding,
-        bottom: padding + (isMobile ? 320 : 0),
-        right: padding,
-        left: padding + (isMobile ? 0 : 415),
-      },
-    });
-    if (
-      newTransform &&
-      newTransform.center &&
-      "lng" in newTransform.center &&
-      "lat" in newTransform.center
-    ) {
-      dispatch(
-        centerUpdated({
-          lng: newTransform.center.lng,
-          lat: newTransform.center.lat,
-          zoom: newTransform.zoom,
-          updateView: true,
-          flyTo: true,
-          resetFitPositionsIntoMap: true,
-        }),
-      );
-    }
+    fitBounds(bounds, isMobile, map.getMapLibre(), dispatch, true, false);
   }, [map, mapState.stops, dispatch, mapState.fitPositionsIntoMap, isMobile]);
 
   return map;

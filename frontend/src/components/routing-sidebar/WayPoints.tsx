@@ -25,6 +25,9 @@ import cx from "clsx";
 import classes from "./WayPoints.module.css";
 import { useLocalize } from "@/hooks";
 
+/**
+ * Reorderable list of way points.
+ */
 export default function WayPoints() {
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();

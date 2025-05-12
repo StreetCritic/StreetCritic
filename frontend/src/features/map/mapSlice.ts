@@ -72,6 +72,11 @@ export type MapState = {
    */
   fitPositionsIntoMap: LngLat[];
 
+  /**
+   * The next calculated route has to be fit into the visible map.
+   */
+  fitRouteIntoMap: boolean;
+
   // Stops on the map.
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
@@ -113,6 +118,7 @@ const initialState: MapState = {
   readyToRender: false,
   center: config.defaultMapCenter,
   fitPositionsIntoMap: [],
+  fitRouteIntoMap: false,
   stops: [],
   routeWay: null,
   routeSegments: null,
@@ -147,6 +153,10 @@ export const mapSlice = createSlice({
          * Should mapState.fitPositionsIntoMap be reset?
          */
         resetFitPositionsIntoMap?: boolean;
+        /**
+         * Should mapState.fitRouteIntoMap be reset?
+         */
+        resetFitRouteIntoMap?: boolean;
       }>,
     ) => {
       if (action.payload.lng) {
@@ -164,6 +174,9 @@ export const mapSlice = createSlice({
       state.center.updateView = action.payload.updateView;
       if (action.payload.resetFitPositionsIntoMap) {
         state.fitPositionsIntoMap = [];
+      }
+      if (action.payload.resetFitRouteIntoMap) {
+        state.fitRouteIntoMap = false;
       }
     },
 
@@ -272,7 +285,7 @@ export const mapSlice = createSlice({
         lng: number;
         lat: number;
         inactive?: boolean;
-        /** Should the stop be fit into the map? */
+        /** Should the stop and next calculated route be fit into the map? */
         fitIntoMap?: boolean;
       }>,
     ) => {
@@ -292,6 +305,7 @@ export const mapSlice = createSlice({
         state.fitPositionsIntoMap = [
           { lng: action.payload.lng, lat: action.payload.lat },
         ];
+        state.fitRouteIntoMap = true;
       }
     },
 
@@ -340,12 +354,6 @@ export const mapSlice = createSlice({
     // Rating layer has been toggled.
     toggledRatingLayer: (state) => {
       state.ratingLayerActive = !state.ratingLayerActive;
-    },
-
-    // A route was calculated.
-    routeCalculated: (state, action: PayloadAction<GeoJSON.GeoJSON>) => {
-      dispatchEvent(new Event("route-calculated"));
-      state.routeWay = action.payload;
     },
 
     // Segments of a route have been calculated.
@@ -422,7 +430,6 @@ export const {
   locatedPosition,
   readyToRender,
   requestedContextMenu,
-  routeCalculated,
   routeSegmentsCalculated,
   setLayerVisibility,
   stopAdded,

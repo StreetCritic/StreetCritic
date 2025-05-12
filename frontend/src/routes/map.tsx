@@ -133,7 +133,7 @@ export default function Map() {
     if (!mapState.readyToRender) {
       return;
     }
-      /* console.log("mapSearchParams changed", mapSearchParams); */
+    /* console.log("mapSearchParams changed", mapSearchParams); */
     if (mapSearchParams !== null) {
       setSearchParams(() => mapSearchParams, { replace: true });
     }

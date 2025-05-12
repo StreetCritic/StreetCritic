@@ -1,32 +1,36 @@
 import { selectMapState } from "@/features/map/mapSlice";
-import type { GeoJSON } from "geojson";
-import { GeoJSONSource, Map as LibreMap } from "maplibre-gl";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Map } from "./map";
-
-type Props = {
-  map: LibreMap;
-};
+import { useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { GeoJSONSource, LngLat, LngLatBounds } from "maplibre-gl";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fitBounds, Map } from "./map";
 
 /**
- * Displays routes.
+ * Hook to initialise the route display functionality.
  */
-export default class RouteDisplay {
-  map: LibreMap;
+export function useRouteDisplay(map: Map | null) {
+  const mapState = useSelector(selectMapState);
+  const dispatch = useDispatch();
+  const theme = useMantineTheme();
+  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
 
-  constructor({ map }: Props) {
-    this.map = map;
+  // Setup source and layer.
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
 
-    this.map.addSource("route", {
+    const libreMap = map.getMapLibre();
+
+    libreMap.addSource("route", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
         features: [],
       },
     });
-
-    this.map.addLayer({
+    libreMap.addLayer({
       id: "route",
       type: "line",
       source: "route",
@@ -48,63 +52,40 @@ export default class RouteDisplay {
         ],
       },
     });
-  }
 
-  /**
-   * Displays the given route.
-   *
-   * @param route - The route to display. Remove any displayed route if null.
-   */
-  displayRoute(route: GeoJSON | null): void {
-    const source = this.map.getSource("route");
-    if (source instanceof GeoJSONSource) {
-      source.setData(
-        route || {
-          type: "FeatureCollection",
-          features: [],
-        },
-      );
-    }
-  }
-
-  /**
-   * Remove from map.
-   */
-  remove() {
-    try {
-      this.map.removeLayer("route");
-      this.map.removeSource("route");
-    } catch (_) {
-      return;
-    }
-  }
-}
-
-/**
- * Hook to initialise the route display functionality.
- */
-export function useRouteDisplay(map: Map | null) {
-  const mapState = useSelector(selectMapState);
-  const [routeDisplay, setRouteDisplay] = useState<RouteDisplay | null>(null);
+    return () => {
+      try {
+        libreMap.removeLayer("route");
+        libreMap.removeSource("route");
+      } catch (_) {
+        return;
+      }
+    };
+  }, [map]);
 
   // Display route.
-  useEffect(() => {
-    if (map && routeDisplay) {
-      routeDisplay.displayRoute(mapState.routeWay);
-    }
-  }, [map, mapState.routeWay, routeDisplay]);
-
-  // Initialize RouteDisplay.
   useEffect(() => {
     if (!map) {
       return;
     }
-    const routeDisplay = new RouteDisplay({
-      map: map.getMapLibre(),
-    });
-    setRouteDisplay(routeDisplay);
-    return () => {
-      routeDisplay.remove();
+    const route = mapState.routeWay || {
+      type: "FeatureCollection",
+      features: [],
     };
-  }, [map]);
+    const source = map.getMapLibre().getSource("route");
+    if (source instanceof GeoJSONSource) {
+      source.setData(route);
+    }
+
+    if (mapState.fitRouteIntoMap && route.type === "LineString") {
+      const coordinates = route.coordinates.map(
+        (position) => new LngLat(position[0], position[1]),
+      );
+      const bounds = coordinates.reduce(
+        (bounds, coord) => bounds.extend(coord),
+        new LngLatBounds(coordinates[0], coordinates[0]),
+      );
+      fitBounds(bounds, isMobile, map.getMapLibre(), dispatch, false, true);
+    }
+  }, [map, mapState.routeWay, isMobile, dispatch, mapState.fitRouteIntoMap]);
 }

@@ -10,6 +10,9 @@ type Props = {
   isLocatedPosition: boolean;
 };
 
+/**
+ * Way point UI with location search.
+ */
 export default function WayPoint({
   stop,
   setStop,
