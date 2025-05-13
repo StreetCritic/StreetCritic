@@ -66,10 +66,10 @@ contact-form-message = Deine Nachricht
 contact-form-submit = Absenden
 
 form-submitted-success-title = Übermittlung erfolgreich
-form-submitted-success-body = Ihre Nachricht wurde erfolgreich übermittelt.
+form-submitted-success-body = Deine Nachricht wurde erfolgreich übermittelt.
 
 form-submitted-error-title = Übermittlung fehlgeschlagen
-form-submitted-error-body = Beim Senden Ihrer Nachricht ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+form-submitted-error-body = Beim Senden deiner Nachricht ist ein Fehler aufgetreten. Bitte versuche es später erneut.
 
 context-menu-set-start = Route von hier
 context-menu-set-destination = Route hierher
