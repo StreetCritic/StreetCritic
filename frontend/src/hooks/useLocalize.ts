@@ -6,7 +6,7 @@ import { useCallback, useMemo } from "react";
 export default function useLocalize() {
   const appState = useSelector(selectAppState);
   const resource = useMemo(
-    // @ts-expect-error
+    // @ts-expect-error TODO
     () => new FluentResource(window.streetcritic.translations),
     [],
   );

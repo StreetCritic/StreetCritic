@@ -18,6 +18,11 @@ body {
   /* background-color: #96B300; */
 }
 
+ul,
+ol {
+  margin: 1em 0 1em 2em;
+}
+
 #root {
   height: 100%;
   display: flex;

@@ -58,6 +58,13 @@ reviews-empty = No reviews yet. Be the first to add one!
 routing-shortest-route = Shortest route
 routing-export = Export track (GPX)
 
+contact-form-title = Get in touch
+contact-form-name = Name
+contact-form-email = Email
+contact-form-subject = Subject
+contact-form-message = Your message
+contact-form-submit = Submit
+
 form-submitted-success-title = Submission Successful
 form-submitted-success-body = Your message has been successfully submitted.
 

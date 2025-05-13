@@ -7,14 +7,14 @@ type Props = {
   /**
    * Use localized text with this id as content.
    */
-  id?: string;
+  msgId?: string;
 };
 
-export default function Text({ size, children, id }: Props) {
+export default function Text({ size, children, msgId }: Props) {
   const __ = useLocalize();
   return (
     <MText mb="md" size={size}>
-      {id ? __(id) : children}
+      {msgId ? __(msgId) : children}
     </MText>
   );
 }

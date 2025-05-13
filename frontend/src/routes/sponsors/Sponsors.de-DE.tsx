@@ -2,31 +2,26 @@ import Container from "@/components/container";
 import { P, Title } from "@/components/typography";
 import useMeta from "@/hooks/useMeta";
 
-/* export const metadata: Metadata = {
- *   title: "Sponsors",
- *   description: "Our sponsors.",
- * };
- *  */
 export default function Home() {
-  useMeta({ title: "Our Sponsors" });
+  useMeta({ title: "Unsere Sponsoren" });
   return (
     <main>
       <Container>
-        <Title>Our Sponsors</Title>
+        <Title>Unsere Sponsoren</Title>
         <P>
-          From September 2024 to February 2025, the development of the prototype
-          of StreetCritic is sponsered by the German Ministry of Education and
-          Research (Code: SubjectiveWays) and the{" "}
+          Von September 2024 bis Februar 2025 wurde die Entwicklung des
+          Prototyps von StreetCritic vom Bundesministerium für Bildung und
+          Forschung (Förderkennzeichen: SubjectiveWays) und dem{" "}
           <a target="_blank" href="https://prototypefund.de/">
             PrototypeFund
-          </a>
-          .
+          </a>{" "}
+          gefördert.
         </P>
         <img
           src={new URL("bmbf_logo.jpg", import.meta.url).href}
           width={402}
           height={343}
-          alt="Sponsored by the Federal Ministry of Education and Research"
+          alt="Gefördert vom Bundesministerium für Bildung und Forschung"
           style={{
             maxWidth: "100%",
             height: "auto",

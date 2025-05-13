@@ -64,7 +64,7 @@ const router = createBrowserRouter([
   } else {
     languages = await import(`./features/i18n/languages/en-US`);
   }
-  // @ts-expect-error
+  // @ts-expect-error TODO
   window.streetcritic = {
     translations: languages.translations,
   };

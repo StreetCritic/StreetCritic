@@ -58,6 +58,13 @@ reviews-empty = Noch keine Bewertungen. Sei der Erste, der eine hinzufügt!
 routing-shortest-route = Kürzeste Route
 routing-export = Strecke exportieren (GPX)
 
+contact-form-title = Kontakt aufnehmen
+contact-form-name = Name
+contact-form-email = E-Mail
+contact-form-subject = Betreff
+contact-form-message = Deine Nachricht
+contact-form-submit = Absenden
+
 form-submitted-success-title = Übermittlung erfolgreich
 form-submitted-success-body = Ihre Nachricht wurde erfolgreich übermittelt.
 
@@ -71,7 +78,7 @@ context-menu-add-waypoint = Wegpunkt hinzufügen
 location-side-box-add-opinion = Meinung hinzufügen
 location-side-box-calculate-route = Route berechnen
 
-way-create-form-intro = Geben Sie einen Titel für die Route an, z. B. „Südliche Hauptstraße zum Marktplatz“. Verwenden Sie den lokalen Namen und die lokale Sprache.
+way-create-form-intro = Geben Sie einen Titel für die Route an, z.B. „Südliche Hauptstraße zum Marktplatz“. Verwenden Sie den lokalen Namen und die lokale Sprache.
 way-create-form-about-to-submit = Sie können Ihre neue Route jetzt absenden. Wenn nötig, können Sie vorher zu einem früheren Schritt zurückkehren.
 way-create-form-discard-way-confirm = Sind Sie sicher, dass Sie den neuen Weg verwerfen möchten?
 

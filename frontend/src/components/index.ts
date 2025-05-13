@@ -11,6 +11,7 @@ export { default as Icon } from "./icon";
 export { default as Indicator } from "./indicator";
 export { default as LayerSelection } from "./layer-selection";
 export { default as Loader } from "./loader";
+export { default as LoadingPage } from "./loading-page";
 export { default as LocationSideBox } from "./location-side-box";
 export { default as LoginButtons } from "./login-buttons";
 export { default as LoginModal } from "./login-modal";

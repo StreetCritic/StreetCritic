@@ -36,11 +36,11 @@ export default function WayPreferences({ disabled }: Props) {
 
   return (
     <>
-      <Text id="way-preferences-title" />
+      <Text msgId="way-preferences-title" />
       <Stack>
         {Object.entries(preferences).map(([id, preference]) => (
           <Group key={id} justify="space-between">
-            <Text id={preference.label} />
+            <Text msgId={preference.label} />
             <Slider
               disabled={disabled}
               w="75%"

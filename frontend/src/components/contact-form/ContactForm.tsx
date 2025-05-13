@@ -78,7 +78,7 @@ export default function ContactForm() {
 
   return (
     <>
-      <Title>Get in touch</Title>
+      <Title msgId="contact-form-title" />
       <form
         onSubmit={form.onSubmit((values: Values) => {
           submit(values);
@@ -87,15 +87,13 @@ export default function ContactForm() {
         <Fieldset disabled={formState === FormState.Submitting}>
           <SimpleGrid cols={{ base: 1, sm: 2 }} mt="xl">
             <TextInput
-              label="Name"
-              placeholder="Your name"
+              label={__("contact-form-name")}
               name="name"
               variant="filled"
               {...form.getInputProps("name")}
             />
             <TextInput
-              label="Email"
-              placeholder="Your email"
+              label={__("contact-form-email")}
               name="email"
               variant="filled"
               {...form.getInputProps("email")}
@@ -103,8 +101,7 @@ export default function ContactForm() {
           </SimpleGrid>
 
           <TextInput
-            label="Subject"
-            placeholder="Subject"
+            label={__("contact-form-subject")}
             mt="md"
             name="subject"
             variant="filled"
@@ -112,8 +109,7 @@ export default function ContactForm() {
           />
           <Textarea
             mt="md"
-            label="Message"
-            placeholder="Your message"
+            label={__("contact-form-message")}
             maxRows={10}
             minRows={5}
             autosize
@@ -124,7 +120,7 @@ export default function ContactForm() {
 
           <Group justify="center" mt="xl">
             <Button type="submit" size="md">
-              Send message
+              {__("contact-form-submit")}
             </Button>
           </Group>
           {formState === FormState.Error && (
