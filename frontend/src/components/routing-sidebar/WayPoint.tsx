@@ -1,3 +1,4 @@
+import { useLocalize } from "@/hooks";
 import { useState } from "react";
 import LocationSearch from "../location-search";
 
@@ -19,12 +20,13 @@ export default function WayPoint({
   label,
   isLocatedPosition,
 }: Props) {
+  const __ = useLocalize();
   const [locationName, setLocationName] = useState("");
   const placeholder = isLocatedPosition
-    ? "My position"
+    ? __("my-position")
     : locationName ||
       (stop.inactive
-        ? "Search location..."
+        ? __("search-location")
         : `${Math.round(stop.lng * 10000) / 10000}, ${Math.round(stop.lat * 10000) / 10000}`);
   return (
     <>

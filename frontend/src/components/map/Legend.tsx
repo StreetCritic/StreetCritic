@@ -1,3 +1,4 @@
+import { useLocalize } from "@/hooks";
 import { SmileySad, Smiley } from "@phosphor-icons/react";
 import { ratingScale } from "./colors";
 import styles from "./Legend.module.css";
@@ -6,6 +7,7 @@ import styles from "./Legend.module.css";
  * Displays the map legends.
  */
 export default function Legend() {
+  const __ = useLocalize();
   const scale = ratingScale();
   let inner = "";
   for (let i = 0; i <= 1.0; i = i + 0.1) {
@@ -13,7 +15,7 @@ export default function Legend() {
   }
   return (
     <div className={styles.root}>
-      Way rating:
+      {__("way-rating")}
       <br />
       <span>
         <SmileySad size={16} weight="bold" />

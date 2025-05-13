@@ -1,4 +1,5 @@
-import { Group, Slider, Stack, Text } from "@mantine/core";
+import { Group, Slider, Stack } from "@mantine/core";
+import { Text } from "@/components";
 
 import {
   selectMapState,
@@ -6,16 +7,17 @@ import {
   StreetPreferences,
 } from "@/features/map/mapSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocalize } from "@/hooks";
 
 const preferences: { [key in keyof StreetPreferences]: { label: string } } = {
   safety: {
-    label: "Safety",
+    label: "safety",
   },
   comfort: {
-    label: "Comfort",
+    label: "comfort",
   },
   beauty: {
-    label: "Beauty",
+    label: "beauty",
   },
 };
 
@@ -28,16 +30,17 @@ type Props = {
  * Sliders to change the way preferences.
  */
 export default function WayPreferences({ disabled }: Props) {
+  const __ = useLocalize();
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
 
   return (
     <>
-      <Text>Preferences:</Text>
+      <Text id="way-preferences-title" />
       <Stack>
         {Object.entries(preferences).map(([id, preference]) => (
           <Group key={id} justify="space-between">
-            <Text>{preference.label}</Text>
+            <Text id={preference.label} />
             <Slider
               disabled={disabled}
               w="75%"

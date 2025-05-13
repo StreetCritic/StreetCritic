@@ -31,7 +31,7 @@ export default function LayerSelection() {
         }
       >
         <Group align="baseline">
-          <span>Terrain</span>
+          <span>{__("terrain")}</span>
           <Icon
             id="mountains"
             color={visibleLayers.terrain ? "white" : "rgba(99, 71, 8)"}

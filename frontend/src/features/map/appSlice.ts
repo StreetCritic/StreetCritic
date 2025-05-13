@@ -2,6 +2,7 @@ import { dispatchEvent, Event } from "@/events";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { LngLat } from "./types";
+import { findUILanguage } from "@/features/i18n";
 
 export enum AppMode {
   Browsing,
@@ -48,7 +49,7 @@ export type AppState = {
 
 const initialState: AppState = {
   mode: AppMode.Browsing,
-  locale: "en",
+  locale: findUILanguage(),
   user: null,
   authState: AuthenticationState.Unauthenticated,
   announcementBannerVisible: localStorage.getItem("state") === null,

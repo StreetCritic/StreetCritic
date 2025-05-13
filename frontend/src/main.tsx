@@ -57,6 +57,18 @@ const router = createBrowserRouter([
 (async () => {
   await initIbre();
   initHooks();
+  const locale = store.getState().app.locale;
+  let languages = undefined;
+  if (locale === "de-DE") {
+    languages = await import(`./features/i18n/languages/de-DE`);
+  } else {
+    languages = await import(`./features/i18n/languages/en-US`);
+  }
+  // @ts-expect-error
+  window.streetcritic = {
+    translations: languages.translations,
+  };
+
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <Provider store={store}>

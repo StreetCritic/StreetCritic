@@ -10,6 +10,7 @@ import {
   stopAdded,
   stopChanged,
 } from "@/features/map/mapSlice";
+import { useLocalize } from "@/hooks";
 import { Paper, NavLink } from "@mantine/core";
 import { Flag, FlagCheckered, FlagPennant, Gps } from "@phosphor-icons/react";
 import { useRef } from "react";
@@ -24,6 +25,7 @@ type Props = {
  * Context menu for certain map modes.
  */
 export default function ContextMenu({ onClick }: Props) {
+  const __ = useLocalize();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapState = useSelector(selectMapState);
   const appState = useSelector(selectAppState);
@@ -38,6 +40,7 @@ export default function ContextMenu({ onClick }: Props) {
   const width = containerRef.current?.offsetWidth || 0;
   const height = containerRef.current?.offsetHeight || 0;
 
+  /** If we are not in routing or a way adding mode yet, enable routing mode. */
   const maybeEnableRouting = () => {
     if (
       ![AppMode.Routing, AppMode.QuickWayRating, AppMode.WayAdding].includes(
@@ -88,23 +91,22 @@ export default function ContextMenu({ onClick }: Props) {
             dispatch(stopChanged({ index: 0, lng, lat, inactive: false }));
             onClick();
           }}
-          label="Set start"
+          label={__("context-menu-set-start")}
           leftSection={<Flag size={14} />}
         />
         <NavLink
           href="#"
           onClick={() => {
             dispatch(stopAdded({ index: mapState.stops.length - 1, lng, lat }));
-
             maybeEnableRouting();
             onClick();
           }}
-          label="Add waypoint"
+          label={__("context-menu-add-waypoint")}
           leftSection={<FlagPennant size={14} />}
         />
         <NavLink
           href="#"
-          label="Set destination"
+          label={__("context-menu-set-destination")}
           onClick={() => {
             dispatch(
               stopChanged({

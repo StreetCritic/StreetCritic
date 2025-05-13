@@ -16,7 +16,7 @@ import { Map } from "./map";
 export default function useContextMenu(map: Map | null): () => void {
   const dispatch = useDispatch();
   const mapState = useSelector(selectMapState);
-  const contextMenuHandler = useRef((e: MapMouseEvent) => {});
+  const contextMenuHandler = useRef((_: MapMouseEvent) => {});
   const cancelHandler = useRef(() => {});
 
   // Register event handlers.
@@ -38,7 +38,6 @@ export default function useContextMenu(map: Map | null): () => void {
       map.getMapLibre().off("contextmenu", onContextMenu);
     };
   }, [map, dispatch, contextMenuHandler, cancelHandler]);
-
 
   // Setup handler functions.
   useEffect(() => {

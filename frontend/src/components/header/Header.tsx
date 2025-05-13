@@ -16,7 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
-import { useUser } from "@/hooks";
+import { useLocalize, useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
 import { ActionIcon, LoginButtons, SocialMediaLinks } from "@/components";
@@ -25,6 +25,7 @@ import LogoLink from "./LogoLink";
 export default function Header() {
   const appState = useSelector(selectAppState);
   const user = useUser();
+  const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
@@ -39,19 +40,18 @@ export default function Header() {
 
           <Group h="100%" gap={0} visibleFrom="md">
             <Link to={"/about"} className={classes.link}>
-              About
+              {__("menu-entry-about")}
             </Link>
 
             <Link to={"/sponsors"} className={classes.link}>
-              Sponsors
+              {__("menu-entry-sponsors")}
             </Link>
 
             <Link to={"/contact"} className={classes.link}>
-              Contact
+              {__("menu-entry-contact")}
             </Link>
-
             <Link to={"/terms-of-use"} className={classes.link}>
-              Terms of Use
+              {__("menu-entry-tos")}
             </Link>
           </Group>
 
@@ -103,20 +103,20 @@ export default function Header() {
           <Divider my="sm" />
 
           <Link to={"about"} className={classes.link} onClick={toggleDrawer}>
-            About
+            {__("menu-entry-about")}
           </Link>
           <Link to={"sponsors"} className={classes.link} onClick={toggleDrawer}>
-            Sponsors
+            {__("menu-entry-sponsors")}
           </Link>
           <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
-            Contact
+            {__("menu-entry-contact")}
           </Link>
           <Link
             to={"/terms-of-use"}
             className={classes.link}
             onClick={toggleDrawer}
           >
-            Terms of Use
+            {__("menu-entry-tos")}
           </Link>
 
           <Divider my="sm" />

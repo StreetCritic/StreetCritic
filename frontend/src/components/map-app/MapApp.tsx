@@ -132,7 +132,7 @@ export default function MapApp({ selectedWay }: Props) {
               }
             /> */}
             <ActionIcon
-              label="Start routing"
+              label={__("start-routing")}
               color="gray.7"
               icon={<TrafficSign size={32} weight="fill" />}
               onClick={() => dispatch(switchedToRouting())}

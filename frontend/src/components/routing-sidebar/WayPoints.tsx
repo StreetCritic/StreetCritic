@@ -73,7 +73,7 @@ export default function WayPoints() {
               <ActionIcon
                 variant="default"
                 disabled={mapState.currentPositionAsStart}
-                aria-label="Reset"
+                aria-label={__("reset")}
                 onClick={() => dispatch(enabledCurrentPositionAsStart())}
               >
                 <Tooltip label="Use my position as start">
@@ -87,7 +87,7 @@ export default function WayPoints() {
               aria-label="Reset"
               onClick={() => dispatch(stopRemoved(index))}
             >
-              <Tooltip label="Reset">
+              <Tooltip label={__("reset")}>
                 <Trash size={24} />
               </Tooltip>
             </ActionIcon>
@@ -118,7 +118,7 @@ export default function WayPoints() {
       <Group justify="flex-end">
         <ActionIcon
           variant="default"
-          aria-label="Add Waypoint"
+          aria-label={__("way-points-add")}
           onClick={() =>
             dispatch(
               stopAdded({
@@ -129,26 +129,26 @@ export default function WayPoints() {
             )
           }
         >
-          <Tooltip label="Add Waypoint">
+          <Tooltip label={__("way-points-add")}>
             <Plus size={24} />
           </Tooltip>
         </ActionIcon>
         <ActionIcon
           variant="default"
-          aria-label="Reverse direction"
+          aria-label={__("way-points-reverse")}
           disabled={mapState.stops.filter((stop) => !stop.inactive).length == 0}
           onClick={() => dispatch(stopsReversed())}
         >
-          <Tooltip label="Reverse direction">
+          <Tooltip label={__("way-points-reverse")}>
             <ArrowsDownUp size={24} />
           </Tooltip>
         </ActionIcon>
         <ActionIcon
           variant="default"
-          aria-label="Reset"
+          aria-label={__("reset")}
           onClick={() => dispatch(stopsResetted())}
         >
-          <Tooltip label="Reset">
+          <Tooltip label={__("reset")}>
             <Trash size={24} />
           </Tooltip>
         </ActionIcon>

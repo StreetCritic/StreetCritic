@@ -103,7 +103,7 @@ export default function LocationSidebar() {
                   )
                 }
               >
-                Add you Opinion
+                {__("location-side-box-add-opinion")}
               </Button>
             )}
           <Button
@@ -120,7 +120,7 @@ export default function LocationSidebar() {
               )
             }
           >
-            Calculate route
+            {__("location-side-box-calculate-route")}
           </Button>
         </Group>
       )}
