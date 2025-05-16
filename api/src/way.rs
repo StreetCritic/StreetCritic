@@ -20,6 +20,7 @@ pub struct Way {
     #[ts(as = "Vec<u8>")]
     datetime: time::PrimitiveDateTime,
     title: Option<String>,
+    rating: Option<f64>,
     // comment: String,
     // mode: String,
     #[ts(type = "GeoJSON.Geometry")]
@@ -71,6 +72,7 @@ pub async fn get_way(
         user_id: "foo".into(),
         datetime: row.get("datetime"),
         title: row.get("title"),
+        rating: None,
         // mode: row.get("mode"),
         // comment: row.get("comment"),
         geometry: geometry.try_into().unwrap(),
@@ -101,7 +103,7 @@ pub async fn get_ways(
     let rows = conn
         .query(
             r"
-            SELECT *,
+            SELECT way.*,
             (
                 SELECT ST_AsGeoJSON(ST_Union(
                     CASE WHEN way_segment.start > way_segment.stop
@@ -114,12 +116,15 @@ pub async fn get_ways(
                 FROM way_segment LEFT JOIN segment
                 ON way_segment.segment_id=segment.id
                 WHERE way_id=way.id AND way_segment.start != way_segment.stop
-            ) AS geom
-            FROM way
-            WHERE id IN
+            ) AS geom,
+            CAST(AVG(way_rating.general_rating) AS double precision) AS rating
+            FROM way LEFT JOIN way_rating
+            ON way.id = way_rating.way_id
+            WHERE way.id IN
                 (SELECT DISTINCT way_id FROM way_segment WHERE segment_id IN
                     (SELECT id FROM segment WHERE geom && ST_MakeEnvelope($1, $2, $3, $4, 4326))
                 )
+            GROUP BY way.id
 ",
             &[&left, &bottom, &right, &top],
         )
@@ -142,6 +147,7 @@ pub async fn get_ways(
             user_id: "foo".into(),
             datetime: row.get("datetime"),
             title: row.get("title"),
+            rating: row.get("rating"),
             // mode: row.get("mode"),
             // comment: row.get("comment"),
             geometry: geometry.try_into().unwrap(),
