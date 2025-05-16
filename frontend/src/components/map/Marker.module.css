@@ -8,3 +8,16 @@
   left: 3px;
   top: 3px;
 }
+
+.icon div {
+  width: 19px;
+  height: 19px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+.icon div:last-child svg {
+  mask: linear-gradient(to right, #fff var(--fill), transparent var(--fill));
+}

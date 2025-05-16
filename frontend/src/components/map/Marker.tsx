@@ -1,11 +1,16 @@
-import { HeartHalf } from "@phosphor-icons/react";
+import {
+  Heart,
+  QuestionMark,
+} from "@phosphor-icons/react";
 import styles from "./Marker.module.css";
 
 type Props = {
   onClick: () => void;
+  /** Percentage (0–100) of the heart that should be filled or null if value is unknown. */
+  fill: number | null;
 };
 
-export default function Marker({ onClick }: Props) {
+export default function Marker({ onClick, fill }: Props) {
   // Based on MapLibreGL marker.
   return (
     <div
@@ -16,12 +21,19 @@ export default function Marker({ onClick }: Props) {
         onClick();
       }}
     >
-      <HeartHalf
+      <div
         className={styles.icon}
-        color="#e01b24"
-        size={19}
-        weight="fill"
-      />
+        style={{ "--fill": `${fill || 100}%` } as React.CSSProperties}
+      >
+        <div>
+          <Heart color="#e01b24" size={19} />
+        </div>
+        <div>
+          {(fill && <Heart color="#e01b24" size={19} weight="fill" />) || (
+            <QuestionMark size={12} weight="bold" />
+          )}
+        </div>
+      </div>
       <svg display="block" height="36.9px" width="24.3px" viewBox="0 0 27 41">
         <g fillRule="nonzero">
           <g transform="translate(3.0, 29.0)" fill="#000000">

@@ -64,7 +64,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
             <Rating
               my="lg"
               fractions={2}
-              defaultValue={rating.general_rating / 2}
+              value={rating.general_rating / 2}
               readOnly
               emptySymbol={<Heart size={32} color="#FA5252" />}
               fullSymbol={<Heart size={32} weight="fill" color="#FA5252" />}

@@ -115,7 +115,12 @@ export default class WayDisplay {
             offset: [0, -15],
             element: rootNode,
           }).setLngLat([coordinate[0], coordinate[1]]);
-          root.render(MarkerElement({ onClick: () => this.onWaySelect(id) }));
+          root.render(
+            MarkerElement({
+              fill: way.properties.rating ? way.properties.rating * 10 : null,
+              onClick: () => this.onWaySelect(id),
+            }),
+          );
           newMarkers[id] = marker;
 
           const element = marker.getElement();
