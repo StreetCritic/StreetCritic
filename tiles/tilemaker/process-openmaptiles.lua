@@ -514,13 +514,7 @@ function way_function()
 			under_construction = true
 		end
 		local minzoom = INVALID_ZOOM
-    if is_route then
-      if route_network == "icn" then minzoom = 4
-      elseif route_network == "ncn" then minzoom = 5
-      elseif route_network == "rcn" then minzoom = 8
-      elseif route_network == "lcn" then minzoom = 9
-      end
-    elseif majorRoadValues[h]    then minzoom = 4
+    if majorRoadValues[h]    then minzoom = 4
 		elseif h == "trunk"          then minzoom = 5
 		elseif highway == "primary"  then minzoom = 7
 		elseif z9RoadValues[h]       then minzoom = 9
@@ -538,6 +532,14 @@ function way_function()
 			h = "path"
 		end
 
+    -- If it's a route, fix the min zoom values
+    if is_route then
+      if route_network == "icn" then minzoom = math.min(4, minzoom)
+      elseif route_network == "ncn" then minzoom = math.min(5, minzoom)
+      elseif route_network == "rcn" then minzoom = math.min(8, minzoom)
+      elseif route_network == "lcn" then minzoom = math.min(9, minzoom)
+      end
+    end
 		-- Links (ramp)
 		local ramp=false
 		if linkValues[h] then
