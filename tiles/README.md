@@ -6,8 +6,8 @@ Contained directories:
 
 ## To generate indicator tiles:
 
-```ssh
-tilemaker  --input input.osm.pbf --output bikeability.mbtiles --config config-indicators.json --process process-indicators.lua
+```sh
+tilemaker --input input.osm.pbf --output bikeability.mbtiles --config config-indicators.json --process process-indicators.lua
 ```
 
 ## To generate main openmaptiles tiles:
@@ -15,6 +15,11 @@ tilemaker  --input input.osm.pbf --output bikeability.mbtiles --config config-in
 Run ./get-coastline.sh and ./get-landcover.sh before running tilemaker to fetch
 sea tiles and small-scale landcover.
 
-```ssh
-tilemaker  --input input.osm.pbf --output tiles.mbtiles --config config-openmaptiles.json --process process-openmaptiles.lua
+
+```sh
+tilemaker  --input input.osm.pbf --output tiles.mbtiles --config config-openmaptiles.json --process process-openmaptiles.lua --bbox -180,-90,180,90 --store ~/tilemaker_tmp
 ```
+
+### System requirements for full planet
+
+- Takes about 2 hours on an AMD EPYC system with 48 cores, 192GB RAM, and NVMe SSD [Hetzner CCX63] (March 2025)
