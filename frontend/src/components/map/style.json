@@ -47,7 +47,7 @@
     }
   },
   "sprite": "https://openmaptiles.github.io/osm-bright-gl-style/sprite",
-  "glyphs": "https://tiles.streetcritic.org/fonts/{fontstack}/{range}.pbf",
+  "glyphs": "https://tiles.streetcritic.org/tiles/r1/font/{fontstack}/{range}",
   "layers": [
     {
       "id": "background",
