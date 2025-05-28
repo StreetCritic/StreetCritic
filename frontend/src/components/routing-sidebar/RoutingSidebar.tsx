@@ -1,5 +1,5 @@
 import { useLocalize } from "@/hooks";
-import { Icon, SidebarContent } from "@/components";
+import { HeightChart, Icon, SidebarContent } from "@/components";
 import { Box, Button, Flex, Stack } from "@mantine/core";
 import Directions from "./Directions";
 import WayPoints from "./WayPoints";
@@ -14,6 +14,8 @@ import RoutingPreferences from "../routing-preferences";
 import { useSelector } from "react-redux";
 import { selectDirectionsState } from "@/features/map/directionsSlice";
 
+import { routingApi, useGetHeightsQuery } from "@/services/routing";
+
 enum View {
   Default,
   Preferences,
@@ -23,6 +25,13 @@ export default function RoutingSidebar() {
   const [view, setView] = useState<View>(View.Default);
   const directionsState = useSelector(selectDirectionsState);
   const __ = useLocalize();
+
+  const heights = useGetHeightsQuery(
+    directionsState.directions?.feature.geometry.coordinates.map((pos) => ({
+      lng: pos[0],
+      lat: pos[1],
+    })) || [],
+  );
 
   const exportGPX = () => {
     (async () => {
@@ -93,6 +102,9 @@ export default function RoutingSidebar() {
       </SidebarContent>
 
       {view === View.Default && <Directions />}
+      {view === View.Default && heights.data && (
+        <HeightChart positions={heights.data?.range_height || []} />
+      )}
     </Box>
   );
 }

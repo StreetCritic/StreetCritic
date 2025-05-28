@@ -7,6 +7,7 @@ export { default as Button } from "./button";
 export { default as ContactForm } from "./contact-form";
 export { default as Container } from "./container";
 export { default as Coordinates } from "./coordinates";
+export { default as HeightChart } from "./height-chart";
 export { default as Icon } from "./icon";
 export { default as Indicator } from "./indicator";
 export { default as LayerSelection } from "./layer-selection";
