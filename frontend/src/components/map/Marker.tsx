@@ -1,7 +1,4 @@
-import {
-  Heart,
-  QuestionMark,
-} from "@phosphor-icons/react";
+import { Heart, QuestionMark } from "@phosphor-icons/react";
 import styles from "./Marker.module.css";
 
 type Props = {
