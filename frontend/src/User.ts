@@ -9,6 +9,7 @@ import {
 import { userAuthenticated } from "@/features/map/appSlice";
 import { createContext } from "react";
 import { Dispatch } from "@reduxjs/toolkit";
+import { updateAccount } from "@/features/user/update";
 
 import { showNotification } from "@/notifications";
 
@@ -68,11 +69,19 @@ export default class User {
    * Callback for login page.
    */
   async signinCallback() {
-    const user = await this.userManager.signinCallback(window.location.href);
-    window.history.replaceState({}, document.title, window.location.pathname);
-    window.location.assign("/");
-    if (user) {
-      this.userManager.storeUser(user);
+    try {
+      const user = await this.userManager.signinCallback(window.location.href);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      window.location.assign("/");
+      if (user) {
+        const accessToken = await this.getAccessToken();
+        if (accessToken) {
+          await updateAccount(accessToken);
+        }
+        this.userManager.storeUser(user);
+      }
+    } catch (error: unknown) {
+      console.error("Login processing error", error);
     }
   }
 

@@ -14,13 +14,16 @@ use crate::config::TokenConfig;
 #[derive(Debug, Clone)]
 pub struct User {
     pub id: String,
+    pub username: String,
+    pub name: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Claims {
     sub: String,
     exp: usize,
-    // name: String,
+    name: String,
+    preferred_username: String,
 }
 
 /// Authorization middleware. Checks for a valid JSON Web Token.
@@ -66,6 +69,8 @@ fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
     match decode::<Claims>(&token, &key, &validation) {
         Ok(token) => Some(User {
             id: token.claims.sub,
+            username: token.claims.preferred_username,
+            name: token.claims.name,
         }),
         Err(e) => {
             trace! {"Token could not be decoded: {:?}", e}

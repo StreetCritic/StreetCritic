@@ -1,7 +1,7 @@
 use axum::{
     extract::Extension,
     http::StatusCode,
-    routing::{get, post},
+    routing::{get, post, put},
     Router,
 };
 
@@ -12,6 +12,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use tower_http::cors::CorsLayer;
 
+pub mod account;
 pub mod config;
 pub mod db;
 pub mod error;
@@ -19,6 +20,7 @@ pub mod middleware;
 pub mod rating;
 pub mod way;
 
+use account::update_account;
 use rating::{create_rating, get_ratings};
 use way::{create_way, get_way, get_ways};
 
@@ -65,6 +67,7 @@ async fn main() {
         // `GET /` goes to `root`
         // .route("/", get(root))
         // `POST /users` goes to `create_user`
+        .route("/accounts", put(update_account))
         .route("/ways", post(create_way))
         .route("/ratings", post(create_rating))
         // .route("/ratings/:id", get(get_rating))

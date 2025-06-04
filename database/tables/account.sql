@@ -1,4 +1,6 @@
 -- Stores user accounts
 CREATE TABLE account (
-  id SERIAL PRIMARY KEY
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  username TEXT,
+  name TEXT
 );
