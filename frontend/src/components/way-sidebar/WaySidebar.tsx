@@ -10,8 +10,8 @@ type Props = {
 
 export default function WaySidebar({ wayId }: Props) {
   const dispatch = useAppDispatch();
-  const way = useGetWayQuery(wayId);
-  const ratings = useGetRatingsByWayIdQuery(wayId);
+  const way = useGetWayQuery({ id: wayId, includeUser: true });
+  const ratings = useGetRatingsByWayIdQuery({ id: wayId, includeUsers: true });
 
   if (way.isLoading || ratings.isLoading) {
     return <Loader />;

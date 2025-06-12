@@ -1,4 +1,11 @@
-use crate::{internal_error, middleware::auth::User, ConnectionPool};
+use crate::{
+    account::{db::SQL_ALIASED_FIELDS, Account, AccountData},
+    internal_error,
+    middleware::auth::User,
+    routing::Includes,
+    time::DateTimeString,
+    ConnectionPool,
+};
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
@@ -16,9 +23,8 @@ pub mod db;
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Way {
     id: u32,
-    user_id: String,
-    #[ts(as = "Vec<u8>")]
-    datetime: time::PrimitiveDateTime,
+    user: AccountData,
+    datetime: DateTimeString,
     title: Option<String>,
     rating: Option<f64>,
     // comment: String,
@@ -31,15 +37,25 @@ pub struct Way {
     geometry: geo_types::Geometry<f64>,
 }
 
+/// Parameters for /ways endpoint.
+#[derive(Deserialize)]
+pub struct GetWayParams {
+    include: Includes,
+}
+
 pub async fn get_way(
+    Query(params): Query<GetWayParams>,
     Path(way_id): Path<i32>,
     State(pool): State<ConnectionPool>,
 ) -> Result<Json<Way>, (StatusCode, String)> {
+    params.include.expect_only(&["user"])?;
+
     let conn = pool.get().await.map_err(internal_error)?;
     let row = conn
         .query_one(
-            r"
-            SELECT *,
+            format!(
+                r"
+            SELECT *, {SQL_ALIASED_FIELDS},
             (
                 SELECT ST_AsGeoJSON(ST_Union(
                     CASE WHEN way_segment.start > way_segment.stop
@@ -54,8 +70,12 @@ pub async fn get_way(
                 WHERE way_id=way.id
             ) AS geom
             FROM way
-            WHERE id=$1
-",
+            LEFT JOIN account
+            ON user_id=account.id
+            WHERE way.id=$1
+"
+            )
+            .as_str(),
             &[&way_id],
         )
         .await
@@ -66,11 +86,20 @@ pub async fn get_way(
     let geometry: geojson::Geometry = value.try_into().unwrap();
     // let mls: geo_types::MultiLineString = geometry.try_into().unwrap();
 
+    let user = if params.include.contains("user") {
+        AccountData::Details(Account {
+            id: row.get("user_id"),
+            username: row.get("account_username"),
+            name: row.get("account_name"),
+        })
+    } else {
+        AccountData::ID(row.get("user_id"))
+    };
+
     let way = Way {
         id: row.get::<_, i32>("id").try_into().unwrap(),
-        // user_id: row.get("user_id"),
-        user_id: "foo".into(),
-        datetime: row.get("datetime"),
+        user,
+        datetime: row.get::<_, time::PrimitiveDateTime>("datetime").into(),
         title: row.get("title"),
         rating: None,
         // mode: row.get("mode"),
@@ -144,8 +173,8 @@ pub async fn get_ways(
         ways.push(Way {
             id: row.get::<_, i32>("id").try_into().unwrap(),
             // user_id: row.get("user_id"),
-            user_id: "foo".into(),
-            datetime: row.get("datetime"),
+            user: AccountData::ID("foo".into()),
+            datetime: row.get::<_, time::PrimitiveDateTime>("datetime").into(),
             title: row.get("title"),
             rating: row.get("rating"),
             // mode: row.get("mode"),

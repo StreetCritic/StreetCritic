@@ -1,6 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Way } from "@/api-bindings/Way";
-import { Rating } from "@/api-bindings/Rating";
 import { type LngLat } from "@/features/map";
 
 import config from "@/config";

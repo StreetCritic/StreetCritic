@@ -14,7 +14,8 @@ import RoutingPreferences from "../routing-preferences";
 import { useSelector } from "react-redux";
 import { selectDirectionsState } from "@/features/map/directionsSlice";
 
-import { routingApi, useGetHeightsQuery } from "@/services/routing";
+import { useGetHeightsQuery } from "@/services/routing";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 enum View {
   Default,
@@ -30,7 +31,7 @@ export default function RoutingSidebar() {
     directionsState.directions?.feature.geometry.coordinates.map((pos) => ({
       lng: pos[0],
       lat: pos[1],
-    })) || [],
+    })) || skipToken,
   );
 
   const exportGPX = () => {

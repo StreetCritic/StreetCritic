@@ -9,13 +9,22 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${config.apiURL}` }),
   tagTypes: ["Way", "Rating"],
   endpoints: (builder) => ({
-    getWay: builder.query<Way, number>({
-      query: (wayId) => `ways/${wayId}`,
+    getWay: builder.query<Way, { id: number; includeUser?: boolean }>({
+      // TODO if include user is false but there is the same query with true,
+      // the cached data should be used. Currently, two requests will be made.
+      query: ({ id, includeUser }) =>
+        `ways/${id}` + (includeUser ? "?include=user" : ""),
       providesTags: (result, _error, _arg) =>
         result ? [{ type: "Way" as const, id: result.id }, "Way"] : ["Way"],
     }),
-    getRatingsByWayId: builder.query<Rating[], number>({
-      query: (wayId) => `ratings?way_id=${wayId}`,
+    getRatingsByWayId: builder.query<
+      Rating[],
+      { id: number; includeUsers?: boolean }
+    >({
+      // TODO if include users is false but there is the same query with true,
+      // the cached data should be used. Currently, two requests will be made.
+      query: ({ id, includeUsers }) =>
+        `ratings?way_id=${id}` + (includeUsers ? "&include=user" : ""),
       providesTags: ["Rating"],
     }),
   }),

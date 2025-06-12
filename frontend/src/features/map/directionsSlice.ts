@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { Feature, LineString } from "geojson";
 import { closedRouting } from "@/features/map/appSlice";
+import { heightsToGains } from "../directions/geo";
 
 export type Directions = {
   feature: Feature<LineString>;
@@ -34,16 +35,7 @@ export const directionsSlice = createSlice({
     },
     /** Received heights. */
     receivedHeights: (state, action: PayloadAction<[[number, number]]>) => {
-      state.elevationGain = action.payload
-        .reduce(
-          ([lastHeight, sumUp, sumDown], [_, height]) => [
-            height,
-            height > lastHeight ? sumUp + height - lastHeight : sumUp,
-            height < lastHeight ? sumDown + lastHeight - height : sumDown,
-          ],
-          [action.payload[0][1], 0, 0],
-        )
-        .slice(1);
+      state.elevationGain = heightsToGains(action.payload);
     },
     // User toggled usage of shortest route.
     toggledUseShortest: (state) => {

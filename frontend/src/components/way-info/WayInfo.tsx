@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 
-import { Button, RatingForm, SidebarContent } from "@/components";
-import { Text, Title, P } from "@/components/typography";
-import { Group, Rating, Badge } from "@mantine/core";
+import {
+  Button,
+  DateTime,
+  Icon,
+  RatingForm,
+  SidebarContent,
+} from "@/components";
+import { Title, P } from "@/components/typography";
+import { Group, Rating, Badge, Paper } from "@mantine/core";
 import { Way as APIWay } from "@/api-bindings/Way";
+import { Rating as APIRating } from "@/api-bindings/Rating";
 
 import {
   Heart,
@@ -15,12 +22,11 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 
 import { useLocalize, useLoginGate } from "@/hooks";
+import { Account } from "@/api-bindings/Account";
 
 type Props = {
   way: APIWay;
-  // TODO
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ratings: any[];
+  ratings: APIRating[];
   // Called when the way info should be refreshed.
   onRefresh: () => void;
 };
@@ -49,18 +55,43 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
 
   return (
     <>
-      {/* {data.datetime} */}
-      {/* Created on 2024/3/12 */}
-      <SidebarContent hideWhenFolded>
-        <Text>Bicycle way</Text>
-      </SidebarContent>
       {loginModal}
       {way.title && <Title size="h3">{way.title}</Title>}
 
+      <small>
+        <Group my="sm" justify="center">
+          <Group>
+            <Icon size={20} id="calendar" />{" "}
+            <DateTime value={new Date(way.datetime)} />
+          </Group>
+          <Group>
+            <Icon size={20} id="user" />{" "}
+            {(way.user as Account).name ||
+              (way.user as Account).id.slice(0, 8) + "..."}
+          </Group>
+        </Group>
+      </small>
+
       <SidebarContent hideWhenFolded>
-        {ratings.length ? `${__("reviews")}:` : __("reviews-empty")}
+        <Title order={4}>
+          {ratings.length ? `${__("reviews")}` : __("reviews-empty")}
+        </Title>
         {ratings.map((rating) => (
-          <>
+          <Paper shadow="xs" p="xl">
+            <small>
+              <Group my="sm">
+                <Group>
+                  <Icon size={20} id="calendar" />{" "}
+                  <DateTime value={new Date(rating.datetime)} />
+                </Group>
+                <Group>
+                  <Icon size={20} id="user" />{" "}
+                  {(rating.user as Account).name ||
+                    (rating.user as Account).id.slice(0, 8) + "..."}
+                </Group>
+              </Group>
+            </small>
+
             <Rating
               my="lg"
               fractions={2}
@@ -81,7 +112,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
             <ThumbsDown /> 3
           </Group>
           */}
-          </>
+          </Paper>
         ))}
         <br />
         <br />

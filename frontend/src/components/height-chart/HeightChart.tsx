@@ -75,7 +75,7 @@ export default function HeightChart({ positions }: Props) {
       lastDist = dist;
       lastHeight = hgt;
     });
-  }, [canvasRef.current, positions]);
+  }, [positions]);
 
   return (
     <div className={styles.root}>

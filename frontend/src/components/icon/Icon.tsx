@@ -3,12 +3,14 @@ import { Envelope } from "@phosphor-icons/react/dist/ssr";
 import styles from "./Icon.module.css";
 import {
   ArrowLeft,
+  Calendar,
   GithubLogo,
   InstagramLogo,
   LinkedinLogo,
   MastodonLogo,
   Mountains,
   Stack,
+  User,
 } from "@phosphor-icons/react";
 
 const icons = {
@@ -19,6 +21,8 @@ const icons = {
   mastodon: MastodonLogo,
   mountains: Mountains,
   stack: Stack,
+  calendar: Calendar,
+  user: User,
   "arrow-left": ArrowLeft,
 };
 

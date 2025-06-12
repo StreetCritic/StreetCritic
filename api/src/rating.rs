@@ -1,4 +1,12 @@
-use crate::{internal_error, middleware::auth::User, way::Segment, ConnectionPool};
+use crate::{
+    account::{db::SQL_ALIASED_FIELDS, Account, AccountData},
+    internal_error,
+    middleware::auth::User,
+    routing::Includes,
+    time::DateTimeString,
+    way::Segment,
+    ConnectionPool,
+};
 use axum::{
     extract::{Query, State},
     http::StatusCode,
@@ -15,9 +23,8 @@ mod db;
 pub struct Rating {
     id: i32,
     way_id: i32,
-    user_id: String,
-    #[ts(skip)]
-    datetime: time::PrimitiveDateTime,
+    user: AccountData,
+    datetime: DateTimeString,
     general_rating: u8,
     safety_rating: u8,
     comfort_rating: u8,
@@ -59,6 +66,7 @@ pub struct CreateRating {
 #[derive(Deserialize)]
 pub struct GetRatingsParams {
     way_id: i32,
+    include: Includes,
 }
 
 /// Retrieves ratings
@@ -66,15 +74,22 @@ pub async fn get_ratings(
     Query(params): Query<GetRatingsParams>,
     State(pool): State<ConnectionPool>,
 ) -> Result<Json<Vec<Rating>>, (StatusCode, String)> {
+    params.include.expect_only(&["user"])?;
+
     let conn = pool.get().await.map_err(internal_error)?;
 
     let rows = conn
         .query(
-            r"
-            SELECT *
+            format!(
+                r"
+            SELECT *, {SQL_ALIASED_FIELDS}
             FROM way_rating
+            LEFT JOIN account
+            ON user_id=account.id
             WHERE way_id=$1
-",
+"
+            )
+            .as_str(),
             &[&params.way_id],
         )
         .await
@@ -104,16 +119,26 @@ pub async fn get_ratings(
             tags.push(tag_row.get("name"))
         }
 
+        let user = if params.include.contains("user") {
+            AccountData::Details(Account {
+                id: row.get("user_id"),
+                username: row.get("account_username"),
+                name: row.get("account_name"),
+            })
+        } else {
+            AccountData::ID(row.get("user_id"))
+        };
+
         ratings.push(Rating {
             id,
             // user_id: row.get("user_id"),
-            user_id: "foo".into(),
+            user,
             way_id: 0,
             general_rating: row.get::<_, i32>("general_rating").try_into().unwrap(),
             safety_rating: row.get::<_, i32>("safety_rating").try_into().unwrap(),
             beauty_rating: row.get::<_, i32>("beauty_rating").try_into().unwrap(),
             comfort_rating: row.get::<_, i32>("comfort_rating").try_into().unwrap(),
-            datetime: row.get("datetime"),
+            datetime: row.get::<_, time::PrimitiveDateTime>("datetime").into(),
             comment: row.get("comment"),
             tags,
         });

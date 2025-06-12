@@ -18,6 +18,8 @@ pub mod db;
 pub mod error;
 pub mod middleware;
 pub mod rating;
+pub mod routing;
+pub mod time;
 pub mod way;
 
 use account::update_account;

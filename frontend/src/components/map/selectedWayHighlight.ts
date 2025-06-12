@@ -14,7 +14,10 @@ export default function useSelectedWayHighlight(map: Map | null) {
   const [initialized, setInitialized] = useState(false);
   const appState = useSelector(selectAppState);
   const { wayId } = useParams();
-  const { data } = useGetWayQuery(wayId ? parseInt(wayId) : skipToken);
+  // TODO includeUsers is currently needed to prevent two requests. See TODO in api.ts
+  const { data } = useGetWayQuery(
+    wayId ? { id: parseInt(wayId), includeUser: true } : skipToken,
+  );
 
   // Initializes highlight.
   useEffect(() => {
