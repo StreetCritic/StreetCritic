@@ -19,7 +19,7 @@ import {
   ThumbsUp,
   Sparkle,
   ThumbsDown,
-} from "@phosphor-icons/react/dist/ssr";
+} from "@phosphor-icons/react";
 
 import { useLocalize, useLoginGate } from "@/hooks";
 import { Account } from "@/api-bindings/Account";
@@ -77,7 +77,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
           {ratings.length ? `${__("reviews")}` : __("reviews-empty")}
         </Title>
         {ratings.map((rating) => (
-          <Paper shadow="xs" p="xl">
+          <Paper shadow="xs" p="xl" key={rating.id}>
             <small>
               <Group my="sm">
                 <Group>

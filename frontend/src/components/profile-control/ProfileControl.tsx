@@ -1,7 +1,7 @@
 import {
   PersonSimpleBike,
   /* PersonSimpleWalk, */
-} from "@phosphor-icons/react/dist/ssr";
+} from "@phosphor-icons/react";
 import IconButton from "./IconButton";
 import styles from "./ProfileControl.module.css";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Envelope } from "@phosphor-icons/react/dist/ssr";
+import { Envelope } from "@phosphor-icons/react";
 import styles from "./Icon.module.css";
 import {
   ArrowLeft,
