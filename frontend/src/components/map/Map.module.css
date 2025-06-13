@@ -6,23 +6,9 @@
 
 .map {
   height: 100%;
+  width: 100%;
 }
 
 .map canvas {
   cursor: default;
-}
-
-.debug {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3em;
-  background: rgba(1, 1, 1, 0.5);
-  color: white;
-}
-
-.debug > * {
-  display: inline-block;
-  margin-right: 1em;
 }
