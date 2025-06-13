@@ -364,7 +364,12 @@ export function useMap(container: React.RefObject<HTMLElement>) {
         center: initialCenter.center,
         zoom: initialCenter.zoom,
       });
+      const requestId = requestAnimationFrame(() => {
+        // fix canvas sizing after layout is stable
+        theMap.getMapLibre().resize();
+      });
       return () => {
+        cancelAnimationFrame(requestId);
         theMap.destruct();
       };
     }
