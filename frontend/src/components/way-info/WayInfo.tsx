@@ -14,12 +14,7 @@ import { Group, Rating, Badge, Paper } from "@mantine/core";
 import { Way as APIWay } from "@/api-bindings/Way";
 import { Rating as APIRating } from "@/api-bindings/Rating";
 
-import {
-  Heart,
-  ThumbsUp,
-  Sparkle,
-  ThumbsDown,
-} from "@phosphor-icons/react";
+import { Heart, ThumbsUp, Sparkle, ThumbsDown } from "@phosphor-icons/react";
 
 import { useLocalize, useLoginGate } from "@/hooks";
 import { Account } from "@/api-bindings/Account";
