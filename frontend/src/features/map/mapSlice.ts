@@ -77,6 +77,9 @@ export type MapState = {
    */
   fitRouteIntoMap: boolean;
 
+  // The currently selected way.
+  selectedWay: number | null;
+
   // Stops on the map.
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
@@ -119,6 +122,7 @@ const initialState: MapState = {
   center: config.defaultMapCenter,
   fitPositionsIntoMap: [],
   fitRouteIntoMap: false,
+  selectedWay: null,
   stops: [],
   routeWay: null,
   routeSegments: null,
@@ -367,6 +371,11 @@ export const mapSlice = createSlice({
       state.routeSegments = action.payload.segments;
       state.routeWay = action.payload.route;
     },
+
+    /** A way has been selected. */
+    waySelected: (state, action: PayloadAction<number>) => {
+      state.selectedWay = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(switchedToRouting, (state, action) => {
@@ -440,6 +449,7 @@ export const {
   stopsReversed,
   streetPreferenceChanged,
   toggledRatingLayer,
+  waySelected,
 } = mapSlice.actions;
 export const selectMapState = (state: RootState) => state.map;
 export const selectVisibleLayers = (state: RootState) =>

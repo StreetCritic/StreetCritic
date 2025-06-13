@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./map.module.css";
 import MapApp from "@/components/map-app";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import {
   selectMapState,
   stopAdded,
   streetPreferenceChanged,
+  waySelected,
 } from "@/features/map/mapSlice";
 import useMapSearchParams from "@/hooks/useMapSearchParams";
 import useMeta from "@/hooks/useMeta";
@@ -21,18 +22,21 @@ import { setUseShortest } from "@/features/map/directionsSlice";
 export default function Map() {
   useMeta({ title: "" });
   const { wayId } = useParams();
+  const selectedWay = wayId ? parseInt(wayId) : null;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const mapSearchParams = useMapSearchParams();
   const mapState = useSelector(selectMapState);
+  const [paramsRead, setParamsRead] = useState(false);
 
   const dispatch = useDispatch();
 
   // Set map zoom and center based on URL params.
   useEffect(() => {
-    if (mapState.readyToRender) {
+    if (paramsRead) {
       return;
     }
+
     // Load stops from URL. If two or more, switch to routing mode.
     const stopStrings: string[] = searchParams.get("s")
       ? searchParams.get("s")!.split("_")
@@ -56,23 +60,6 @@ export default function Map() {
     const zoom: number | null = searchParams.get("z")
       ? parseFloat(searchParams.get("z") as string)
       : null;
-    if (zoom) {
-      dispatch(centerUpdated({ zoom, updateView: true }));
-    }
-
-    // Load center from URL.
-    const centerCoords = searchParams.get("c")
-      ? searchParams.get("c")!.split("-").map(parseFloat)
-      : [];
-    const center: [number, number] | null =
-      centerCoords.length === 2 && !centerCoords.some(isNaN)
-        ? [centerCoords[0], centerCoords[1]]
-        : null;
-    if (center) {
-      dispatch(
-        centerUpdated({ lng: center[0], lat: center[1], updateView: true }),
-      );
-    }
 
     // Load location marker from URL.
     const locationMarkerCoords = searchParams.get("lm")
@@ -125,8 +112,35 @@ export default function Map() {
         : [];
     dispatch(setUseShortest(routingOptions.includes("sh")));
 
-    dispatch(readyToRender());
-  }, [dispatch, searchParams, mapState.readyToRender]);
+    // Load center from URL.
+    const centerCoords = searchParams.get("c")
+      ? searchParams.get("c")!.split("-").map(parseFloat)
+      : [];
+    const center: [number, number] | null =
+      centerCoords.length === 2 && !centerCoords.some(isNaN)
+        ? [centerCoords[0], centerCoords[1]]
+        : null;
+
+    // set zoom and center only (at this point) if not both are set or a way is not selected
+    if (!selectedWay || (zoom && center)) {
+      if (zoom) {
+        dispatch(centerUpdated({ zoom, updateView: true }));
+      }
+
+      if (center) {
+        dispatch(
+          centerUpdated({ lng: center[0], lat: center[1], updateView: true }),
+        );
+      }
+      // if we should use the selected ways center, we have to wait until
+      // the map is available.
+      dispatch(readyToRender());
+    }
+    if (selectedWay) {
+      dispatch(waySelected(selectedWay));
+    }
+    setParamsRead(true);
+  }, [dispatch, searchParams, mapState.readyToRender, selectedWay, paramsRead]);
 
   // Update search params in URL when something changed.
   useEffect(() => {
@@ -141,7 +155,7 @@ export default function Map() {
 
   return (
     <main className={styles.root}>
-      <MapApp selectedWay={wayId ? parseInt(wayId) : null}></MapApp>
+      <MapApp selectedWay={selectedWay}></MapApp>
     </main>
   );
 }

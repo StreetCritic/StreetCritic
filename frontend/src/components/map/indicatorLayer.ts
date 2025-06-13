@@ -122,29 +122,19 @@ export function updateColors(
  *
  * @returns onStyleLoaded callback
  */
-export function useIndicatorLayer(map: Map | null) {
+export function useIndicatorLayer(map: Map | null, mapRendered: boolean) {
   const mapState = useSelector(selectMapState);
 
-  const update = useCallback(
+  useEffect(() => {
+    if (map && mapRendered) {
+      updateColors(map.getMapLibre(), mapState.streetPreferences);
+    }
+  }, [map, mapState.streetPreferences, mapRendered]);
+
+  return useCallback(
     (map: Map) => {
       updateColors(map.getMapLibre(), mapState.streetPreferences);
     },
     [mapState.streetPreferences],
   );
-
-  useEffect(() => {
-    if (!map) {
-      return;
-    }
-    update(map);
-  }, [map, mapState.streetPreferences, update]);
-
-  const onStyleLoaded = useCallback(
-    (map: Map) => {
-      update(map);
-    },
-    [update],
-  );
-
-  return onStyleLoaded;
 }

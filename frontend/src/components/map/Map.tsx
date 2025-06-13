@@ -16,12 +16,12 @@ import { AnnouncementBanner } from "@/components";
 
 export default function Map(): React.JSX.Element {
   const container = useRef<HTMLDivElement>(null);
-  const map = useMap(container);
+  const [map, mapRendered] = useMap(container);
   const onClick = useContextMenu(map);
-  useLocationHighlight(map);
-  useLocationSelector(map);
-  useSelectedWayHighlight(map);
-  useVisibleLayers(map);
+  useLocationHighlight(mapRendered ? map : null);
+  useLocationSelector(mapRendered ? map : null);
+  useSelectedWayHighlight(mapRendered ? map : null);
+  useVisibleLayers(mapRendered ? map : null);
   return (
     <div className={styles.root}>
       <AnnouncementBanner />

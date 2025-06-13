@@ -1,12 +1,10 @@
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Map as LibreMap,
   LngLat,
-  type LngLatLike,
   NavigationControl,
   StyleSpecification,
   ScaleControl,
-  LngLatBounds,
 } from "maplibre-gl";
 
 import style from "./style.json";
@@ -15,7 +13,12 @@ import originalStyle from "./originalStyle.json";
 import { init_hooks } from "ibre";
 import { useStops } from "./stops";
 import { useDispatch, useSelector } from "react-redux";
-import { centerUpdated, selectMapState } from "@/features/map/mapSlice";
+import {
+  centerUpdated,
+  readyToRender,
+  selectMapState,
+} from "@/features/map/mapSlice";
+import { fitBounds, getBoundsFromGeometry } from "@/features/map/camera";
 import { useLocationMarker } from "./locationMarker";
 import { useWayDisplay } from "./wayDisplay";
 import useGeoLocate from "./geoLocate";
@@ -23,7 +26,8 @@ import { useRouteDisplay } from "./routeDisplay";
 import { useIndicatorLayer } from "./indicatorLayer";
 import { useMediaQuery } from "@mantine/hooks";
 import { useMantineTheme } from "@mantine/core";
-import { UnknownAction } from "@reduxjs/toolkit";
+import { useGetWayQuery } from "@/services/api";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -33,55 +37,6 @@ export type PositionChangeHandler = (
 
 // A function that returns an API access token.
 export type GetAccessTokenFn = () => Promise<string | null>;
-
-/**
- * Fit the given bounds into the map.
- */
-export function fitBounds(
-  bounds: LngLatBounds,
-  isMobile: boolean,
-  map: LibreMap,
-  dispatch: Dispatch<UnknownAction>,
-  resetFitPositions: boolean,
-  resetFitRoute: boolean,
-) {
-  const padding = 50;
-  const newTransform = map.cameraForBounds(bounds, {
-    padding: {
-      top: padding,
-      bottom: padding + (isMobile ? 320 : 0),
-      right: padding,
-      left: padding + (isMobile ? 0 : 415),
-    },
-  });
-  if (
-    newTransform &&
-    newTransform.center &&
-    "lng" in newTransform.center &&
-    "lat" in newTransform.center
-  ) {
-    dispatch(
-      centerUpdated({
-        lng: newTransform.center.lng,
-        lat: newTransform.center.lat,
-        zoom: newTransform.zoom,
-        updateView: true,
-        flyTo: true,
-        resetFitPositionsIntoMap: resetFitPositions || undefined,
-        resetFitRouteIntoMap: resetFitRoute || undefined,
-      }),
-    );
-  }
-}
-
-type Options = {
-  /** Called when the style is loaded */
-  onStyleLoaded: (map: Map) => void;
-  /** Initial center coordinates. */
-  center: LngLatLike;
-  /** Initial zoom. */
-  zoom: number;
-};
 
 /**
  * Implements a wrapper for MapLibre.
@@ -100,26 +55,14 @@ export class Map {
   constructor(
     onCenterChange: (center: LngLat, zoom: number) => void,
     container: HTMLElement,
-    onLoad: (map: Map) => void,
-    options: Options,
+    onLoad: () => void,
   ) {
     this.map = new LibreMap({
       container,
-      center: options.center,
-      zoom: options.zoom,
-      style: style as StyleSpecification,
       attributionControl: {
         customAttribution:
           '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap Mitwirkende</a> <a href = "https://www.maptiler.com/copyright/" target="_blank" >&copy; MapTiler</a>',
       },
-    });
-
-    this.map.once("styledata", () => {
-      for (const layer of (originalStyle as StyleSpecification).layers) {
-        // @ts-expect-error TODO
-        this.map.addLayer(layer, layer.beforeId);
-      }
-      options.onStyleLoaded(this);
     });
 
     const scale = new ScaleControl({
@@ -148,111 +91,110 @@ export class Map {
     //   }
     // });
 
+    this.map.addControl(new NavigationControl(), "bottom-right");
+
+    this.map.on("dragstart", () => {
+      this.map.getCanvas().style.cursor = "grabbing";
+    });
+
+    this.map.on("dragend", () => {
+      this.map.getCanvas().style.cursor = "";
+    });
+
+    // this.map.addSource("transportation", {
+    //   type: "vector",
+    //   url: "http://transport-tiles.streetcritic.org/function_zxy_query,connector",
+    // });
+
+    // this.map.addLayer({
+    //   id: "segments",
+    //   type: "line",
+    //   source: "transportation",
+    //   // source: 'segments',
+    //   "source-layer": "function_zxy_query",
+    //   layout: {
+    //     "line-join": "round",
+    //     "line-cap": "round",
+    //   },
+    //   paint: {
+    //     "line-color": "#DBB3FF",
+    //     "line-opacity": 1,
+    //     "line-width": 1,
+    //   },
+    // });
+
+    // this.map.addLayer({
+    //   id: "connectors",
+    //   type: "circle",
+    //   source: "transportation",
+    //   // source: 'connectors',
+    //   "source-layer": "connector",
+    //   paint: {
+    //     "circle-color": "#DB00E6",
+    //     "circle-opacity": 0.7,
+    //     "circle-radius": 3,
+    //   },
+    // });
+
+    // this.map.addSource("segments-parsed", {
+    //   type: "geojson",
+    //   data: {
+    //     type: "FeatureCollection",
+    //     features: [],
+    //   },
+    // });
+
+    // this.map.addLayer({
+    //   id: "segments-parsed",
+    //   type: "line",
+    //   source: "segments-parsed",
+    //   layout: {
+    //     "line-join": "round",
+    //     "line-cap": "round",
+    //   },
+    //   paint: {
+    //     // "line-color": "#00B3E6",
+    //     "line-color": "#00FF00",
+    //     "line-opacity": 0.3,
+    //     "line-width": 10,
+    //   },
+    // });
+
+    // this.map.addLayer({
+    //   id: "rated-segments",
+    //   type: "line",
+    //   source: {
+    //     type: "vector",
+    //     url: config.ratedSegmentsURL,
+    //   },
+    //   "source-layer": "function_query_rated_segments",
+    //   paint: {
+    //     "line-color": [
+    //       "interpolate",
+    //       ["linear"],
+    //       ["to-number", ["get", "_rating"]],
+    //       ...ratingColors(),
+    //     ],
+    //     "line-opacity": 1,
+    //     "line-width": 4,
+    //   },
+    // });
+
+    this.map.on("click", (e) => {
+      const ratings = this.map.queryRenderedFeatures(e.point, {
+        // layers: ["bikeability"],
+      });
+      console.log(ratings.map((x) => x.properties));
+    });
+
     this.map.once("load", () => {
-      this.map.addControl(new NavigationControl(), "bottom-right");
-
-      this.map.on("dragstart", () => {
-        this.map.getCanvas().style.cursor = "grabbing";
-      });
-
-      this.map.on("dragend", () => {
-        this.map.getCanvas().style.cursor = "";
-      });
-
-      // this.map.addSource("transportation", {
-      //   type: "vector",
-      //   url: "http://transport-tiles.streetcritic.org/function_zxy_query,connector",
-      // });
-
-      // this.map.addLayer({
-      //   id: "segments",
-      //   type: "line",
-      //   source: "transportation",
-      //   // source: 'segments',
-      //   "source-layer": "function_zxy_query",
-      //   layout: {
-      //     "line-join": "round",
-      //     "line-cap": "round",
-      //   },
-      //   paint: {
-      //     "line-color": "#DBB3FF",
-      //     "line-opacity": 1,
-      //     "line-width": 1,
-      //   },
-      // });
-
-      // this.map.addLayer({
-      //   id: "connectors",
-      //   type: "circle",
-      //   source: "transportation",
-      //   // source: 'connectors',
-      //   "source-layer": "connector",
-      //   paint: {
-      //     "circle-color": "#DB00E6",
-      //     "circle-opacity": 0.7,
-      //     "circle-radius": 3,
-      //   },
-      // });
-
-      this.map.addSource("segments-parsed", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [],
-        },
-      });
-
-      // this.map.addLayer({
-      //   id: "segments-parsed",
-      //   type: "line",
-      //   source: "segments-parsed",
-      //   layout: {
-      //     "line-join": "round",
-      //     "line-cap": "round",
-      //   },
-      //   paint: {
-      //     // "line-color": "#00B3E6",
-      //     "line-color": "#00FF00",
-      //     "line-opacity": 0.3,
-      //     "line-width": 10,
-      //   },
-      // });
-
-      // this.map.addLayer({
-      //   id: "rated-segments",
-      //   type: "line",
-      //   source: {
-      //     type: "vector",
-      //     url: config.ratedSegmentsURL,
-      //   },
-      //   "source-layer": "function_query_rated_segments",
-      //   paint: {
-      //     "line-color": [
-      //       "interpolate",
-      //       ["linear"],
-      //       ["to-number", ["get", "_rating"]],
-      //       ...ratingColors(),
-      //     ],
-      //     "line-opacity": 1,
-      //     "line-width": 4,
-      //   },
-      // });
-
-      this.map.on("click", (e) => {
-        const ratings = this.map.queryRenderedFeatures(e.point, {
-          // layers: ["bikeability"],
-        });
-        console.log(ratings.map((x) => x.properties));
-      });
-
       const updateCenter = () => {
         onCenterChange(this.map.getCenter(), this.map.getZoom());
       };
 
       this.map.on("moveend", updateCenter);
       this.map.on("zoomend", updateCenter);
-
-      onLoad(this);
+      onLoad();
     });
   }
 
@@ -316,38 +258,89 @@ export class Map {
  *
  * @param container - The map container.
  */
-export function useMap(container: React.RefObject<HTMLElement>) {
+export function useMap(
+  container: React.RefObject<HTMLElement>,
+): [Map | null, boolean] {
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const [map, setMap] = useState<Map | null>(null);
+  const [mapRendered, setMapRendered] = useState(false);
+  const theme = useMantineTheme();
+  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+
+  // TODO fix includeUser. not needed, but prevents double requests
+  const selectedWay = useGetWayQuery(
+    mapState.selectedWay
+      ? { id: mapState.selectedWay, includeUser: true }
+      : skipToken,
+  );
 
   useStops(map);
   useLocationMarker(map);
-  useWayDisplay(map);
-  useRouteDisplay(map);
-  const onStyleLoaded = useIndicatorLayer(map);
-  const onStyleLoadedRef = useRef(onStyleLoaded);
+  useWayDisplay(mapRendered ? map : null);
+  useRouteDisplay(mapRendered ? map : null);
+  const onStyleLoaded = useRef((_map: Map) => {});
+  onStyleLoaded.current = useIndicatorLayer(map, mapRendered);
   useGeoLocate(map);
-  useEffect(() => {
-    onStyleLoadedRef.current = onStyleLoaded;
-  }, [onStyleLoaded]);
 
-  const [initialCenter, setInitialCenter] = useState<{
-    center: LngLatLike;
-    zoom: number;
-  } | null>(null);
+  // Ready to render in the case of way urls without coordinates.
   useEffect(() => {
-    if (mapState.readyToRender && initialCenter === null) {
-      setInitialCenter({
-        center: { lng: mapState.center.lng, lat: mapState.center.lat },
-        zoom: mapState.center.zoom,
+    if (
+      map &&
+      !mapState.readyToRender &&
+      selectedWay &&
+      selectedWay.data?.geometry
+    ) {
+      const bounds = getBoundsFromGeometry(selectedWay.data.geometry);
+      fitBounds(bounds, {
+        isMobile,
+        map: map.getMapLibre(),
+        dispatch,
+        resetFitPositions: true,
+        resetFitRoute: true,
       });
+      dispatch(readyToRender());
     }
-  }, [mapState.readyToRender, mapState.center, initialCenter]);
+  }, [map, dispatch, isMobile, selectedWay, mapState.readyToRender]);
+
+  const initialCenter = useRef<typeof mapState.center | null>(null);
+  useEffect(() => {
+    initialCenter.current = mapState.center;
+  }, [mapState.center]);
+
+  // Set styles when map is ready to be rendered.
+  useEffect(() => {
+    if (map && mapState.readyToRender && initialCenter.current) {
+      const libreMap = map.getMapLibre();
+      libreMap.setZoom(initialCenter.current.zoom);
+      libreMap.setCenter({
+        lng: initialCenter.current.lng,
+        lat: initialCenter.current.lat,
+      });
+
+      const layers: string[] = [];
+      const listener = libreMap.on("styledata", () => {
+        for (const layer of (originalStyle as StyleSpecification).layers) {
+          // @ts-expect-error TODO
+          libreMap.addLayer(layer, layer.beforeId);
+          layers.push(layer.id);
+        }
+        onStyleLoaded.current(map);
+        listener.unsubscribe();
+      });
+      libreMap.setStyle(style as StyleSpecification);
+      return () => {
+        listener.unsubscribe();
+        layers.forEach((id) => {
+          libreMap.removeLayer(id);
+        });
+      };
+    }
+  }, [map, mapState.readyToRender, onStyleLoaded, initialCenter]);
 
   // Initialize the map.
   useEffect(() => {
-    if (container.current && initialCenter) {
+    if (container.current) {
       init_hooks();
       const onCenterChange = (center: LngLat, zoom: number) => {
         dispatch(
@@ -359,11 +352,11 @@ export function useMap(container: React.RefObject<HTMLElement>) {
           }),
         );
       };
-      const theMap = new Map(onCenterChange, container.current, setMap, {
-        onStyleLoaded: onStyleLoadedRef.current,
-        center: initialCenter.center,
-        zoom: initialCenter.zoom,
-      });
+      const theMap = new Map(onCenterChange, container.current, () =>
+        setMapRendered(true),
+      );
+      setMap(theMap);
+
       const requestId = requestAnimationFrame(() => {
         // fix canvas sizing after layout is stable
         theMap.getMapLibre().resize();
@@ -373,7 +366,9 @@ export function useMap(container: React.RefObject<HTMLElement>) {
         theMap.destruct();
       };
     }
-  }, [dispatch, container, initialCenter]);
+  }, [dispatch, container]);
+
+  //
 
   // Update center when changed.
   useEffect(() => {
@@ -393,9 +388,6 @@ export function useMap(container: React.RefObject<HTMLElement>) {
       );
     }
   }, [map, mapState.center, mapState.center.updateView, dispatch]);
-
-  const theme = useMantineTheme();
-  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
 
   // Update view to fit stops.
   useEffect(() => {
@@ -417,8 +409,14 @@ export function useMap(container: React.RefObject<HTMLElement>) {
     if (!updateNeeded) {
       return;
     }
-    fitBounds(bounds, isMobile, map.getMapLibre(), dispatch, true, false);
+    fitBounds(bounds, {
+      isMobile,
+      map: map.getMapLibre(),
+      dispatch,
+      resetFitPositions: true,
+      resetFitRoute: false,
+    });
   }, [map, mapState.stops, dispatch, mapState.fitPositionsIntoMap, isMobile]);
 
-  return map;
+  return [map, mapRendered];
 }

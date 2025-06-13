@@ -1,10 +1,11 @@
 import { selectMapState } from "@/features/map/mapSlice";
+import { fitBounds, getBoundsFromGeometry } from "@/features/map/camera";
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { GeoJSONSource, LngLat, LngLatBounds } from "maplibre-gl";
+import { GeoJSONSource } from "maplibre-gl";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fitBounds, Map } from "./map";
+import { Map } from "./map";
 
 /**
  * Hook to initialise the route display functionality.
@@ -78,14 +79,14 @@ export function useRouteDisplay(map: Map | null) {
     }
 
     if (mapState.fitRouteIntoMap && route.type === "LineString") {
-      const coordinates = route.coordinates.map(
-        (position) => new LngLat(position[0], position[1]),
-      );
-      const bounds = coordinates.reduce(
-        (bounds, coord) => bounds.extend(coord),
-        new LngLatBounds(coordinates[0], coordinates[0]),
-      );
-      fitBounds(bounds, isMobile, map.getMapLibre(), dispatch, false, true);
+      const bounds = getBoundsFromGeometry(route);
+      fitBounds(bounds, {
+        isMobile,
+        map: map.getMapLibre(),
+        dispatch,
+        resetFitPositions: false,
+        resetFitRoute: true,
+      });
     }
   }, [map, mapState.routeWay, isMobile, dispatch, mapState.fitRouteIntoMap]);
 }
