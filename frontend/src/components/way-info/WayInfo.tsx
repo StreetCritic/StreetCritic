@@ -112,7 +112,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
         <br />
         <br />
         <Button
-          label="Rate this way"
+          label={__("way-rating-button")}
           icon={<Sparkle size={32} />}
           onClick={() => requireAuthentication(() => setRatingFormOpen(true))}
         />

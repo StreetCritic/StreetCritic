@@ -82,6 +82,7 @@ way-create-form-intro = Provide a title for the route, e.g., 'Southern Main Stre
 way-create-form-about-to-submit = You can now submit your new route. If needed, feel free to go back to a previous step before finalizing your submission.
 way-create-form-discard-way-confirm = Are you sure to discard your new way?
 
+way-rating-button = Rate this way
 way-rating-tag-roomy = Roomy
 way-rating-tag-paved = Well paved
 way-rating-tag-little_traffic = Little traffic

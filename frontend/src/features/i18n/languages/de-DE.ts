@@ -82,6 +82,7 @@ way-create-form-intro = Geben Sie einen Titel für die Route an, z.B. „Südlic
 way-create-form-about-to-submit = Sie können Ihre neue Route jetzt absenden. Wenn nötig, können Sie vorher zu einem früheren Schritt zurückkehren.
 way-create-form-discard-way-confirm = Sind Sie sicher, dass Sie den neuen Weg verwerfen möchten?
 
+way-rating-button = Weg bewerten
 way-rating-tag-roomy = Geräumig
 way-rating-tag-paved = Gut befestigt
 way-rating-tag-little_traffic = Wenig Verkehr
