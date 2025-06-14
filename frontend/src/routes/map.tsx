@@ -18,11 +18,26 @@ import useMeta from "@/hooks/useMeta";
 import { selectedLocation } from "@/features/map/locationSlice";
 import { switchedToRouting } from "@/features/map/appSlice";
 import { setUseShortest } from "@/features/map/directionsSlice";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useGetWayQuery } from "@/services/api";
+import { toSlug } from "@/features/seo/titles";
 
 export default function Map() {
-  useMeta({ title: "" });
   const { wayId } = useParams();
   const selectedWay = wayId ? parseInt(wayId) : null;
+
+  // TODO fix includeUser. not needed, but prevents double requests
+  const way = useGetWayQuery(
+    selectedWay ? { id: selectedWay, includeUser: true } : skipToken,
+  );
+
+  useMeta({
+    title: (way.data ? way.data.title : "") || "",
+    lang: way.data ? "de" : "en",
+    path: way.data
+      ? `/way/${selectedWay}/${toSlug(way.data.title || "")}?lang=de`
+      : undefined,
+  });
 
   const [searchParams, setSearchParams] = useSearchParams();
   const mapSearchParams = useMapSearchParams();

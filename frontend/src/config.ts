@@ -6,6 +6,8 @@ import { MapState } from "./features/map/mapSlice";
 type Config = {
   // URL to the StreetCritic API
   apiURL: string;
+  /** Base URL of the instance without trailing slash. */
+  baseURL: string;
   // Keycloak authority
   keycloakAuthority: string;
   // Keycloak redirect URI
@@ -27,6 +29,7 @@ type Config = {
 
 const config: Config = {
   apiURL: process.env.API_URL as string,
+  baseURL: process.env.BASE_URL as string,
   keycloakAuthority: process.env.KEYCLOAK_AUTHORITY as string,
   keycloakRedirectURI: process.env.KEYCLOAK_REDIRECT_URI as string,
   keycloakClientId: process.env.KEYCLOAK_CLIENT_ID as string,

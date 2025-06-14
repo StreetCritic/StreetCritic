@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "/way/:wayId",
+        path: "/way/:wayId/:waySlug?",
         element: <Map />,
       },
       {
