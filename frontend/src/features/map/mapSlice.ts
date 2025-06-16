@@ -3,7 +3,6 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import {
   closedQuickWayRating,
-  closedRouting,
   closedWayAdding,
   switchedToQuickWayRating,
   switchedToRouting,
@@ -123,7 +122,7 @@ const initialState: MapState = {
   fitPositionsIntoMap: [],
   fitRouteIntoMap: false,
   selectedWay: null,
-  stops: [],
+  stops: newInitialStops(),
   routeWay: null,
   routeSegments: null,
   ratingLayerActive: false,
@@ -379,7 +378,6 @@ export const mapSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(switchedToRouting, (state, action) => {
-      resetRouting(state);
       if (action.payload && action.payload.target) {
         state.stops[1].lng = action.payload.target.lng;
         state.stops[1].lat = action.payload.target.lat;
@@ -405,9 +403,6 @@ export const mapSlice = createSlice({
       }
     });
     builder.addCase(closedQuickWayRating, (state) => {
-      resetRouting(state);
-    });
-    builder.addCase(closedRouting, (state, _action) => {
       resetRouting(state);
     });
     builder.addCase(closedWayAdding, (state, _action) => {

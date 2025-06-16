@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { Feature, LineString } from "geojson";
-import { closedRouting } from "@/features/map/appSlice";
+import { closedQuickWayRating, closedWayAdding } from "@/features/map/appSlice";
 import { heightsToGains } from "../directions/geo";
+import { stopsResetted } from "./mapSlice";
 
 export type Directions = {
   feature: Feature<LineString>;
@@ -47,9 +48,13 @@ export const directionsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(closedRouting, (state, _action) => {
-      state.directions = null;
-    });
+    builder.addMatcher(
+      isAnyOf(stopsResetted, closedQuickWayRating, closedWayAdding),
+      (state, _action) => {
+        state.directions = null;
+        state.elevationGain = null;
+      },
+    );
   },
 });
 

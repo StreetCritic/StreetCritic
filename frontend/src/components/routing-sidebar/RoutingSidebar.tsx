@@ -103,7 +103,7 @@ export default function RoutingSidebar() {
       </SidebarContent>
 
       {view === View.Default && <Directions />}
-      {view === View.Default && heights.data && (
+      {view === View.Default && directionsState.directions && heights.data && (
         <HeightChart positions={heights.data?.range_height || []} />
       )}
     </Box>

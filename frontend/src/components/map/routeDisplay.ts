@@ -6,11 +6,14 @@ import { GeoJSONSource } from "maplibre-gl";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Map } from "./map";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
+import { FeatureCollection } from "geojson";
 
 /**
  * Hook to initialise the route display functionality.
  */
 export function useRouteDisplay(map: Map | null) {
+  const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const theme = useMantineTheme();
@@ -66,13 +69,16 @@ export function useRouteDisplay(map: Map | null) {
 
   // Display route.
   useEffect(() => {
-    if (!map) {
+    if (
+      ![AppMode.QuickWayRating, AppMode.WayAdding, AppMode.Routing].includes(
+        appState.mode,
+      ) ||
+      !mapState.routeWay ||
+      !map
+    ) {
       return;
     }
-    const route = mapState.routeWay || {
-      type: "FeatureCollection",
-      features: [],
-    };
+    const route = mapState.routeWay;
     const source = map.getMapLibre().getSource("route");
     if (source instanceof GeoJSONSource) {
       source.setData(route);
@@ -88,5 +94,23 @@ export function useRouteDisplay(map: Map | null) {
         resetFitRoute: true,
       });
     }
-  }, [map, mapState.routeWay, isMobile, dispatch, mapState.fitRouteIntoMap]);
+
+    return () => {
+      const route: FeatureCollection = {
+        type: "FeatureCollection",
+        features: [],
+      };
+      const source = map.getMapLibre().getSource("route");
+      if (source instanceof GeoJSONSource) {
+        source.setData(route);
+      }
+    };
+  }, [
+    map,
+    mapState.routeWay,
+    isMobile,
+    dispatch,
+    mapState.fitRouteIntoMap,
+    appState.mode,
+  ]);
 }

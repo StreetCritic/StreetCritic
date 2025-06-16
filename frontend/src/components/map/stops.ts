@@ -8,6 +8,7 @@ import { Marker } from "maplibre-gl";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Map } from "./map";
+import { AppMode, selectAppState } from "@/features/map/appSlice";
 
 // TODO Use WASM function that builds on getExtendedStops (via GeoJSON?)
 
@@ -30,16 +31,18 @@ import { Map } from "./map";
  */
 export function useStops(map: Map | null) {
   const dispatch = useDispatch();
+  const appState = useSelector(selectAppState);
   const mapState = useSelector(selectMapState);
-  useEffect(() => {
-    if (!map) {
-      return;
-    }
-  }, [map, dispatch]);
 
   // Updated displayed stops.
   useEffect(() => {
-    if (!mapState.stops || !map) {
+    if (
+      ![AppMode.QuickWayRating, AppMode.WayAdding, AppMode.Routing].includes(
+        appState.mode,
+      ) ||
+      !mapState.stops ||
+      !map
+    ) {
       return;
     }
     const stops = mapState.stops.filter((stop) => !stop.inactive);
@@ -87,5 +90,5 @@ export function useStops(map: Map | null) {
     return () => {
       stopMarker.forEach((m) => m.remove());
     };
-  }, [map, mapState.stops, dispatch]);
+  }, [map, mapState.stops, dispatch, appState.mode]);
 }
