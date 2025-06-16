@@ -7,6 +7,7 @@ import Map from "@/routes/map";
 import Root from "@/routes/root";
 import Sponsors from "@/routes/sponsors";
 import TermsOfUse from "@/routes/TermsOfUse";
+import { default as UserPage } from "@/routes/user";
 import ErrorPage from "./error-page";
 import store from "./store";
 
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/way/:wayId/:waySlug?",
         element: <Map />,
+      },
+      {
+        path: "/user/:username",
+        element: <UserPage />,
       },
       {
         path: "/about",

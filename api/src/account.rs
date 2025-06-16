@@ -1,5 +1,6 @@
-use crate::{internal_error, middleware::auth::User, ConnectionPool};
-use axum::{extract::State, http::StatusCode, Extension};
+use crate::{internal_error, middleware::auth::User, routing::Includes, ConnectionPool};
+use axum::{extract::{Path, Query, State}, http::StatusCode, Extension, Json};
+use serde::Deserialize;
 use ts_rs::TS;
 
 pub mod db;
@@ -23,6 +24,34 @@ pub enum AccountData {
     ID(String),
     /// Full account details.
     Details(Account),
+}
+
+/// Retrieves account data.
+pub async fn get_account(
+    Path(username): Path<String>,
+    State(pool): State<ConnectionPool>,
+) -> Result<Json<Account>, (StatusCode, String)> {
+    let conn = pool.get().await.map_err(internal_error)?;
+    let row = conn
+        .query_one(
+            format!(
+                r"
+            SELECT *
+            FROM account
+            WHERE username=$1
+            ")
+            .as_str(),
+            &[&username],
+        )
+        .await
+        .map_err(internal_error)?;
+
+    let account = Account {
+        id: row.get("id"),
+        username: row.get("username"),
+        name: row.get("name"),
+    };
+    Ok(Json(account))
 }
 
 /// Updates the user's account.

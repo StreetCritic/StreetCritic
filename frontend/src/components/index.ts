@@ -1,5 +1,6 @@
 export * from "./typography";
 export { default as Accordion } from "./accordion";
+export { default as AccountLink } from "./account-link";
 export { default as ActionIcon } from "./action-icon";
 export { default as Alert } from "./alert";
 export { default as AnnouncementBanner } from "./announcement-banner";
@@ -12,6 +13,7 @@ export { default as HeightChart } from "./height-chart";
 export { default as Icon } from "./icon";
 export { default as Indicator } from "./indicator";
 export { default as LayerSelection } from "./layer-selection";
+export { default as Link } from "./link";
 export { default as Loader } from "./loader";
 export { default as LoadingPage } from "./loading-page";
 export { default as LocationSideBox } from "./location-side-box";

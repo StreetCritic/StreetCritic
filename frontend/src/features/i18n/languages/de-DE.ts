@@ -78,6 +78,8 @@ context-menu-add-waypoint = Wegpunkt hinzufügen
 location-side-box-add-opinion = Meinung hinzufügen
 location-side-box-calculate-route = Route berechnen
 
+user-view-way = Weg ansehen
+
 way-create-form-intro = Geben Sie einen Titel für die Route an, z.B. „Südliche Hauptstraße zum Marktplatz“. Verwenden Sie den lokalen Namen und die lokale Sprache.
 way-create-form-about-to-submit = Sie können Ihre neue Route jetzt absenden. Wenn nötig, können Sie vorher zu einem früheren Schritt zurückkehren.
 way-create-form-discard-way-confirm = Sind Sie sicher, dass Sie den neuen Weg verwerfen möchten?

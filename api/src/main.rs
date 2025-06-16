@@ -22,7 +22,7 @@ pub mod routing;
 pub mod time;
 pub mod way;
 
-use account::update_account;
+use account::{get_account, update_account};
 use rating::{create_rating, get_ratings};
 use way::{create_way, get_way, get_ways};
 
@@ -75,6 +75,7 @@ async fn main() {
         // .route("/ratings/:id", get(get_rating))
         .route_layer(axum::middleware::from_fn(middleware::auth::auth))
         .route("/ways", get(get_ways))
+        .route("/accounts/:username", get(get_account))
         .route("/ratings", get(get_ratings))
         .route("/ways/:id", get(get_way))
         .layer(Extension(config.access.token))

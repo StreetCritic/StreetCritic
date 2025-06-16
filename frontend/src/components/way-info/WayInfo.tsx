@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import {
+  AccountLink,
   Button,
   DateTime,
   Icon,
@@ -61,8 +62,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
           </Group>
           <Group>
             <Icon size={20} id="user" />{" "}
-            {(way.user as Account).name ||
-              (way.user as Account).id.slice(0, 8) + "..."}
+            <AccountLink size="sm" account={way.user as Account} />
           </Group>
         </Group>
       </small>
@@ -81,8 +81,7 @@ export default function WayInfo({ way, ratings, onRefresh }: Props) {
                 </Group>
                 <Group>
                   <Icon size={20} id="user" />{" "}
-                  {(rating.user as Account).name ||
-                    (rating.user as Account).id.slice(0, 8) + "..."}
+                  <AccountLink size="sm" account={rating.user as Account} />
                 </Group>
               </Group>
             </small>

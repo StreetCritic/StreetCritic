@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Way } from "@/api-bindings/Way";
 import { Rating } from "@/api-bindings/Rating";
+import { Account } from "@/api-bindings/Account";
 
 import config from "@/config";
 
@@ -17,6 +18,9 @@ export const api = createApi({
       providesTags: (result, _error, _arg) =>
         result ? [{ type: "Way" as const, id: result.id }, "Way"] : ["Way"],
     }),
+    getRatingsByAccountId: builder.query<Rating[], { account_id: string }>({
+      query: ({ account_id }) => `ratings?account_id=${account_id}`,
+    }),
     getRatingsByWayId: builder.query<
       Rating[],
       { id: number; includeUsers?: boolean }
@@ -27,7 +31,15 @@ export const api = createApi({
         `ratings?way_id=${id}` + (includeUsers ? "&include=user" : ""),
       providesTags: ["Rating"],
     }),
+    getUser: builder.query<Account, { username: string }>({
+      query: ({ username }) => `accounts/${username}`,
+    }),
   }),
 });
 
-export const { useGetRatingsByWayIdQuery, useGetWayQuery } = api;
+export const {
+  useGetRatingsByAccountIdQuery,
+  useGetRatingsByWayIdQuery,
+  useGetUserQuery,
+  useGetWayQuery,
+} = api;

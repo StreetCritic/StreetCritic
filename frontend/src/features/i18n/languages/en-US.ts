@@ -78,6 +78,8 @@ context-menu-add-waypoint = Add waypoint
 location-side-box-add-opinion = Add opinion
 location-side-box-calculate-route = Calculate route
 
+user-view-way = View way
+
 way-create-form-intro = Provide a title for the route, e.g., 'Southern Main Street to Market Place.' Use the local name and language.
 way-create-form-about-to-submit = You can now submit your new route. If needed, feel free to go back to a previous step before finalizing your submission.
 way-create-form-discard-way-confirm = Are you sure to discard your new way?

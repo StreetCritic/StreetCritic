@@ -1,0 +1,10 @@
+.ratings {
+  margin: 0;
+}
+
+.ratings li {
+  list-style-type: none;
+  display: flex;
+  gap: var(--mantine-spacing-xl);
+  align-items: center;
+}

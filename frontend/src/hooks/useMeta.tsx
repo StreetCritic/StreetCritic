@@ -15,7 +15,7 @@ type Props = {
  */
 export default function useMeta({ title, lang, path }: Props) {
   useEffect(() => {
-    if (title === "") {
+    if (!title) {
       document.title = "StreetCritic";
     } else {
       document.title = `${title} — StreetCritic`;

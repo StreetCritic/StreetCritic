@@ -13,7 +13,7 @@ export default function WaySidebar({ wayId }: Props) {
   const way = useGetWayQuery({ id: wayId, includeUser: true });
   const ratings = useGetRatingsByWayIdQuery({ id: wayId, includeUsers: true });
 
-  if (way.isLoading || ratings.isLoading) {
+  if (way.isFetching || ratings.isFetching) {
     return <Loader />;
   }
 

@@ -65,8 +65,9 @@ pub struct CreateRating {
 
 #[derive(Deserialize)]
 pub struct GetRatingsParams {
-    way_id: i32,
+    way_id: Option<i32>,
     include: Includes,
+    account_id: Option<String>
 }
 
 /// Retrieves ratings
@@ -86,11 +87,14 @@ pub async fn get_ratings(
             FROM way_rating
             LEFT JOIN account
             ON user_id=account.id
-            WHERE way_id=$1
+            WHERE
+              way_id=COALESCE($1, way_id)
+              AND user_id=COALESCE($2, user_id)
+            ORDER BY datetime desc
 "
             )
             .as_str(),
-            &[&params.way_id],
+            &[&params.way_id, &params.account_id],
         )
         .await
         .map_err(internal_error)?;
@@ -131,9 +135,8 @@ pub async fn get_ratings(
 
         ratings.push(Rating {
             id,
-            // user_id: row.get("user_id"),
             user,
-            way_id: 0,
+            way_id: row.get("way_id"),
             general_rating: row.get::<_, i32>("general_rating").try_into().unwrap(),
             safety_rating: row.get::<_, i32>("safety_rating").try_into().unwrap(),
             beauty_rating: row.get::<_, i32>("beauty_rating").try_into().unwrap(),
