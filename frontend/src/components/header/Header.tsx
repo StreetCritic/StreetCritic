@@ -30,6 +30,19 @@ export default function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
 
+  const links =
+    locale === "en"
+      ? {
+          about: "/en/about",
+          sponsors: "/en/sponsors",
+          terms: "/en/terms-of-use",
+        }
+      : {
+          about: "/de/ueber",
+          sponsors: "/de/sponsoren",
+          terms: "/de/nutzungsbedingungen",
+        };
+
   return (
     <Box>
       <header className={classes.root}>
@@ -40,16 +53,16 @@ export default function Header() {
           </Box>
 
           <Group h="100%" gap={0} visibleFrom="md">
-            <a href={`/${locale}/about`} className={classes.link}>
+            <a href={links.about} className={classes.link}>
               {__("menu-entry-about")}
             </a>
-            <a href={`/${locale}/sponsors`} className={classes.link}>
+            <a href={links.sponsors} className={classes.link}>
               {__("menu-entry-sponsors")}
             </a>
             <Link to={"/contact"} className={classes.link}>
               {__("menu-entry-contact")}
             </Link>
-            <a href={`/${locale}/terms-of-use`} className={classes.link}>
+            <a href={links.terms} className={classes.link}>
               {__("menu-entry-tos")}
             </a>
           </Group>
@@ -100,16 +113,16 @@ export default function Header() {
           </Box>
 
           <Divider my="sm" />
-          <a href={`/${locale}/about`} className={classes.link}>
+          <a href={links.about} className={classes.link}>
             {__("menu-entry-about")}
           </a>
-          <a href={`/${locale}/sponsors`} className={classes.link}>
+          <a href={links.sponsors} className={classes.link}>
             {__("menu-entry-sponsors")}
           </a>
           <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
             {__("menu-entry-contact")}
           </Link>
-          <a href={`/${locale}/terms-of-use`} className={classes.link}>
+          <a href={links.terms} className={classes.link}>
             {__("menu-entry-tos")}
           </a>
           <Divider my="sm" />
