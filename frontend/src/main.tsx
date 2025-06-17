@@ -1,12 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import About from "@/routes/about";
 import Contact from "@/routes/contact";
 import Login from "@/routes/login";
 import Map from "@/routes/map";
 import Root from "@/routes/root";
-import Sponsors from "@/routes/sponsors";
-import TermsOfUse from "@/routes/TermsOfUse";
 import { default as UserPage } from "@/routes/user";
 import ErrorPage from "./error-page";
 import store from "./store";
@@ -40,20 +37,8 @@ const router = createBrowserRouter([
         element: <UserPage />,
       },
       {
-        path: "/about",
-        element: <About />,
-      },
-      {
-        path: "/sponsors",
-        element: <Sponsors />,
-      },
-      {
         path: "/contact",
         element: <Contact />,
-      },
-      {
-        path: "/terms-of-use",
-        element: <TermsOfUse />,
       },
     ],
   },

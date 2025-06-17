@@ -16,7 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
 
 import UserNavigation from "./UserNavigation";
-import { useLocalize, useUser } from "@/hooks";
+import { useLocale, useLocalize, useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
 import { ActionIcon, LoginButtons, SocialMediaLinks } from "@/components";
@@ -25,6 +25,7 @@ import LogoLink from "./LogoLink";
 export default function Header() {
   const appState = useSelector(selectAppState);
   const user = useUser();
+  const locale = useLocale().slice(0, 2);
   const __ = useLocalize();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -39,20 +40,18 @@ export default function Header() {
           </Box>
 
           <Group h="100%" gap={0} visibleFrom="md">
-            <Link to={"/about"} className={classes.link}>
+            <a href={`/${locale}/about`} className={classes.link}>
               {__("menu-entry-about")}
-            </Link>
-
-            <Link to={"/sponsors"} className={classes.link}>
+            </a>
+            <a href={`/${locale}/sponsors`} className={classes.link}>
               {__("menu-entry-sponsors")}
-            </Link>
-
+            </a>
             <Link to={"/contact"} className={classes.link}>
               {__("menu-entry-contact")}
             </Link>
-            <Link to={"/terms-of-use"} className={classes.link}>
+            <a href={`/${locale}/terms-of-use`} className={classes.link}>
               {__("menu-entry-tos")}
-            </Link>
+            </a>
           </Group>
 
           <SocialMediaLinks visibleFrom="md" />
@@ -101,24 +100,18 @@ export default function Header() {
           </Box>
 
           <Divider my="sm" />
-
-          <Link to={"about"} className={classes.link} onClick={toggleDrawer}>
+          <a href={`/${locale}/about`} className={classes.link}>
             {__("menu-entry-about")}
-          </Link>
-          <Link to={"sponsors"} className={classes.link} onClick={toggleDrawer}>
+          </a>
+          <a href={`/${locale}/sponsors`} className={classes.link}>
             {__("menu-entry-sponsors")}
-          </Link>
+          </a>
           <Link to={"contact"} className={classes.link} onClick={toggleDrawer}>
             {__("menu-entry-contact")}
           </Link>
-          <Link
-            to={"/terms-of-use"}
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
+          <a href={`/${locale}/terms-of-use`} className={classes.link}>
             {__("menu-entry-tos")}
-          </Link>
-
+          </a>
           <Divider my="sm" />
 
           <Stack align="flex-start" p="md">
