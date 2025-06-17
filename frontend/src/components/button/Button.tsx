@@ -3,7 +3,7 @@ import { Button as MantineButton } from "@mantine/core";
 type Props = {
   onClick: () => void;
   label: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 export default function Button({ onClick, label, icon }: Props) {

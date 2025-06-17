@@ -8,12 +8,13 @@ type Props = {
    * Use localized text with this id as content.
    */
   msgId?: string;
+  fw?: number;
 };
 
-export default function Text({ size, children, msgId }: Props) {
+export default function Text({ fw, size, children, msgId }: Props) {
   const __ = useLocalize();
   return (
-    <MText mb="md" size={size}>
+    <MText mb="md" fw={fw} size={size}>
       {msgId ? __(msgId) : children}
     </MText>
   );

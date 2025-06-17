@@ -22,10 +22,12 @@ export type SelectedWay = {
 
 export type LocationState = {
   location: Location | null;
+  recentLocations: Location[];
   selectedWay: SelectedWay | null;
 };
 
 const initialState: LocationState = {
+  recentLocations: [],
   location: null,
   selectedWay: null,
 };
@@ -41,12 +43,31 @@ export const locationSlice = createSlice({
         location: Location;
         selectedWay?: SelectedWay;
         changeCenter?: boolean;
+        /** Add the location to the recent locations list? */
+        remember?: boolean;
+        /** Sets this location as current location. Default true. */
+        setLocation?: boolean;
       }>,
     ) => {
-      state.location = {
-        center: action.payload.location.center,
-        label: action.payload.location.label,
-      };
+      if (action.payload.setLocation !== false) {
+        state.location = {
+          center: action.payload.location.center,
+          label: action.payload.location.label,
+        };
+      }
+      if (action.payload.remember) {
+        const lastIndex = state.recentLocations.findIndex(
+          (entry) => entry.label === action.payload.location.label,
+        );
+        if (lastIndex !== -1) {
+          state.recentLocations.splice(lastIndex, 1);
+        }
+        state.recentLocations.unshift({
+          center: action.payload.location.center,
+          label: action.payload.location.label,
+        });
+        state.recentLocations = state.recentLocations.slice(0, 10);
+      }
       state.selectedWay = action.payload.selectedWay || null;
     },
     clearedLocation: (state) => {

@@ -75,6 +75,9 @@ context-menu-set-start = Route from here
 context-menu-set-destination = Route to here
 context-menu-add-waypoint = Add waypoint
 
+location-search-recent-locations = Previous Locations:
+location-search-recent-locations-empty = Your location history is empty.
+
 location-side-box-add-opinion = Add opinion
 location-side-box-calculate-route = Calculate route
 

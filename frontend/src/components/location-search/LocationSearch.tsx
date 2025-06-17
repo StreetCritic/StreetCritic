@@ -6,6 +6,7 @@ import {
   Train,
   Tram,
 } from "@phosphor-icons/react";
+import { Text } from "@mantine/core";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -14,14 +15,17 @@ import styles from "./LocationSearch.module.css";
 import {
   Box,
   Combobox,
+  Flex,
   Group,
   Highlight,
   Loader,
   Modal,
+  ScrollArea,
   TextInput,
   useCombobox,
 } from "@mantine/core";
-import { selectedLocation } from "@/features/map/locationSlice";
+import { Location, selectedLocation } from "@/features/map/locationSlice";
+import RecentLocations from "./RecentLocations";
 
 type Props = {
   /** Placeholder text for the search input. */
@@ -29,15 +33,7 @@ type Props = {
   /** Label text for the search input. */
   label?: string;
   /** Called when user selects a location. */
-  setLocation?: ({
-    lng,
-    lat,
-    label,
-  }: {
-    lng: number;
-    lat: number;
-    label: string;
-  }) => void;
+  setLocation?: (location: Location) => void;
 };
 
 /**
@@ -74,6 +70,24 @@ export default function LocationSearch({
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
+
+  const _setLocation = (location: Location) => {
+    setQuery("");
+    combobox.targetRef.current?.blur();
+    combobox.closeDropdown();
+    setActive(false);
+    if (setLocation) {
+      setLocation(location);
+    }
+    dispatch(
+      selectedLocation({
+        remember: true,
+        changeCenter: !setLocation,
+        setLocation: !setLocation,
+        location,
+      }),
+    );
+  };
 
   const [locations, loading] = useLocationSearch({
     query,
@@ -136,37 +150,20 @@ export default function LocationSearch({
         size="100%"
         styles={{ content: { overflowY: "visible" } }}
       >
-        <Box h="70vh">
+        <Flex h="70vh" direction="column">
           <Combobox
             onOptionSubmit={(optionValue) => {
               const entry = locations?.find(
                 (i) => String(i.properties.osm_id) === optionValue,
               );
               if (entry !== undefined) {
-                if (setLocation) {
-                  setLocation({
+                _setLocation({
+                  center: {
                     lng: entry.geometry.coordinates[0],
                     lat: entry.geometry.coordinates[1],
-                    label: entry.properties.label,
-                  });
-                } else {
-                  dispatch(
-                    selectedLocation({
-                      changeCenter: true,
-                      location: {
-                        center: {
-                          lng: entry.geometry.coordinates[0],
-                          lat: entry.geometry.coordinates[1],
-                        },
-                        label: entry.properties.label,
-                      },
-                    }),
-                  );
-                }
-                setQuery("");
-                combobox.targetRef.current?.blur();
-                combobox.closeDropdown();
-                setActive(false);
+                  },
+                  label: entry.properties.label,
+                });
               }
             }}
             withinPortal={false}
@@ -205,7 +202,17 @@ export default function LocationSearch({
               </Combobox.Options>
             </Combobox.Dropdown>
           </Combobox>
-        </Box>
+          <Text size="sm" mt="lg" mb="xs" fw={700}>
+            {__("location-search-recent-locations")}
+          </Text>
+          <ScrollArea type="auto" offsetScrollbars>
+            <RecentLocations
+              onSelect={(location) => {
+                _setLocation(location);
+              }}
+            />
+          </ScrollArea>
+        </Flex>
       </Modal>
     </>
   );

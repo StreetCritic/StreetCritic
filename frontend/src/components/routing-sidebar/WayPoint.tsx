@@ -33,9 +33,11 @@ export default function WayPoint({
       <LocationSearch
         placeholder={placeholder}
         label={label}
-        setLocation={({ lng, lat, label }) => {
+        setLocation={({ center: { lng, lat }, label }) => {
           setStop({ lng, lat });
-          setLocationName(label);
+          if (label) {
+            setLocationName(label);
+          }
         }}
       />
     </>
