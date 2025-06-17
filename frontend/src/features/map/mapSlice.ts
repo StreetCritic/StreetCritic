@@ -116,9 +116,22 @@ export type MapState = {
   };
 };
 
+/** Returns center from local storage. */
+function getPersistedCenter() {
+  const center = { ...config.defaultMapCenter };
+  for (const key of ["lng", "lat", "zoom"]) {
+    const value = localStorage.getItem(key);
+    if (value) {
+      // @ts-expect-error TS7053
+      center[key] = parseFloat(value);
+    }
+  }
+  return center;
+}
+
 const initialState: MapState = {
   readyToRender: false,
-  center: config.defaultMapCenter,
+  center: getPersistedCenter(),
   fitPositionsIntoMap: [],
   fitRouteIntoMap: false,
   selectedWay: null,

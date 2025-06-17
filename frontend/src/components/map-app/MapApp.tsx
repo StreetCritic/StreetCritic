@@ -15,6 +15,8 @@ import {
   TrafficSign,
 } from "@phosphor-icons/react";
 
+import usePersistSettings from "./usePersistSettings";
+
 import LocationSearch from "../location-search";
 import WayCreateForm from "./WayCreateForm";
 import {
@@ -63,6 +65,7 @@ export default function MapApp({ selectedWay }: Props) {
   const locationState = useSelector(selectLocationState);
   const isLoading = useSelector(selectIsLoading);
   const [showLayerSelection, setShowLayerSelection] = useState(false);
+  usePersistSettings();
 
   /* const [loginModal, requireAuthentication] = useLoginGate(); */
   const navigateMap = useNavigateMap();
