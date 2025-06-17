@@ -10,6 +10,7 @@ import {
   readyToRender,
   selectMapState,
   stopAdded,
+  stopsResetted,
   streetPreferenceChanged,
   waySelected,
 } from "@/features/map/mapSlice";
@@ -67,6 +68,7 @@ export default function Map() {
       }
     }
     if (stops.length > 1) {
+      dispatch(stopsResetted());
       dispatch(switchedToRouting());
       stops.forEach((stop) => dispatch(stopAdded(stop)));
     }
