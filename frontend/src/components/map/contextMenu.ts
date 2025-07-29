@@ -28,14 +28,34 @@ export default function useContextMenu(map: Map | null): () => void {
     const onContextMenu = (e: MapMouseEvent) => {
       contextMenuHandler.current(e);
     };
+
+    let touchTimeout: number | undefined = undefined;
+    const onTouchStart = (e: MapMouseEvent) => {
+      touchTimeout = window.setTimeout(() => {
+        onContextMenu(e);
+      }, 400);
+    };
+    const onTouchEnd = () => {
+      clearTimeout(touchTimeout);
+    };
+
     map.getMapLibre().on("click", onCancel);
     map.getMapLibre().on("dragstart", onCancel);
+    map.getMapLibre().on("dragstart", onTouchEnd);
     map.getMapLibre().on("contextmenu", onContextMenu);
+    map.getMapLibre().on("touchstart", onTouchStart);
+    map.getMapLibre().on("touchend", onTouchEnd);
 
     return () => {
       map.getMapLibre().off("click", onCancel);
       map.getMapLibre().off("dragstart", onCancel);
+      map.getMapLibre().off("dragstart", onTouchEnd);
       map.getMapLibre().off("contextmenu", onContextMenu);
+      map.getMapLibre().off("touchstart", onTouchStart);
+      map.getMapLibre().off("touchend", onTouchEnd);
+      if (touchTimeout !== undefined) {
+        clearTimeout(touchTimeout);
+      }
     };
   }, [map, dispatch, contextMenuHandler, cancelHandler]);
 
