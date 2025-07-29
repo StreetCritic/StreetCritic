@@ -45,7 +45,9 @@ export default function useContextMenu(map: Map | null): () => void {
     map.getMapLibre().on("contextmenu", onContextMenu);
     map.getMapLibre().on("touchstart", onTouchStart);
     map.getMapLibre().on("touchend", onTouchEnd);
-
+    map.getMapLibre().on("touchmove", onTouchEnd);
+    map.getMapLibre().on("zoom", onCancel);
+    map.getMapLibre().on("zoom", onTouchEnd);
     return () => {
       map.getMapLibre().off("click", onCancel);
       map.getMapLibre().off("dragstart", onCancel);
@@ -53,6 +55,9 @@ export default function useContextMenu(map: Map | null): () => void {
       map.getMapLibre().off("contextmenu", onContextMenu);
       map.getMapLibre().off("touchstart", onTouchStart);
       map.getMapLibre().off("touchend", onTouchEnd);
+      map.getMapLibre().off("touchmove", onTouchEnd);
+      map.getMapLibre().off("zoom", onCancel);
+      map.getMapLibre().off("zoom", onTouchEnd);
       if (touchTimeout !== undefined) {
         clearTimeout(touchTimeout);
       }
