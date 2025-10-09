@@ -26,6 +26,7 @@ export default function useRouteDragging(map: Map | null) {
       return;
     }
     const libreMap = map.getMapLibre();
+    /** Stops on the route, i.e. start, in-betweens, target. */
     libreMap.addSource("route-stops", {
       type: "geojson",
       data: featureCollection([]),
@@ -35,8 +36,20 @@ export default function useRouteDragging(map: Map | null) {
       type: "circle",
       source: "route-stops",
       paint: {
-        "circle-stroke-width": 3,
-        "circle-stroke-opacity": 0.7,
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#777",
+        "circle-stroke-opacity": 0.5,
+        "circle-color": "#AAA",
+        "circle-radius": 25,
+        "circle-opacity": 0.3,
+      },
+    });
+    libreMap.addLayer({
+      id: "route-stop-inner",
+      type: "circle",
+      source: "route-stops",
+      paint: {
+        "circle-stroke-width": 1,
         "circle-color": [
           "match",
           ["get", "position"],
@@ -46,10 +59,25 @@ export default function useRouteDragging(map: Map | null) {
           "#AB212A",
           "#212AAB",
         ],
-        "circle-radius": ["match", ["get", "position"], "between", 7, 11],
-        "circle-opacity": 0.7,
+        "circle-radius": 6,
+        "circle-opacity": 0.5,
       },
     });
+    libreMap.addLayer({
+      id: "route-stop-last",
+      type: "circle",
+      source: "route-stops",
+      filter: ["==", ["get", "position"], "last"],
+      paint: {
+        "circle-radius": 10,
+        "circle-opacity": 0,
+        "circle-stroke-width": 5,
+        "circle-stroke-color": "#777",
+        "circle-stroke-opacity": 0.5,
+      },
+    });
+    /** Non-visible layer which is just a thicker route to allow more accessible
+    mouse actions. */
     libreMap.addLayer({
       id: "route-selectable",
       type: "line",
@@ -60,10 +88,11 @@ export default function useRouteDragging(map: Map | null) {
       paint: {
         "line-color": "#00FF00",
         "line-opacity": 0.0,
-        "line-width": 20,
+        "line-width": 40,
       },
     });
 
+    /** Used to draw a circle on the route when the pointer is near. */
     libreMap.addSource("route-hoverpoint", {
       type: "geojson",
       data: {
