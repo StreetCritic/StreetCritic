@@ -111,7 +111,7 @@ export default function MapApp({ selectedWay }: Props) {
         </Sidebar>
       )}
 
-      {appState.mode === AppMode.Browsing && locationState.location && (
+      {locationState.location && (
         <SideBox onClose={() => dispatch(clearedLocation())}>
           <LocationSideBox />
         </SideBox>

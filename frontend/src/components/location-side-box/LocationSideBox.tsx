@@ -10,13 +10,11 @@ import {
   Sparkle,
   TrafficSign,
 } from "@phosphor-icons/react";
-import {
-  switchedToQuickWayRating,
-  switchedToRouting,
-} from "@/features/map/appSlice";
+import { switchedToQuickWayRating } from "@/features/map/appSlice";
 import { Geometry } from "geojson";
 import type { LngLat } from "@/features/map";
 import { LngLat as LibreLngLat } from "maplibre-gl";
+import NavigationMenu from "./NavigationMenu";
 
 /**
  * If this is a linestring, generate stops from it. Take the first and last
@@ -106,22 +104,14 @@ export default function LocationSidebar() {
                 {__("location-side-box-add-opinion")}
               </Button>
             )}
-          <Button
-            leftSection={<TrafficSign size={24} weight="fill" />}
-            color="gray.7"
-            onClick={() =>
-              dispatch(
-                switchedToRouting({
-                  target: {
-                    lng: locationState.location?.center.lng || 0,
-                    lat: locationState.location?.center.lat || 0,
-                  },
-                }),
-              )
-            }
-          >
-            {__("location-side-box-calculate-route")}
-          </Button>
+          <NavigationMenu>
+            <Button
+              leftSection={<TrafficSign size={24} weight="fill" />}
+              color="gray.7"
+            >
+              {__("location-side-box-navigation")}
+            </Button>
+          </NavigationMenu>
         </Group>
       )}
       {/* </SidebarContent> */}

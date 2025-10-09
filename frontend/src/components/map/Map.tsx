@@ -7,8 +7,9 @@ import { useMap } from "./map";
 import ContextMenu from "./ContextMenu";
 import useContextMenu from "./contextMenu";
 import useLocationHighlight from "./locationHighlight";
-import useLocationSelector from "./locationSelector";
 import useVisibleLayers from "./visibleLayers";
+import useRouteDragging from "./features/routeDragging";
+import useLocationSelector from "./locationSelector";
 
 import styles from "./Map.module.css";
 import useSelectedWayHighlight from "./selectedWayHighlight";
@@ -19,9 +20,10 @@ export default function Map(): React.JSX.Element {
   const [map, mapRendered] = useMap(container);
   const onClick = useContextMenu(map);
   useLocationHighlight(mapRendered ? map : null);
-  useLocationSelector(mapRendered ? map : null);
   useSelectedWayHighlight(mapRendered ? map : null);
   useVisibleLayers(mapRendered ? map : null);
+  useRouteDragging(mapRendered ? map : null);
+  useLocationSelector(mapRendered ? map : null);
   return (
     <div className={styles.root}>
       <AnnouncementBanner />

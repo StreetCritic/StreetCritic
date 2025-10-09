@@ -79,7 +79,7 @@ location-search-recent-locations = Vorherige Orte:
 location-search-recent-locations-empty = Dein Standortverlauf ist leer.
 
 location-side-box-add-opinion = Meinung hinzufügen
-location-side-box-calculate-route = Route berechnen
+location-side-box-navigation = Navigation
 
 user-view-way = Weg ansehen
 

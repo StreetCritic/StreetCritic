@@ -5,6 +5,8 @@ import type { LngLat as Stop } from "@/features/map";
 import config from "@/config";
 import { useDispatch } from "react-redux";
 import { routeSegmentsCalculated } from "@/features/map/mapSlice";
+import { FeatureCollection, LineString, Position } from "geojson";
+import { lineString } from "@turf/helpers";
 
 /**
  * React hook to calculate the route.
@@ -35,10 +37,16 @@ export function useSegmentsRoute(stops: Stop[]) {
           stop: segment.get_stop(),
         });
       }
+      const features = JSON.parse(
+        route.get_segments_as_geojson(),
+      ) as FeatureCollection<LineString>;
+      const coordinates = features.features.reduce((acc, x) => {
+        return acc.concat(x.geometry.coordinates);
+      }, [] as Position[]);
       dispatch(
         routeSegmentsCalculated({
           segments,
-          route: JSON.parse(route.get_segments_as_geojson()),
+          route: lineString(coordinates).geometry,
         }),
       );
     })();

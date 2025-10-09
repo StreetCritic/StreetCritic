@@ -12,9 +12,10 @@ import {
 } from "@/features/map/mapSlice";
 import { useLocalize } from "@/hooks";
 import { Paper, NavLink } from "@mantine/core";
-import { Flag, FlagCheckered, FlagPennant, Gps } from "@phosphor-icons/react";
+import { Gps } from "@phosphor-icons/react";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Icon } from "@/components";
 
 type Props = {
   // Called when a menu item is clicked.
@@ -92,7 +93,7 @@ export default function ContextMenu({ onClick }: Props) {
             onClick();
           }}
           label={__("context-menu-set-start")}
-          leftSection={<Flag size={14} />}
+          leftSection={<Icon id="nav-start" size={14} />}
         />
         <NavLink
           href="#"
@@ -102,7 +103,7 @@ export default function ContextMenu({ onClick }: Props) {
             onClick();
           }}
           label={__("context-menu-add-waypoint")}
-          leftSection={<FlagPennant size={14} />}
+          leftSection={<Icon id="nav-waypoint" size={14} />}
         />
         <NavLink
           href="#"
@@ -120,7 +121,7 @@ export default function ContextMenu({ onClick }: Props) {
             maybeEnableRouting();
             onClick();
           }}
-          leftSection={<FlagCheckered size={14} />}
+          leftSection={<Icon id="nav-destination" size={14} />}
         />
         {config.development && (
           <NavLink

@@ -11,7 +11,6 @@ import style from "./style.json";
 import originalStyle from "./originalStyle.json";
 
 import { init_hooks } from "ibre";
-import { useStops } from "./stops";
 import { useDispatch, useSelector } from "react-redux";
 import {
   centerUpdated,
@@ -275,7 +274,6 @@ export function useMap(
       : skipToken,
   );
 
-  useStops(map);
   useLocationMarker(map);
   useWayDisplay(mapRendered ? map : null);
   useRouteDisplay(mapRendered ? map : null);

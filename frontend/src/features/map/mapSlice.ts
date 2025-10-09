@@ -11,9 +11,12 @@ import {
 import { receivedDirections } from "@/features/map/directionsSlice";
 import { selectedLocation } from "@/features/map/locationSlice";
 import { dispatchEvent, Event } from "@/events";
+import { nearestPointOnLine } from "@turf/nearest-point-on-line";
 import { LngLat } from "./types";
 
 import config from "@/config";
+import { LineString } from "geojson";
+import { cleanCoords } from "@turf/clean-coords";
 
 // Free unique id for the next stop.
 let nextStopId = 0;
@@ -83,7 +86,7 @@ export type MapState = {
   stops: { lng: number; lat: number; inactive: boolean; id: number }[];
 
   // The calculated way of a routing.
-  routeWay: GeoJSON.GeoJSON | null;
+  routeWay: GeoJSON.LineString | null;
 
   // The calculated segments of a route.
   routeSegments: RouteSegment[] | null;
@@ -263,10 +266,12 @@ export const mapSlice = createSlice({
       };
     },
 
-    // Stop has been added.
+    /** Stop has been added. */
     stopAdded: (
       state,
       action: PayloadAction<{
+        /** Position from start of the current route where stop has been added */
+        at?: number;
         index?: number;
         lng: number;
         lat: number;
@@ -276,6 +281,28 @@ export const mapSlice = createSlice({
       dispatchEvent(new Event("stop-added"));
       const inactive = action.payload.inactive || false;
       const firstInactive = state.stops.findIndex((stop) => stop.inactive);
+      if (
+        action.payload.index !== undefined &&
+        action.payload.at !== undefined
+      ) {
+        throw new Error(
+          "stopAdded can't be called with both at and index parameters",
+        );
+      }
+      if (action.payload.at !== undefined) {
+        let index = 0;
+        for (const stop of state.stops) {
+          const position = nearestPointOnLine(
+            cleanCoords(state.routeWay as LineString),
+            [stop.lng, stop.lat],
+          ).properties.location;
+          if (position > action.payload.at) {
+            break;
+          }
+          index++;
+        }
+        action.payload.index = index;
+      }
       if (!inactive && firstInactive >= 0) {
         state.stops.splice(firstInactive, 1, {
           lng: action.payload.lng,
@@ -377,7 +404,7 @@ export const mapSlice = createSlice({
       state,
       action: PayloadAction<{
         segments: RouteSegment[];
-        route: GeoJSON.GeoJSON;
+        route: LineString;
       }>,
     ) => {
       state.routeSegments = action.payload.segments;

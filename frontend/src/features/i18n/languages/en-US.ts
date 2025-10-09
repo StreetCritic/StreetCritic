@@ -79,7 +79,7 @@ location-search-recent-locations = Previous Locations:
 location-search-recent-locations-empty = Your location history is empty.
 
 location-side-box-add-opinion = Add opinion
-location-side-box-calculate-route = Calculate route
+location-side-box-navigation = Navigation
 
 user-view-way = View way
 

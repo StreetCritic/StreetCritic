@@ -1,8 +1,7 @@
-import { AppMode, selectAppState } from "@/features/map/appSlice";
 import { selectedLocation, SelectedWay } from "@/features/map/locationSlice";
 import { MapMouseEvent, Point } from "maplibre-gl";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Map } from "./map";
 
 /** Minimum zoom level at with selecting ways is possible. */
@@ -13,10 +12,9 @@ const minZoomForWaySelection = 14;
  */
 export default function useLocationSelector(map: Map | null) {
   const dispatch = useDispatch();
-  const appState = useSelector(selectAppState);
 
   useEffect(() => {
-    if (!map || appState.mode !== AppMode.Browsing) {
+    if (!map) {
       return;
     }
     let cursorModified = false;
@@ -98,19 +96,11 @@ export default function useLocationSelector(map: Map | null) {
     mapLibre.on("click", onClick);
 
     return () => {
-      const clear = () => {
-        mapLibre.off("mousemove", onMove);
-        mapLibre.off("click", onClick);
-      };
-      // if (mapLibre.loaded()) {
-      clear();
-      // } else {
-      // console.log('once loaded')
-      // mapLibre.once("loaded", clear);
-      // }
+      mapLibre.off("mousemove", onMove);
+      mapLibre.off("click", onClick);
       if (cursorModified) {
         map.getMapLibre().getCanvas().style.cursor = "";
       }
     };
-  }, [map, dispatch, appState.mode]);
+  }, [map, dispatch]);
 }

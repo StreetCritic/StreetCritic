@@ -1,5 +1,10 @@
 import React from "react";
-import { Envelope } from "@phosphor-icons/react";
+import {
+  Envelope,
+  FlagCheckeredIcon,
+  FlagIcon,
+  FlagPennantIcon,
+} from "@phosphor-icons/react";
 import styles from "./Icon.module.css";
 import {
   ArrowLeft,
@@ -20,6 +25,9 @@ const icons = {
   linkedin: LinkedinLogo,
   mastodon: MastodonLogo,
   mountains: Mountains,
+  "nav-destination": FlagCheckeredIcon,
+  "nav-start": FlagIcon,
+  "nav-waypoint": FlagPennantIcon,
   stack: Stack,
   calendar: Calendar,
   user: User,
