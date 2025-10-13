@@ -1,3 +1,4 @@
+pub mod dooring_exposure;
 pub mod motorized_traffic;
 pub mod priority;
 pub mod speed_limit;
@@ -13,6 +14,7 @@ pub fn calculate(way: &Way) -> HashMap<String, f32> {
     indicators.insert("priority".into(), priority::calculate(way));
     indicators.insert("surface".into(), surface::calculate(way));
     indicators.insert("speed_limit".into(), speed_limit::calculate(way));
+    indicators.insert("dooring_exposure".into(), dooring_exposure::calculate(way));
     indicators.insert(
         "motorized_traffic".into(),
         motorized_traffic::calculate(way),
@@ -25,8 +27,9 @@ pub fn calculate(way: &Way) -> HashMap<String, f32> {
 
     let bike_safety = (2.0 * indicators.get("priority").unwrap()
         + 1.0 * indicators.get("surface").unwrap()
-        + 3.0 * indicators.get("speed_limit").unwrap()
-        + 4.0 * indicators.get("motorized_traffic").unwrap())
+        + 1.0 * indicators.get("dooring_exposure").unwrap()
+        + 2.5 * indicators.get("speed_limit").unwrap()
+        + 3.5 * indicators.get("motorized_traffic").unwrap())
         / 10.0;
     indicators.insert("bike_safety".into(), bike_safety);
 
