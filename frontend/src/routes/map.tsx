@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import styles from "./map.module.css";
 import MapApp from "@/components/map-app";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   centerUpdated,

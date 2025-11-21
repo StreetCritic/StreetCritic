@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import useMeta from "@/hooks/useMeta";
 import { useGetRatingsByAccountIdQuery, useGetUserQuery } from "@/services/api";
 import { skipToken } from "@reduxjs/toolkit/query";

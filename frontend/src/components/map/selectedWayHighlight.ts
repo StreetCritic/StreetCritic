@@ -4,7 +4,7 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { GeoJSONSource } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { Map } from "./map";
 
 /**

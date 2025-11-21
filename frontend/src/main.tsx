@@ -8,7 +8,7 @@ import { default as UserPage } from "@/routes/user";
 import ErrorPage from "./error-page";
 import store from "./store";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 
 import initIbre, { init_hooks as initHooks } from "ibre";

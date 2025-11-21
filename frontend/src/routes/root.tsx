@@ -3,7 +3,7 @@ import "@mantine/notifications/styles.css";
 import "./globals.css";
 
 import App from "@/components/app";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 
 /* import { ColorSchemeScript } from "@mantine/core"; */
 

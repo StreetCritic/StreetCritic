@@ -3,7 +3,7 @@ import {
   createSearchParams,
   NavigateOptions,
   useNavigate,
-} from "react-router-dom";
+} from "react-router";
 import useMapSearchParams from "./useMapSearchParams";
 
 export default function useNavigateMap(): (
