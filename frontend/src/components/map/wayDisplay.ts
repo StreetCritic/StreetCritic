@@ -196,7 +196,10 @@ export function useWayDisplay(map: Map | null) {
   const appState = useSelector(selectAppState);
   const navigateMap = useNavigateMap();
   const user = useUser();
-  const getAccessToken = useCallback(async () => {
+  const getAccessToken: GetAccessTokenFn = useCallback(async () => {
+    if (!user) {
+      return null;
+    }
     return await user.getAccessToken();
   }, [user]);
 

@@ -6,10 +6,13 @@ import { useEffect } from "react";
 export default function About() {
   const user = useUser();
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     (async () => {
       user.signinCallback();
     })();
-  });
+  }, [user]);
   return (
     <main>
       <Container>

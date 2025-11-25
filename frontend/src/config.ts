@@ -28,15 +28,15 @@ type Config = {
 };
 
 const config: Config = {
-  apiURL: process.env.API_URL as string,
-  baseURL: process.env.BASE_URL as string,
-  keycloakAuthority: process.env.KEYCLOAK_AUTHORITY as string,
-  keycloakRedirectURI: process.env.KEYCLOAK_REDIRECT_URI as string,
-  keycloakClientId: process.env.KEYCLOAK_CLIENT_ID as string,
-  valhallaURL: process.env.VALHALLA_URL as string,
-  locationSearchURL: process.env.LOCATION_SEARCH_URL as string,
-  transportTilesURL: process.env.TRANSPORT_TILES_URL as string,
-  ratedSegmentsURL: process.env.RATED_SEGMENTS_URL as string,
+  apiURL: import.meta.env.PUBLIC_API_URL as string,
+  baseURL: import.meta.env.PUBLIC_BASE_URL as string,
+  keycloakAuthority: import.meta.env.PUBLIC_KEYCLOAK_AUTHORITY as string,
+  keycloakRedirectURI: import.meta.env.PUBLIC_KEYCLOAK_REDIRECT_URI as string,
+  keycloakClientId: import.meta.env.PUBLIC_KEYCLOAK_CLIENT_ID as string,
+  valhallaURL: import.meta.env.PUBLIC_VALHALLA_URL as string,
+  locationSearchURL: import.meta.env.PUBLIC_LOCATION_SEARCH_URL as string,
+  transportTilesURL: import.meta.env.PUBLIC_TRANSPORT_TILES_URL as string,
+  ratedSegmentsURL: import.meta.env.PUBLIC_RATED_SEGMENTS_URL as string,
   defaultMapCenter: {
     zoom: 0.0,
     lng: 0.0,
@@ -44,7 +44,8 @@ const config: Config = {
     updateView: false,
     flyTo: false,
   },
-  development: (process.env.DEVELOPMENT as string).toLowerCase() == "true",
+  development:
+    (import.meta.env.PUBLIC_DEVELOPMENT as string).toLowerCase() == "true",
 };
 
 export default config;

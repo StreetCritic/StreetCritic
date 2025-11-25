@@ -1,4 +1,4 @@
-import { Map as LibreMap, LngLat, LngLatBounds } from "maplibre-gl";
+import { Map as LibreMap, LngLatBounds } from "maplibre-gl";
 
 import { Geometry } from "geojson";
 import { UnknownAction, Dispatch } from "@reduxjs/toolkit";
@@ -68,9 +68,10 @@ export function getBoundsFromGeometry(geometry: Geometry): LngLatBounds {
   } else {
     throw new Error(`Unsupported geometry type ${geometry.type}`);
   }
-  coordinates = coordinates.map(
-    (position) => new LngLat(position[0], position[1]),
-  );
+  coordinates = coordinates.map((position) => ({
+    lng: position[0],
+    lat: position[1],
+  }));
   return coordinates.reduce(
     (bounds, coord) => bounds.extend(coord),
     new LngLatBounds(coordinates[0], coordinates[0]),

@@ -1,9 +1,5 @@
 import { useCallback } from "react";
-import {
-  createSearchParams,
-  NavigateOptions,
-  useNavigate,
-} from "react-router";
+import { createSearchParams, NavigateOptions, useNavigate } from "react-router";
 import useMapSearchParams from "./useMapSearchParams";
 
 export default function useNavigateMap(): (

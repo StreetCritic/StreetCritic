@@ -8,11 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-.parcel-cache
-dist-ssr
 *.local
 tsconfig.tsbuildinfo
+.react-router
 
 # Editor directories and files
 .vscode/*

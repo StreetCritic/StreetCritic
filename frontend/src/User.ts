@@ -13,16 +13,6 @@ import { updateAccount } from "@/features/user/update";
 
 import { showNotification } from "@/notifications";
 
-const settings: UserManagerSettings = {
-  authority: config.keycloakAuthority,
-  client_id: config.keycloakClientId,
-  redirect_uri: config.keycloakRedirectURI,
-  userStore: new WebStorageStateStore({ store: window.localStorage }),
-  // onSigninCallback: (_user: any): void => {
-  // window.history.replaceState({}, document.title, window.location.pathname);
-  // },
-};
-
 /**
  * Handles user authentication.
  */
@@ -30,6 +20,16 @@ export default class User {
   private userManager: UserManager;
 
   constructor() {
+    const settings: UserManagerSettings = {
+      authority: config.keycloakAuthority,
+      client_id: config.keycloakClientId,
+      redirect_uri: config.keycloakRedirectURI,
+      userStore: new WebStorageStateStore({ store: localStorage }),
+      // onSigninCallback: (_user: any): void => {
+      // window.history.replaceState({}, document.title, window.location.pathname);
+      // },
+    };
+
     this.userManager = new UserManager(settings);
   }
 

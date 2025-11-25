@@ -123,7 +123,8 @@ export type MapState = {
 function getPersistedCenter() {
   const center = { ...config.defaultMapCenter };
   for (const key of ["lng", "lat", "zoom"]) {
-    const value = localStorage.getItem(key);
+    const value =
+      typeof localStorage !== "undefined" && localStorage.getItem(key);
     if (value) {
       // @ts-expect-error TS7053
       center[key] = parseFloat(value);

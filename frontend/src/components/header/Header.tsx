@@ -70,22 +70,26 @@ export default function Header() {
           <SocialMediaLinks visibleFrom="md" />
 
           <Group h="100%" wrap="nowrap">
-            {appState.authState === AuthenticationState.Error && (
-              <p>Authentication error</p>
-            )}
-            {appState.authState === AuthenticationState.Authenticating && (
-              <Loader color="blue" size="md" />
-            )}
-            {appState.authState === AuthenticationState.Authenticated && (
-              <UserNavigation
-                userName={appState.user?.name || ""}
-                onLogout={() => user.signOut()}
-              />
-            )}
-            {appState.authState === AuthenticationState.Unauthenticated && (
-              <Group visibleFrom="md">
-                <LoginButtons />
-              </Group>
+            {user && (
+              <>
+                {appState.authState === AuthenticationState.Error && (
+                  <p>Authentication error</p>
+                )}
+                {appState.authState === AuthenticationState.Authenticating && (
+                  <Loader color="blue" size="md" />
+                )}
+                {appState.authState === AuthenticationState.Authenticated && (
+                  <UserNavigation
+                    userName={appState.user?.name || ""}
+                    onLogout={() => user.signOut()}
+                  />
+                )}
+                {appState.authState === AuthenticationState.Unauthenticated && (
+                  <Group visibleFrom="md">
+                    <LoginButtons />
+                  </Group>
+                )}
+              </>
             )}
             <Box hiddenFrom="md">
               <ActionIcon

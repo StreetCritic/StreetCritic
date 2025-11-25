@@ -9,7 +9,7 @@ export default function LoginButtons() {
     <>
       <Button
         onClick={() => {
-          user.register();
+          user?.register();
           dispatchEvent(new Event("clicked-login-buttons-sign-up"));
         }}
       >
@@ -18,7 +18,7 @@ export default function LoginButtons() {
       <Button
         variant="default"
         onClick={() => {
-          user.signIn();
+          user?.signIn();
           dispatchEvent(new Event("clicked-login-buttons-log-in"));
         }}
       >

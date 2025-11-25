@@ -85,7 +85,7 @@ export default function RatingForm({ wayId, onClose }: Props) {
     setRating((oldState: Ratings) => ({ ...oldState, [key]: v }));
 
   const onSubmit = async () => {
-    const token = (await user.getAccessToken()) || "";
+    const token = (await user?.getAccessToken()) || "";
     const segments = mapState.routeSegments || undefined;
 
     try {

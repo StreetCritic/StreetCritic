@@ -43,7 +43,7 @@ export default function WayCreateForm({ onCreated, onDiscard }: Props) {
         segments: [] as { id: string; start: number; stop: number }[],
       };
       body.segments = mapState.routeSegments;
-      const token = (await user.getAccessToken()) || "";
+      const token = (await user?.getAccessToken()) || "";
       try {
         const response = await fetch(`${config.apiURL}/ways`, {
           method: "POST",

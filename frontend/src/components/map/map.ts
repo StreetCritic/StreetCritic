@@ -10,7 +10,6 @@ import {
 import style from "./style.json";
 import originalStyle from "./originalStyle.json";
 
-import { init_hooks } from "ibre";
 import { useDispatch, useSelector } from "react-redux";
 import {
   centerUpdated,
@@ -339,7 +338,6 @@ export function useMap(
   // Initialize the map.
   useEffect(() => {
     if (container.current) {
-      init_hooks();
       const onCenterChange = (center: LngLat, zoom: number) => {
         dispatch(
           centerUpdated({

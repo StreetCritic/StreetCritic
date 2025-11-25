@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { MVTRouter, Point as WASMPoint } from "ibre";
+import { init_hooks as initHooks, MVTRouter, Point as WASMPoint } from "ibre";
 
 import type { LngLat as Stop } from "@/features/map";
 import config from "@/config";
@@ -16,6 +16,7 @@ import { lineString } from "@turf/helpers";
 export function useSegmentsRoute(stops: Stop[]) {
   const dispatch = useDispatch();
   const router = useMemo(() => {
+    initHooks();
     return new MVTRouter(config.transportTilesURL);
   }, []);
   useEffect(() => {

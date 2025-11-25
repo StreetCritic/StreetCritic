@@ -52,11 +52,16 @@ const initialState: AppState = {
   locale: findUILanguage(),
   user: null,
   authState: AuthenticationState.Unauthenticated,
-  announcementBannerVisible: localStorage.getItem("state") === null,
+  announcementBannerVisible:
+    typeof localStorage !== "undefined"
+      ? localStorage.getItem("state") === null
+      : true,
   loading: {},
 };
 
-localStorage.setItem("state", "visited");
+if (typeof localStorage !== "undefined") {
+  localStorage.setItem("state", "visited");
+}
 
 export const appSlice = createSlice({
   name: "app",

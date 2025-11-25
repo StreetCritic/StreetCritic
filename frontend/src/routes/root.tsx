@@ -1,9 +1,8 @@
-import "@mantine/core/styles.css";
-import "@mantine/notifications/styles.css";
-import "./globals.css";
-
-import App from "@/components/app";
 import { Outlet } from "react-router";
+
+import { useUser } from "@/hooks";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 /* import { ColorSchemeScript } from "@mantine/core"; */
 
@@ -14,11 +13,18 @@ import { Outlet } from "react-router";
  *  */
 
 export default function Root() {
-  return (
-    <App>
-      <Outlet />
-    </App>
-  );
+  const user = useUser();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    (async () => {
+      user.initAuth(dispatch);
+    })();
+  }, [user, dispatch]);
+  return <Outlet />;
 }
 
 /* head:        <ColorSchemeScript /> */

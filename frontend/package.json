@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "parcel src/index.html",
-    "build": "tsc -b && parcel build src/index.html",
-    "type-check": "tsc -b",
+    "dev": "react-router dev",
+    "build": "tsc -b && react-router build",
+    "start": "react-router-serve ./build/server/index.js",
+    "type-check": "react-router typegen && tsc -b",
     "lint": "eslint . -f unix",
     "format": "prettier src/ --write",
     "test": "vitest"
@@ -20,6 +21,8 @@
     "@mantine/notifications": "^7.17.8",
     "@mapbox/tilebelt": "^2.0.2",
     "@phosphor-icons/react": "^2.1.10",
+    "@react-router/node": "^7.9.2",
+    "@react-router/serve": "^7.9.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@routingjs/valhalla": "^0.3.0",
     "@turf/clean-coords": "^7.2.0",
@@ -27,8 +30,9 @@
     "@turf/nearest-point-on-line": "^7.2.0",
     "chroma-js": "^3.1.2",
     "clsx": "^2.1.1",
-    "ibre": "link:/home/cneumann/projekte/ibre/repo/pkg",
-    "maplibre-gl": "link:../../maplibre-gl-js",
+    "ibre": "file:../../../ibre/repo/pkg",
+    "isbot": "^5",
+    "maplibre-gl": "file:../../maplibre-gl-js",
     "oidc-client-ts": "^3.2.1",
     "pmtiles": "^3.2.1",
     "protomaps-themes-base": "^4.5.0",
@@ -36,10 +40,12 @@
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
     "react-router": "^7.9.6",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "vite-plugin-top-level-await": "^1.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@react-router/dev": "^7.9.2",
     "@types/chroma-js": "^2.4.5",
     "@types/css-modules": "^1.0.5",
     "@types/geojson": "^7946.0.16",
@@ -52,7 +58,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
-    "parcel": "^2.15.4",
     "postcss": "^8.5.5",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
@@ -61,6 +66,8 @@
     "svgo": "^3.3.2",
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.34.0",
+    "vite": "^7.1.7",
+    "vite-plugin-wasm": "^3.5.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.3"
   }
