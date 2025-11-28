@@ -4,7 +4,8 @@ import {
   stopChanged,
   stopRemoved,
 } from "@/features/map/mapSlice";
-import { GeoJSONSource, MapMouseEvent, MapTouchEvent } from "maplibre-gl";
+import { GeoJSONSource } from "maplibre-gl";
+import type { MapMouseEvent, MapTouchEvent } from "maplibre-gl";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Map } from "../map";

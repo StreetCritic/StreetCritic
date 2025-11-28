@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+
 import {
   Map as LibreMap,
-  LngLat,
+  setWorkerUrl,
   NavigationControl,
-  StyleSpecification,
   ScaleControl,
 } from "maplibre-gl";
+import type { LngLat, StyleSpecification } from "maplibre-gl";
 
 import style from "./style.json";
 import originalStyle from "./originalStyle.json";
@@ -26,6 +27,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useMantineTheme } from "@mantine/core";
 import { useGetWayQuery } from "@/services/api";
 import { skipToken } from "@reduxjs/toolkit/query";
+
+import webWorkerURL from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 
 export type PositionHandler = (point: LngLat) => void;
 export type PositionChangeHandler = (
@@ -55,6 +58,7 @@ export class Map {
     container: HTMLElement,
     onLoad: () => void,
   ) {
+    setWorkerUrl(webWorkerURL);
     this.map = new LibreMap({
       container,
       attributionControl: {

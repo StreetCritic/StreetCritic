@@ -91,7 +91,9 @@ export default function LocationSearch({
 
   const [locations, loading] = useLocationSearch({
     query,
-    update: combobox.targetRef.current === document.activeElement,
+    update:
+      typeof document !== "undefined" &&
+      combobox.targetRef.current === document.activeElement,
   });
 
   const options = locations?.map((item) => (

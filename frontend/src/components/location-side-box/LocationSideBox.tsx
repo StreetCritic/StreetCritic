@@ -13,9 +13,7 @@ import {
 import { switchedToQuickWayRating } from "@/features/map/appSlice";
 import { Geometry } from "geojson";
 import type { LngLat } from "@/features/map";
-import MapLibre from "maplibre-gl";
-const LibreLngLat = MapLibre.LngLat;
-type LibreLngLat = InstanceType<typeof LibreLngLat>;
+import { LngLat as LibreLngLat } from "maplibre-gl";
 import NavigationMenu from "./NavigationMenu";
 
 /**
