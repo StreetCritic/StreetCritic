@@ -57,8 +57,10 @@ enum Commands {
 
 fn main() -> Result<(), anyhow::Error> {
     let cli = Cli::parse();
-    SimpleLogger::new().init()?;
-    log::set_max_level(LevelFilter::Warn);
+    SimpleLogger::new()
+        .with_level(LevelFilter::Warn)
+        .env()
+        .init()?;
     match &cli.command {
         Some(Commands::MergeRatingsIntoOSMPlanet { input, output, db }) => {
             commands::merge_ratings_into_osm_planet(input, output, db)

@@ -6,6 +6,14 @@ To compile / run the tools, you first have to install
 To list all available commands, run with `--help`.
 $ cargo run -- --help
 
+## Setting log level
+
+Choose log level by setting RUST_LOG environment variable, e.g.
+
+$ RUST_LOG=info cargo run -- ...
+
+Level can be off, error, warn, info, debug, trace.
+
 ## merge-ratings-into-osm-planet (Experimental)
 
 This command loads the ratings from the database and updates an OpenStreetMap
