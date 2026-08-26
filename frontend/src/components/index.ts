@@ -3,7 +3,6 @@ export { default as Accordion } from "./accordion";
 export { default as AccountLink } from "./account-link";
 export { default as ActionIcon } from "./action-icon";
 export { default as Alert } from "./alert";
-export { default as AnnouncementBanner } from "./announcement-banner";
 export { default as Button } from "./button";
 export { default as ContactForm } from "./contact-form";
 export { default as Container } from "./container";

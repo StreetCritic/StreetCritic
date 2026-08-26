@@ -37,11 +37,6 @@ export type AppState = {
   authState: AuthenticationState;
 
   /**
-   * Is the announcement banner visible?
-   */
-  announcementBannerVisible: boolean;
-
-  /**
    * Is a component in a loading state?
    */
   loading: Record<string, boolean>;
@@ -52,26 +47,13 @@ const initialState: AppState = {
   locale: findUILanguage(),
   user: null,
   authState: AuthenticationState.Unauthenticated,
-  announcementBannerVisible:
-    typeof localStorage !== "undefined"
-      ? localStorage.getItem("state") === null
-      : true,
   loading: {},
 };
-
-if (typeof localStorage !== "undefined") {
-  localStorage.setItem("state", "visited");
-}
 
 export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    /** User closed the announcement banner. */
-    closedAnnouncementBanner: (state) => {
-      state.announcementBannerVisible = false;
-    },
-
     /** Component with id started loading something. */
     loadingStarted: (state, action: PayloadAction<string>) => {
       state.loading[action.payload] = true;
@@ -142,7 +124,6 @@ export const appSlice = createSlice({
 });
 
 export const {
-  closedAnnouncementBanner,
   closedQuickWayRating,
   loadingStarted,
   loadingFinished,
