@@ -1,5 +1,5 @@
 .root {
-  @media (max-width: calc($mantine-breakpoint-md - 1px)) {
+  @media (max-width: calc($mantine-breakpoint-lg - 1px)) {
     max-height: 350px;
     overflow: scroll;
   }

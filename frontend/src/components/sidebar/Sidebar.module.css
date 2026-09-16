@@ -5,7 +5,7 @@
   right: 0;
   left: 0;
   max-height: calc(100% - 40px);
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     max-height: none;
     right: auto;
     top: 0;
@@ -15,7 +15,7 @@
 
 .fullHeight {
   height: calc(100% - 40px);
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     height: auto;
   }
 }
@@ -39,7 +39,7 @@
   width: 60px;
   height: 35px;
 
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     left: auto;
     top: calc(30%);
     right: -25px;
@@ -54,13 +54,13 @@
 }
 
 .caretVariants *:first-child {
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     display: block;
   }
 }
 
 .caretVariants *:last-child {
-  @media (max-width: calc($mantine-breakpoint-md - 1px)) {
+  @media (max-width: calc($mantine-breakpoint-lg - 1px)) {
     display: block;
   }
 }
@@ -84,7 +84,7 @@
 }
 
 .folded {
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     top: calc(100% - 50px);
     top: 0;
     width: 7px;
@@ -92,7 +92,7 @@
 }
 
 .folded .inner {
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     display: none;
   }
 }

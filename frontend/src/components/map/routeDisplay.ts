@@ -17,7 +17,7 @@ export function useRouteDisplay(map: Map | null) {
   const mapState = useSelector(selectMapState);
   const dispatch = useDispatch();
   const theme = useMantineTheme();
-  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
   // Setup source and layer.
   useEffect(() => {

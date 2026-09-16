@@ -25,7 +25,7 @@
 .styleControls {
   left: auto;
   right: var(--controls-spacing);
-  @media (max-width: calc($mantine-breakpoint-md - 1px)) {
+  @media (max-width: calc($mantine-breakpoint-lg - 1px)) {
     top: 70px;
   }
 }
@@ -46,7 +46,7 @@
   box-shadow: var(--mantine-shadow-sm);
   top: calc(var(--controls-spacing) + var(--header-height));
   right: var(--controls-spacing);
-  @media (min-width: calc($mantine-breakpoint-md)) {
+  @media (min-width: calc($mantine-breakpoint-lg)) {
     top: var(--controls-spacing);
   }
 }

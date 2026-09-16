@@ -52,12 +52,12 @@ export default function Header() {
     <Box>
       <header className={classes.root}>
         <Group wrap="nowrap" justify="space-between" h="100%">
-          <Box hiddenFrom="md"></Box>
-          <Box visibleFrom="md" w="50%" maw="200px">
+          <Box hiddenFrom="lg"></Box>
+          <Box visibleFrom="lg" w="50%" maw="200px">
             <LogoLink />
           </Box>
 
-          <Group h="100%" gap={0} visibleFrom="md">
+          <Group h="100%" gap={0} visibleFrom="lg">
             <a href={links.about} className={classes.link}>
               {__("menu-entry-about")}
             </a>
@@ -72,10 +72,10 @@ export default function Header() {
             </a>
           </Group>
 
-          <SocialMediaLinks visibleFrom="md" />
+          <SocialMediaLinks visibleFrom="lg" />
 
           <Group h="100%" wrap="nowrap">
-            <Group visibleFrom="md">
+            <Group visibleFrom="lg">
               <LanguageSwitcher />
             </Group>
             {user && (
@@ -93,13 +93,13 @@ export default function Header() {
                   />
                 )}
                 {appState.authState === AuthenticationState.Unauthenticated && (
-                  <Group visibleFrom="md">
+                  <Group visibleFrom="lg">
                     <LoginButtons />
                   </Group>
                 )}
               </>
             )}
-            <Box hiddenFrom="md">
+            <Box hiddenFrom="lg">
               <ActionIcon
                 label="Menu"
                 color="white"
@@ -116,7 +116,7 @@ export default function Header() {
         onClose={closeDrawer}
         size="100%"
         padding="md"
-        hiddenFrom="md"
+        hiddenFrom="lg"
         zIndex={1000000}
       >
         <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">

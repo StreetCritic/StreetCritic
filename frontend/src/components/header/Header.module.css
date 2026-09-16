@@ -11,7 +11,7 @@
   border-bottom: rem(1px) solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 
-  @media (min-width: $mantine-breakpoint-md) {
+  @media (min-width: $mantine-breakpoint-lg) {
     position: relative;
   }
 }

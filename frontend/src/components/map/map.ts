@@ -268,7 +268,7 @@ export function useMap(
   const [map, setMap] = useState<Map | null>(null);
   const [mapRendered, setMapRendered] = useState(false);
   const theme = useMantineTheme();
-  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.md})`);
+  const isMobile = !useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
 
   // TODO fix includeUser. not needed, but prevents double requests
   const selectedWay = useGetWayQuery(
