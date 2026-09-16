@@ -1,11 +1,14 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "react-router";
+import type { ShouldRevalidateFunctionArgs } from "react-router";
 
 import iconURL from "./icon.png";
 
@@ -17,7 +20,7 @@ import Header from "@/components/header";
 import { Notifications } from "@mantine/notifications";
 
 import { Provider } from "react-redux";
-import store from "./store";
+import { makeStore } from "./store";
 
 import { Avatar, createTheme, MantineProvider, rem } from "@mantine/core";
 
@@ -25,7 +28,13 @@ import type { Route } from "./+types/root";
 
 import User, { UserContext } from "./User";
 import { useEffect, useState } from "react";
-import { TranslationsContext } from "./features/i18n";
+import {
+  DEFAULT_LOCALE,
+  findUILanguage,
+  TranslationsContext,
+} from "./features/i18n";
+import { commitSession, getSession } from "./sessions.server";
+import { localeSet } from "./features/map/appSlice";
 import { Container } from "./components";
 
 const theme = createTheme({
@@ -68,28 +77,93 @@ const theme = createTheme({
    * primaryColor: "streetcritic-green", */
 });
 
+async function loadTranslations(locale: string): Promise<string> {
+  const languages =
+    locale === "de-DE"
+      ? await import(`./features/i18n/languages/de-DE`)
+      : await import(`./features/i18n/languages/en-US`);
+  return languages.translations;
+}
+
+/**
+ * Determines the UI locale server-side and loads its translations, so that the
+ * first render is already localized.
+ *
+ * The locale is taken from an explicit `lang` URL parameter, then from the one
+ * previously chosen that way, and otherwise negotiated from the Accept-Language
+ * header.
+ *
+ * Only an explicit choice is written to the session. A negotiated locale is
+ * deliberately not persisted: storing it would pin the UI to whatever the first
+ * request happened to resolve to for a year, and stop it following the browser
+ * settings when those change.
+ */
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const chosenLocale = session.get("locale");
+
+  const langParam = new URL(request.url).searchParams.get("lang");
+  let locale;
+  if (langParam) {
+    locale = findUILanguage(langParam);
+  } else if (chosenLocale) {
+    // Negotiated rather than trusted, the cookie is client-controlled.
+    locale = findUILanguage(chosenLocale);
+  } else {
+    locale = findUILanguage(request.headers.get("Accept-Language"));
+  }
+
+  const translations = await loadTranslations(locale);
+
+  if (!langParam || locale === chosenLocale) {
+    return data({ locale, translations });
+  }
+  session.set("locale", locale);
+  return data(
+    { locale, translations },
+    { headers: { "Set-Cookie": await commitSession(session) } },
+  );
+}
+
+/**
+ * The root loader only needs to run again when the locale can actually change,
+ * which is when the `lang` parameter differs. Revalidating on every client
+ * navigation would cost a round trip per navigation for data that is stable.
+ */
+export function shouldRevalidate({
+  currentUrl,
+  nextUrl,
+}: ShouldRevalidateFunctionArgs) {
+  return (
+    currentUrl.searchParams.get("lang") !== nextUrl.searchParams.get("lang")
+  );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     setUser(new User());
   }, []);
 
-  const [translations, setTranslations] = useState<null>(null);
+  // Undefined when the loader did not run, e.g. while rendering the error
+  // boundary.
+  const loaderData = useRouteLoaderData<typeof loader>("root");
+  const locale = loaderData?.locale || DEFAULT_LOCALE;
+  const translations = loaderData?.translations || null;
+
+  // One store per render, seeded with the locale before anything renders, so
+  // that SSR and the first client render agree.
+  const [store] = useState(() => {
+    const store = makeStore();
+    store.dispatch(localeSet(locale));
+    return store;
+  });
   useEffect(() => {
-    (async () => {
-      let languages = undefined;
-      if (store.getState().app.locale === "de-DE") {
-        languages = await import(`./features/i18n/languages/de-DE`);
-      } else {
-        languages = await import(`./features/i18n/languages/en-US`);
-      }
-      // @ts-expect-error TODO
-      setTranslations(languages.translations);
-    })();
-  }, []);
+    store.dispatch(localeSet(locale));
+  }, [store, locale]);
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <meta charSet="utf-8" />
         <title>StreetCritic</title>

@@ -1,2 +1,2 @@
 import { createContext } from "react";
-export const TranslationsContext = createContext<null>(null);
+export const TranslationsContext = createContext<string | null>(null);

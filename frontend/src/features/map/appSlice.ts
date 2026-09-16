@@ -2,7 +2,7 @@ import { dispatchEvent, Event } from "@/events";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "@/store";
 import { LngLat } from "./types";
-import { findUILanguage } from "@/features/i18n";
+import { DEFAULT_LOCALE } from "@/features/i18n";
 
 export enum AppMode {
   Browsing,
@@ -44,7 +44,7 @@ export type AppState = {
 
 const initialState: AppState = {
   mode: AppMode.Browsing,
-  locale: findUILanguage(),
+  locale: DEFAULT_LOCALE,
   user: null,
   authState: AuthenticationState.Unauthenticated,
   loading: {},
@@ -62,6 +62,11 @@ export const appSlice = createSlice({
     /** Component with id finished loading something. */
     loadingFinished: (state, action: PayloadAction<string>) => {
       delete state.loading[action.payload];
+    },
+
+    /** Locale was set. */
+    localeSet: (state, action: PayloadAction<string>) => {
+      state.locale = action.payload;
     },
 
     // User switched to way adding mode.
@@ -127,6 +132,7 @@ export const {
   closedQuickWayRating,
   loadingStarted,
   loadingFinished,
+  localeSet,
   switchedToBrowsing,
   switchedToWayAdding,
   switchedToQuickWayRating,

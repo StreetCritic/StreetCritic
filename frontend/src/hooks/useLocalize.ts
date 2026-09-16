@@ -8,8 +8,7 @@ export default function useLocalize() {
   const appState = useSelector(selectAppState);
   const translations = useContext(TranslationsContext);
   const resource = useMemo(
-    // @ts-expect-error TODO
-    () => new FluentResource(translations),
+    () => new FluentResource(translations || ""),
     [translations],
   );
 
