@@ -31,12 +31,7 @@
 }
 
 .legend {
-  bottom: 50;
-}
-
-.infoBoxes {
-  top: 50;
-  right: 50;
+  bottom: 50px;
 }
 
 .locationSearch {
@@ -51,9 +46,6 @@
   box-shadow: var(--mantine-shadow-sm);
   top: calc(var(--controls-spacing) + var(--header-height));
   right: var(--controls-spacing);
-  width: 40;
-  height: 40;
-  padding: 5;
   @media (min-width: calc($mantine-breakpoint-md)) {
     top: var(--controls-spacing);
   }
