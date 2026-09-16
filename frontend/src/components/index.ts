@@ -11,6 +11,7 @@ export { default as DateTime } from "./datetime";
 export { default as HeightChart } from "./height-chart";
 export { default as Icon } from "./icon";
 export { default as Indicator } from "./indicator";
+export { default as LanguageSwitcher } from "./language-switcher";
 export { default as LayerSelection } from "./layer-selection";
 export { default as Link } from "./link";
 export { default as Loader } from "./loader";

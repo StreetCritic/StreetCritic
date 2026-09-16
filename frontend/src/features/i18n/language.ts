@@ -31,3 +31,11 @@ export function findUILanguage(acceptLanguage: string | null): string {
   }).languages(SUPPORTED_LOCALES);
   return best ?? DEFAULT_LOCALE;
 }
+
+/**
+ * Name of each supported locale, written in that locale.
+ */
+export const LOCALE_NAMES: Record<string, string> = {
+  "en-US": "English",
+  "de-DE": "Deutsch",
+};

@@ -19,7 +19,12 @@ import UserNavigation from "./UserNavigation";
 import { useLocale, useLocalize, useUser } from "@/hooks";
 import { useSelector } from "react-redux";
 import { AuthenticationState, selectAppState } from "@/features/map/appSlice";
-import { ActionIcon, LoginButtons, SocialMediaLinks } from "@/components";
+import {
+  ActionIcon,
+  LanguageSwitcher,
+  LoginButtons,
+  SocialMediaLinks,
+} from "@/components";
 import LogoLink from "./LogoLink";
 
 export default function Header() {
@@ -70,6 +75,9 @@ export default function Header() {
           <SocialMediaLinks visibleFrom="md" />
 
           <Group h="100%" wrap="nowrap">
+            <Group visibleFrom="md">
+              <LanguageSwitcher />
+            </Group>
             {user && (
               <>
                 {appState.authState === AuthenticationState.Error && (
@@ -132,6 +140,7 @@ export default function Header() {
           <Divider my="sm" />
 
           <Stack align="flex-start" p="md">
+            <LanguageSwitcher />
             {appState.authState === AuthenticationState.Unauthenticated && (
               <LoginButtons />
             )}

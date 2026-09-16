@@ -8,6 +8,7 @@ submit = Absenden
 continue = Weiter
 sign-up = Registrieren
 log-in = Anmelden
+switch-language = Sprache wechseln
 no = Nein
 yes = Ja
 preferences = Einstellungen

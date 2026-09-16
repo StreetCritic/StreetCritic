@@ -8,6 +8,7 @@ submit = Submit
 continue = Continue
 sign-up = Sign up
 log-in = Log in
+switch-language = Switch language
 no = No
 yes = Yes
 preferences = Preferences
