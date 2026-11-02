@@ -51,7 +51,7 @@ export default function RatingForm({ wayId, onClose }: Props) {
         "quiet",
         "clean",
         "little_motorized_traffic",
-        "infastructure",
+        "good_infrastructure",
       ].map((x) => [x, TagState.Neutral]),
     ),
   );
