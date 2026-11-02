@@ -95,10 +95,11 @@ async fn main() {
 type ConnectionPool = Pool<PostgresConnectionManager<NoTls>>;
 
 /// Utility function for mapping any error into a `500 Internal Server Error`
-/// response.
+/// response. The error is logged.
 fn internal_error<E>(err: E) -> (StatusCode, String)
 where
     E: std::error::Error,
 {
+    tracing::error!("Internal error: {err}");
     (StatusCode::INTERNAL_SERVER_ERROR, err.to_string())
 }
