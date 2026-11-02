@@ -22,7 +22,8 @@ pub struct User {
 struct Claims {
     sub: String,
     exp: usize,
-    name: String,
+    /// Keycloak omits this claim for users without first and last name.
+    name: Option<String>,
     preferred_username: String,
 }
 
@@ -69,8 +70,11 @@ fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
     match decode::<Claims>(&token, &key, &validation) {
         Ok(token) => Some(User {
             id: token.claims.sub,
+            name: token
+                .claims
+                .name
+                .unwrap_or_else(|| token.claims.preferred_username.clone()),
             username: token.claims.preferred_username,
-            name: token.claims.name,
         }),
         Err(e) => {
             warn!("Token rejected: {:?}", e.kind());
