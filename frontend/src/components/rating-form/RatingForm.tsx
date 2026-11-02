@@ -70,6 +70,7 @@ export default function RatingForm({ wayId, onClose }: Props) {
   const [comment, setComment] = useState("");
   const [step, setStep] = useState(Steps.GeneralRating);
   const [discardModalOpen, setDiscardModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const toTagString = ([tag, state]: [string, TagState]) => {
     if (state === TagState.Positive) {
@@ -85,10 +86,14 @@ export default function RatingForm({ wayId, onClose }: Props) {
     setRating((oldState: Ratings) => ({ ...oldState, [key]: v }));
 
   const onSubmit = async () => {
-    const token = (await user?.getAccessToken()) || "";
-    const segments = mapState.routeSegments || undefined;
-
+    if (submitting) {
+      return;
+    }
+    setSubmitting(true);
     try {
+      const token = (await user?.getAccessToken()) || "";
+      const segments = mapState.routeSegments || undefined;
+
       const ok = await submitRating(
         { comment, tags: Object.entries(tags).flatMap(toTagString), rating },
         { wayId: wayId, token, segments },
@@ -109,6 +114,8 @@ export default function RatingForm({ wayId, onClose }: Props) {
         message: __("generic-error-body"),
         type: "error",
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -247,7 +254,11 @@ export default function RatingForm({ wayId, onClose }: Props) {
               <Button onClick={() => setStep((step) => step + 1)}>Next</Button>
             )}
             {step === Steps.Submit && (
-              <Button onClick={onSubmit} color="green">
+              <Button
+                onClick={onSubmit}
+                color="green"
+                loading={submitting}
+              >
                 Submit
               </Button>
             )}
