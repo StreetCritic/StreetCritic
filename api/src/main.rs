@@ -10,7 +10,7 @@ use bb8_postgres::PostgresConnectionManager;
 use tokio_postgres::NoTls;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use tower_http::cors::CorsLayer;
+use tower_http::{cors::CorsLayer, trace::TraceLayer};
 
 pub mod account;
 pub mod config;
@@ -80,6 +80,7 @@ async fn main() {
         .route("/ways/:id", get(get_way))
         .layer(Extension(config.access.token))
         .layer(CorsLayer::permissive())
+        .layer(TraceLayer::new_for_http())
         .with_state(pool);
 
     let listener = tokio::net::TcpListener::bind(format!(
