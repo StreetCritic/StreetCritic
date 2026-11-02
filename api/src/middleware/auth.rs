@@ -4,7 +4,7 @@ use axum::{
     middleware::Next,
     response::Response,
 };
-use tracing::trace;
+use tracing::warn;
 
 use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use serde::{Deserialize, Serialize};
@@ -54,7 +54,7 @@ fn get_token(headers: &HeaderMap) -> Option<&str> {
             if v.starts_with("Bearer ") {
                 Some(&v[7..])
             } else {
-                trace! {"Token does not start with \"Bearer\""}
+                warn!("Authorization header does not start with \"Bearer \"");
                 None
             }
         })
@@ -73,7 +73,7 @@ fn get_user_from_token(token: &str, config: &TokenConfig) -> Option<User> {
             name: token.claims.name,
         }),
         Err(e) => {
-            trace! {"Token could not be decoded: {:?}", e}
+            warn!("Token rejected: {:?}", e.kind());
             None
         }
     }
