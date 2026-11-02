@@ -6,6 +6,8 @@ use crate::internal_error;
 pub enum APIError {
     DatabaseError { message: String },
     IncludesError { unexpected: String },
+    /// The request is invalid; reported to the client as `400 Bad Request`.
+    BadRequest { message: String },
 }
 
 impl std::fmt::Display for APIError {
@@ -15,6 +17,7 @@ impl std::fmt::Display for APIError {
             APIError::IncludesError { ref unexpected } => {
                 write!(f, "Unexpected includes parameter: {unexpected}")
             }
+            APIError::BadRequest { ref message } => write!(f, "Bad request: {message}"),
         }
     }
 }
@@ -27,6 +30,12 @@ impl std::error::Error for APIError {
 
 impl From<APIError> for (StatusCode, String) {
     fn from(error: APIError) -> Self {
-        internal_error(error)
+        match error {
+            APIError::BadRequest { message } => {
+                tracing::warn!("Bad request: {message}");
+                (StatusCode::BAD_REQUEST, message)
+            }
+            error => internal_error(error),
+        }
     }
 }

@@ -9,6 +9,12 @@ pub async fn create_rating(
     payload: CreateRating,
     user_id: &str,
 ) -> Result<i32, APIError> {
+    if payload.way_id.is_none() && payload.segments.is_none() {
+        return Err(APIError::BadRequest {
+            message: "Either way_id or segments is required".to_string(),
+        });
+    }
+
     let mut conn = pool.get().await.map_err(|e| APIError::DatabaseError {
         message: e.to_string(),
     })?;
@@ -22,12 +28,11 @@ pub async fn create_rating(
     let way_id = match payload.way_id {
         Some(id) => id,
         None => {
-            // TODO return parameter error
             crate::way::db::create_way_on_transaction(
                 &mut transaction,
                 &payload
                     .segments
-                    .expect("Segments needed when way_id is missing"),
+                    .expect("Checked above that segments are present"),
                 None,
                 &user_id,
             )
