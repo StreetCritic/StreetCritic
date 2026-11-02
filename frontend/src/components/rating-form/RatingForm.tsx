@@ -89,10 +89,13 @@ export default function RatingForm({ wayId, onClose }: Props) {
     const segments = mapState.routeSegments || undefined;
 
     try {
-      await submitRating(
+      const ok = await submitRating(
         { comment, tags: Object.entries(tags).flatMap(toTagString), rating },
         { wayId: wayId, token, segments },
       );
+      if (!ok) {
+        throw new Error("Submitting the rating failed");
+      }
       onClose();
       showNotification({
         title: __("way-rating-success-title"),
